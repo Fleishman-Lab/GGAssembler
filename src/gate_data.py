@@ -10,7 +10,7 @@ class GGData:
 
     def _parse_ligation_df(self):
         idf = pd.read_csv(
-            "%s/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__), index_col=0
+            "%s/../data/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__), index_col=0
         )
         return idf
 
@@ -81,6 +81,9 @@ class GGData:
             if self.gates_scores(gate, reverse_complement(gate)) < threshold:
                 return True
         return False
+
+    def score_gate1_rc_gate2(self, gate1: str, gate2: str) -> int:
+       return self.gates_scores(gate1, reverse_complement(gate2))
 
 
 def reverse_complement(seq) -> str:
