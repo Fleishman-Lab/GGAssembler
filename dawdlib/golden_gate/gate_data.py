@@ -88,12 +88,9 @@ class GGData:
 
     def score_gate1_rc_gate2(self, gate1: str, gate2: str) -> int:
         return self.gates_scores(gate1, reverse_complement(gate2))
-<<<<<<< HEAD
-=======
 
     def self_binding_scores(self) -> List[int]:
         return [self.score_gate1_rc_gate2(g, g) for g in self.lig_df.columns]
->>>>>>> 1d5f465a04a1061a4fbaa0f404281a271caca29a
 
     def filter_self_binding_gates(self, threshold: int = 2000) -> List[str]:
         return [
