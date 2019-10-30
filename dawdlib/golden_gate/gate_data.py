@@ -1,4 +1,5 @@
 import os
+from itertools import combinations
 from typing import List
 
 import pandas as pd
@@ -10,7 +11,7 @@ class GGData:
 
     def _parse_ligation_df(self):
         idf = pd.read_csv(
-            "%s/../data/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__), index_col=0
+            "%s/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__), index_col=0
         )
         return idf
 
@@ -18,15 +19,13 @@ class GGData:
         score1 = self.lig_df.loc[gate1, gate2]
         score2 = self.lig_df.loc[gate2, gate1]
         return int((score1 + score2) / 2)
-    
+
     def gates_all_scores(self, gate1: str, gate2: str) -> int:
         score = 0
         score += self.gates_scores(gate1, gate2)
         score += self.gates_scores(gate1, reverse_complement(gate2))
         score += self.gates_scores(gate2, reverse_complement(gate1))
-        score += self.gates_scores(
-            reverse_complement(gate1), reverse_complement(gate2)
-        )
+        score += self.gates_scores(reverse_complement(gate1), reverse_complement(gate2))
         return score
 
     def score_gate_clique(self, gates_clq: List[str]) -> int:
@@ -39,7 +38,7 @@ class GGData:
 
     def score_on_gate_clique(self, gates: List[str]) -> int:
         return sum([self.gates_scores(g, reverse_complement(g)) for g in gates])
-    
+
     def is_one_over(self, gates: List[str], threshold: int = 1000) -> bool:
         """used for screening lists of gates where at least one off target gate pair scores over threshold
         
@@ -83,14 +82,19 @@ class GGData:
         return False
 
     def score_gate1_rc_gate2(self, gate1: str, gate2: str) -> int:
-       return self.gates_scores(gate1, reverse_complement(gate2))
+        return self.gates_scores(gate1, reverse_complement(gate2))
 
     def get_all_self_binding_gates(self, threshold: int = 2000) -> List[str]:
         all_gates = self.lig_df.columns
         return [g for g in all_gates if self.score_gate1_rc_gate2(g, g) > threshold]
 
+    def gate_set_has_off_target(self, gates: List[str], threshold: int = 1000) -> bool:
+        for gate1, gate2 in combinations(gates, 2):
+            if self.gates_all_scores(gate1, gate2) > threshold:
+                return True
+        return False
+
 
 def reverse_complement(seq) -> str:
     complement = {"A": "T", "T": "A", "G": "C", "C": "G"}
     return "".join([complement[a] for a in seq[::-1]])
-
