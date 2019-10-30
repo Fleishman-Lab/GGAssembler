@@ -43,7 +43,7 @@ class GraphMaker:
         return d_graph
 
     def make_nodes(self, d_graph, dna: str, const_dna_poss: List[int]) -> None:
-        acceptable_fcws = self.gg_data.get_all_self_binding_gates()
+        acceptable_fcws = self.gg_data.filter_self_binding_gates()
         for ind in range(len(dna) - 3):
             fcw = dna[ind : ind + 4]
             if _is_node(fcw, ind, acceptable_fcws, const_dna_poss):

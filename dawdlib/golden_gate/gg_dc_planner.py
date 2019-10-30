@@ -45,7 +45,7 @@ sources = [n for n in d_graph.nodes if n.index < dna_var_poss[0]]
 sinks = [n for n in d_graph.nodes if n.index > dna_var_poss[-1]]
 
 #%%
-best_path = dijkstra_all_paths(d_graph, sources, sinks, MAX_NUM_GATES, gg_data)
+best_path = next(dijkstra_all_paths(d_graph, sources, sinks, MAX_NUM_GATES, gg_data))
 print(best_path)
 # %% [markdown]
 path_edges = [(n1, n2) for n1, n2 in zip(best_path[:-1], best_path[1:])]
