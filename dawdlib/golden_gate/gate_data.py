@@ -5,28 +5,31 @@ import pandas as pd
 
 
 class GGData:
-    def __init__(self) -> None:
-        self.lig_df: pd.DataFrame = self._parse_ligation_df()
+
+    default_df = "%s/resources/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__)
+
+    def __init__(self, init_df=True) -> None:
+        self.lig_df: pd.DataFrame = None
+        if init_df:
+            self.lig_df = self._parse_ligation_df()
+
+    def _load_ligation_df(self, df_path: str, *args, **kwargs) -> pd.DataFrame:
+        return pd.read_csv(df_path, *args, **kwargs)
 
     def _parse_ligation_df(self):
-        idf = pd.read_csv(
-            "%s/../data/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__), index_col=0
-        )
-        return idf
+        return self._load_ligation_df(self.default_df, index_col=0)
 
     def gates_scores(self, gate1: str, gate2: str) -> int:
         score1 = self.lig_df.loc[gate1, gate2]
         score2 = self.lig_df.loc[gate2, gate1]
         return int((score1 + score2) / 2)
-    
+
     def gates_all_scores(self, gate1: str, gate2: str) -> int:
         score = 0
         score += self.gates_scores(gate1, gate2)
         score += self.gates_scores(gate1, reverse_complement(gate2))
         score += self.gates_scores(gate2, reverse_complement(gate1))
-        score += self.gates_scores(
-            reverse_complement(gate1), reverse_complement(gate2)
-        )
+        score += self.gates_scores(reverse_complement(gate1), reverse_complement(gate2))
         return score
 
     def score_gate_clique(self, gates_clq: List[str]) -> int:
@@ -39,7 +42,7 @@ class GGData:
 
     def score_on_gate_clique(self, gates: List[str]) -> int:
         return sum([self.gates_scores(g, reverse_complement(g)) for g in gates])
-    
+
     def is_one_over(self, gates: List[str], threshold: int = 1000) -> bool:
         """used for screening lists of gates where at least one off target gate pair scores over threshold
         
@@ -83,14 +86,19 @@ class GGData:
         return False
 
     def score_gate1_rc_gate2(self, gate1: str, gate2: str) -> int:
-       return self.gates_scores(gate1, reverse_complement(gate2))
+        return self.gates_scores(gate1, reverse_complement(gate2))
 
-    def get_all_self_binding_gates(self, threshold: int = 2000) -> List[str]:
-        all_gates = self.lig_df.columns
-        return [g for g in all_gates if self.score_gate1_rc_gate2(g, g) > threshold]
+    def self_binding_scores(self) -> List[int]:
+        return [self.score_gate1_rc_gate2(g, g) for g in self.lig_df.columns]
+
+    def filter_self_binding_gates(self, threshold: int = 2000) -> List[str]:
+        return [
+            g
+            for g, score in zip(self.lig_df.columns, self.self_binding_scores())
+            if score > threshold
+        ]
 
 
 def reverse_complement(seq) -> str:
     complement = {"A": "T", "T": "A", "G": "C", "C": "G"}
     return "".join([complement[a] for a in seq[::-1]])
-
