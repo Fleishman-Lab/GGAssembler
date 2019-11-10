@@ -364,14 +364,11 @@ def _optimise_codons_exact(
         codon_comb = _combine_condons(codons_list)
         if not _is_codon_set_valid(req_aas_set, codon_comb["encoded_acids"]):
             continue
-        if len(codon_comb["ambiguous_codons"]) < best_codon_len:
-            best_codon = codon_comb
-            best_codon_len = len(codon_comb["ambiguous_codons"])
-            best_codon_score = codon_comb["score"]
+        if len(codon_comb["ambiguous_codons"]) > best_codon_len:
             continue
-        if codon_comb["score"] > best_codon_score:
-            best_codon = codon_comb
-            best_codon_len = len(codon_comb["ambiguous_codons"])
-            best_codon_score = codon_comb["score"]
+        if codon_comb["score"] < best_codon_score:
             continue
+        best_codon = codon_comb
+        best_codon_len = len(codon_comb["ambiguous_codons"])
+        best_codon_score = codon_comb["score"]
     return best_codon
