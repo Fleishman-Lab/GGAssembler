@@ -46,14 +46,14 @@ class GGData:
 
     def is_one_over(self, gates: List[str], threshold: int = 1000) -> bool:
         """used for screening lists of gates where at least one off target gate pair scores over threshold
-        
+
         Parameters
         ----------
         gates : List[str]
             a list of gates (clique) to be testes
         threshold : int, optional
             threshold to consider a gate pair as off-target binders, by default 1000
-        
+
         Returns
         -------
         bool
@@ -68,14 +68,14 @@ class GGData:
 
     def is_one_on_target_under(self, gates: List[str], threshold: int = 2000) -> bool:
         """used for screening lists of gates where at least one gate binds itself under threshold
-        
+
         Parameters
         ----------
         gates : List[str]
             list of gates, clique
         threshold : int, optional
             threshold to consider as binders, by default 2000
-        
+
         Returns
         -------
         bool

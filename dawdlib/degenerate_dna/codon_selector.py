@@ -1,10 +1,28 @@
 import typing as tp
-from itertools import chain, combinations
+from itertools import chain, combinations, product
 
 import networkx as nx
 import numpy as np
 from dawdlib.degenerate_dna.codon_utils import CodonSelector as UtilsCodonSelector
 from dawdlib.degenerate_dna.codon_utils import _get_score
+
+DEG_NUCL_CODES = [
+    "A",
+    "C",
+    "G",
+    "T",
+    "R",
+    "Y",
+    "S",
+    "W",
+    "K",
+    "M",
+    "B",
+    "D",
+    "H",
+    "V",
+    "N",
+]
 
 
 class CodonSelector(object):
@@ -39,7 +57,9 @@ class CodonSelector(object):
 
     codon_dict = property(_get_codon_dict, _set_codon_dict)
 
-    def select_codons(self, amino_acids: str) -> tp.Generator[tp.Any, None, None]:
+    def select_aminoacids_codon(
+        self, amino_acids: str
+    ) -> tp.Generator[tp.Any, None, None]:
         for codon in self.cod_sel.optimise_codons(amino_acids, self.organism_id):
             codon_aas = set(
                 [amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]]
@@ -47,13 +67,36 @@ class CodonSelector(object):
             if set(list(amino_acids)).issuperset(set(codon_aas)):
                 yield codon
 
-    def _gen_degenerate_codons(self, amino_acids: tp.List[str]) -> tp.List[tp.Dict]:
+    def select_codon_aminoacids(
+        self, amino_acids: str
+    ) -> tp.Generator[tp.Any, None, None]:
+        for bps in product(DEG_NUCL_CODES, repeat=3):
+            for codon in self.cod_sel.analyse_codon("".join(bps), self.organism_id):
+                codon_aas = set(
+                    [amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]]
+                )
+                if set(list(amino_acids)).issuperset(set(codon_aas)):
+                    for amino_acid in codon["amino_acids"]:
+                        amino_acid["type"] = 1
+                    yield codon
+
+    def _gen_degenerate_codons_big(self, amino_acids: tp.List[str]) -> tp.List[tp.Dict]:
+        res = self.select_codon_aminoacids("".join(amino_acids))
+        res2 = _codon_to_codons_gen(res)
+        return list(res2)
+
+    def _gen_degenerate_codons_sm(self, amino_acids: tp.List[str]) -> tp.List[tp.Dict]:
         res = (
-            self.select_codons("".join(amino_acid_set))
+            self.select_aminoacids_codon("".join(amino_acid_set))
             for amino_acid_set in _powerset(amino_acids)
         )
         res2 = (_codon_to_codons_gen(x) for x in res)
         return list(chain(*res2))
+
+    def _gen_degenerate_codons(self, amino_acids: tp.List[str]) -> tp.List[tp.Dict]:
+        if 2 ** len(amino_acids) > 3375:
+            return self._gen_degenerate_codons_big(amino_acids)
+        return self._gen_degenerate_codons_sm(amino_acids)
 
     def _lookup_degenerate_codons(self, amino_acids: tp.List[str]) -> tp.List[tp.Dict]:
         acc = []
@@ -64,9 +107,7 @@ class CodonSelector(object):
                 pass
         return acc
 
-    def optimise_codons(
-        self, amino_acids: tp.List[str], mode="graph"
-    ) -> tp.Optional[tp.Dict]:
+    def optimise_codons(self, amino_acids: tp.List[str], mode="graph") -> tp.Dict:
 
         if mode == "graph" and self.graph is not None:
             return _optimise_codons_graph(amino_acids, graph=self.graph)
@@ -80,6 +121,10 @@ class CodonSelector(object):
 
         if mode == "graph":
             return _optimise_codons_graph(amino_acids, codons)
+        # TODO:
+        # Not supported yet - still have to figure out how to solve this
+        # if mode == 'reverse_graph':
+        #     return _optimise_codons_reverse_graph(amino_acids, codons)
         elif mode == "greedy":
             return _optimise_codons_greedy(amino_acids, codons)
         elif mode == "exact":
@@ -109,13 +154,18 @@ def _codon_to_codons_gen(
 
 
 def _codon_to_codons(codon: tp.Dict) -> tp.Dict:
+    try:
+        score = codon["score"]
+    except KeyError:
+        score = _get_score(codon["amino_acids"])
+
     return {
         "ambiguous_codons": [codon["ambiguous_codon"]],
         "amino_acids": codon["amino_acids"],
-        "encoded_acids": set(
+        "encoded_acids": frozenset(
             amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
         ),
-        "score": codon["score"],
+        "score": score,
     }
 
 
@@ -125,7 +175,7 @@ def _combine_condons(codons_list: tp.Sequence[tp.Dict]) -> tp.Dict:
             chain(*(codons["ambiguous_codons"] for codons in codons_list))
         ),
         "amino_acids": list(chain(*(codons["amino_acids"] for codons in codons_list))),
-        "encoded_acids": set(
+        "encoded_acids": frozenset(
             (aa for codons in codons_list for aa in codons["encoded_acids"])
         ),
     }
@@ -167,7 +217,7 @@ def _optimise_codons_graph(
     amino_acids: tp.List[str],
     codons: tp.Optional[tp.List[tp.Dict]] = None,
     graph: tp.Optional[nx.Graph] = None,
-) -> tp.Optional[tp.Dict]:
+) -> tp.Dict:
     """Build a graph of possible degenerate codons
         that only encode the required given codons.
 
@@ -178,16 +228,50 @@ def _optimise_codons_graph(
         Two nodes are connected by an edge if there is a degenerate codon
         that can create the difference between the two nodes AAs.
         """
-    best_codon = None
+    best_codon: tp.Dict = {}
     best_codon_score = np.NINF
-    aa_str = "".join(sorted(amino_acids))
+    # aa_str = "".join(sorted(amino_acids))
+    aa_set = frozenset(amino_acids)
 
     if codons is not None:
-        g = _generate_codons_graph(amino_acids, codons)
+        # g = _generate_codons_graph(amino_acids, codons)
+        g = _generate_codons_set_graph(amino_acids, codons)
     else:
         g = graph
 
-    for path in nx.all_shortest_paths(g, "", aa_str):
+    for path in nx.all_shortest_paths(g, frozenset(), aa_set):
+        codons_list = [g[v1][v2]["codon"] for v1, v2 in zip(path[:-1], path[1:])]
+        codon_comb = _combine_condons(codons_list)
+        if codon_comb["score"] > best_codon_score:
+            best_codon = codon_comb
+            best_codon_score = codon_comb["score"]
+
+    return best_codon
+
+
+def _optimise_codons_reverse_graph(
+    amino_acids: tp.List[str],
+    codons: tp.Optional[tp.List[tp.Dict]] = None,
+    graph: tp.Optional[nx.Graph] = None,
+) -> tp.Optional[tp.Dict]:
+    """
+    Build a graph of possible degenerate codons
+        that only encode the required given codons.
+
+    The nodes are different degenerate codons.
+
+    Edges connect between nodes that are mutually exculsive.
+        For example: 'AFL'<->'HK' but 'AFL'|'LHK'.
+    """
+    best_codon = None
+    best_codon_score = np.NINF
+
+    if codons is not None:
+        g, source, target = _generate_reverse_codons_graph(amino_acids, codons)
+    else:
+        g = graph
+
+    for path in nx.all_shortest_paths(g, source, target):
         codons_list = [g[v1][v2]["codon"] for v1, v2 in zip(path[:-1], path[1:])]
         codon_comb = _combine_condons(codons_list)
         if codon_comb["score"] > best_codon_score:
@@ -210,22 +294,68 @@ def _generate_codons_graph(
     return g
 
 
+def _generate_codons_set_graph(
+    amino_acids: tp.List[str], codons: tp.List[tp.Dict]
+) -> nx.Graph:
+
+    stack: tp.List[frozenset] = []
+    stack.append(frozenset())
+
+    nodes: tp.List[tp.Tuple[frozenset, tp.Dict]] = []
+    nodes.append((frozenset(), {}))
+    edges: tp.List[tp.Tuple[frozenset, frozenset, tp.Dict]] = []
+
+    visited = set()
+
+    while stack:
+        u = stack.pop()
+        visited.add(u)
+        for codon in codons:
+            encoded_acids = codon["encoded_acids"]
+            if u.isdisjoint(encoded_acids):
+                v = u.union(encoded_acids)
+                edges.append((u, v, {"codon": codon}))
+                if v not in visited:
+                    nodes.append((v, codon))
+                    stack.append(v)
+
+    g = nx.Graph()
+    g.add_nodes_from(nodes)
+    g.add_edges_from(edges)
+    return g
+
+
+def _generate_reverse_codons_graph(
+    amino_acids: tp.List[str], codons: tp.List[tp.Dict]
+) -> nx.Graph:
+    nodes = [(codon["encoded_acids"], codon) for codon in codons]
+    source: tp.Tuple[frozenset, tp.Dict] = (frozenset(), {})
+    target: tp.Tuple[frozenset, tp.Dict] = (frozenset(amino_acids), {})
+    nodes += [source, target]
+    edges = [(v1, v2) for v1, v2 in combinations(nodes, 2) if len(v1[0] & v2[0]) == 0]
+
+    g = nx.Graph()
+    g.add_nodes_from(nodes)
+    g.add_edges_from(edges)
+    return g, source, target
+
+
 def _optimise_codons_greedy(
     amino_acids: tp.List[str], codons: tp.List[tp.Dict]
-) -> tp.Optional[tp.Dict]:
+) -> tp.Dict:
     req_aas_set = set(amino_acids)
 
     for codons_list in _powerset(codons):
         codon_comb = _combine_condons(codons_list)
         if _is_codon_set_valid(req_aas_set, codon_comb["encoded_acids"]):
             return codon_comb
-    return None
+    return {}
 
 
 def _optimise_codons_exact(
     amino_acids: tp.List[str], codons: tp.List[tp.Dict]
-) -> tp.Optional[tp.Dict]:
-    best_codon = None
+) -> tp.Dict:
+    best_codon: tp.Dict = {}
     best_codon_score = np.NINF
     best_codon_len = np.inf
     req_aas_set = set(amino_acids)

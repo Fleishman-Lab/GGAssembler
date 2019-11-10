@@ -1,3 +1,13 @@
-from collections import namedtuple
+from typing import NamedTuple
+from pandas import DataFrame
 
-Gate = namedtuple("Gate", ["index", "bps"])
+
+class Gate(NamedTuple):
+    idx: int
+    bps: str
+
+
+class GateSet(NamedTuple):
+    no_oligos: str
+    idx: int
+    table: DataFrame

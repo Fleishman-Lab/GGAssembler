@@ -1,6 +1,5 @@
 from itertools import permutations
-from collections import OrderedDict
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Dict, Callable, Union
 
 import networkx as nx
 import numpy as np
@@ -17,119 +16,138 @@ class GraphMaker:
     def __init__(self, gg_data):
         self.gg_data: GGData = gg_data
 
-    def make_grpah(
+    def create_default_valid_edge_func(
         self,
-        dna: str,
-        const_poss: List[int],
-        var_poss: List[int],
-        dna_pos_n_codons: Dict[int, List[str]],
+        dna_var_poss: List[int],
         min_oligo_length: int,
         max_oligo_length: int,
         min_const_oligo_length: int,
-    ) -> Tuple[nx.DiGraph, Gate, Gate]:
-        d_graph: nx.DiGraph = nx.DiGraph()
-        self.make_nodes(d_graph, dna, const_poss)
-        self.make_edges(
-            d_graph,
-            var_poss,
-            dna_pos_n_codons,
-            min_oligo_length,
-            max_oligo_length,
-            min_const_oligo_length,
-        )
-        src, snk = self.add_source_sink(
-            d_graph,
-            dna,
-            var_poss,
-            min_oligo_length,
-            max_oligo_length,
-            min_const_oligo_length,
-        )
-        return d_graph, src, snk
+        max_gate_crosstalk: int,
+    ) -> Callable[[Gate, Gate], bool]:
+        ggdata = self.gg_data
+        dna_var_arr = np.array(dna_var_poss)
 
-    def make_nodes(self, d_graph, dna: str, const_dna_poss: List[int]) -> None:
-        acceptable_fcws = self.gg_data.filter_self_binding_gates()
-        for ind in range(len(dna) - 3):
-            fcw = dna[ind : ind + 4]
-            if _is_node(fcw, ind, acceptable_fcws, const_dna_poss):
-                d_graph.add_node(Gate(ind, fcw))
+        def _is_valid_edge(nd1: Gate, nd2: Gate) -> bool:
+            if nd1.index + 3 >= nd2.index:
+                return False
+            # segments with variable positions between them
+            # are required to be at a certain length
+            if np.any(np.logical_and(nd1.index < dna_var_arr, dna_var_arr < nd2.index)):
+                if not (min_oligo_length < nd2.index - nd1.index < max_oligo_length):
+                    return False
+            else:
+                if nd2.index - nd1.index < min_const_oligo_length:
+                    return False
+            if ggdata.gates_all_scores(nd1.bps, nd2.bps) > max_gate_crosstalk:
+                return False
+            return True
 
-    def make_edges(
-        self,
-        d_graph: nx.DiGraph,
-        var_poss: List[int],
-        dna_pos_n_codons: Dict[int, List[str]],
-        min_oligo_length,
-        max_oligo_length,
-        min_const_oligo_length,
-    ) -> None:
-        for nd1, nd2 in permutations(d_graph.nodes, 2):
-            if self._is_edge(
-                nd1,
-                nd2,
-                var_poss,
-                min_oligo_length,
-                max_oligo_length,
-                min_const_oligo_length,
-            ):
-                cost = np.product(
-                    [
-                        len(codons) if nd1.index < pos < nd2.index else 1
-                        for pos, codons in dna_pos_n_codons.items()
-                    ]
-                )
-                # cost += 1
-                d_graph.add_edge(nd1, nd2, weight=cost)
+        return _is_valid_edge
 
-    def add_source_sink(
-        self,
-        d_graph: nx.DiGraph,
-        dna: str,
-        var_poss: List[int],
-        min_oligo_length,
-        max_oligo_length,
-        min_const_oligo_length,
-    ) -> Tuple[Gate, Gate]:
-        src = Gate(-1, SOURCE_NODE)
-        snk = Gate(len(dna), SINK_NODE)
-        d_graph.add_node(src)
-        d_graph.add_node(snk)
-        for nd1 in d_graph.nodes:
-            if nd1.index < var_poss[0]:
-                d_graph.add_edge(src, nd1, weight=0)
-            elif nd1.index > var_poss[-1]:
-                d_graph.add_edge(nd1, snk, weight=0)
-        return src, snk
 
-    def _is_edge(
-        self,
-        nd1: Gate,
-        nd2: Gate,
-        dna_var_poss: List[int],
-        min_oligo_length,
-        max_oligo_length,
-        min_const_oligo_length,
-    ) -> bool:
-        if nd1.index + 3 >= nd2.index:
+def make_nodes(d_graph, dna: str, is_valid_node: Callable[[str, int], bool]) -> None:
+    for ind in range(len(dna) - 3):
+        gate_idxs = slice(ind, ind + 4)
+        fcw = dna[gate_idxs]
+        if is_valid_node(fcw, ind+1):
+            d_graph.add_node(Gate(ind+1, fcw))
+
+
+def create_default_valid_node_function(
+    acceptable_fcws: List[str], var_dna_poss: List[int]
+) -> Callable[[str, int], bool]:
+    var_dna_arr = np.array(var_dna_poss)
+
+    def _is_valid_node(fcw: str, ind: int) -> bool:
+        if fcw not in acceptable_fcws:
             return False
-
-        # segments with variable positions between them are required to be at a certain length
-        if any([nd1.index < p < nd2.index for p in dna_var_poss]):
-            if not (min_oligo_length < nd2.index - nd1.index + 3 < max_oligo_length):
-                return False
-        else:
-            if nd2.index - nd1.index + 3 < min_const_oligo_length:
-                return False
-        if self.gg_data.gates_all_scores(nd1.bps, nd2.bps) > 1000:
+        if np.any(np.logical_and(ind <= var_dna_arr, var_dna_arr <= ind + 3)):
             return False
         return True
 
+    return _is_valid_node
 
-def _is_node(
-    fcw: str, ind: int, acceptable_fcws: List[str], const_dna_poss: List[int]
-) -> bool:
-    if fcw not in acceptable_fcws:
-        return False
-    if any([p not in const_dna_poss for p in range(ind, ind + 4)]):
-        return False
-    return True
+
+def _add_source_sink(
+    d_graph: nx.DiGraph, dna: str, var_poss: List[int]
+) -> Tuple[Gate, Gate]:
+    src = Gate(-1, SOURCE_NODE)
+    snk = Gate(len(dna), SINK_NODE)
+    d_graph.add_node(src)
+    d_graph.add_node(snk)
+    for nd1 in d_graph.nodes:
+        if nd1.index < var_poss[0]:
+            d_graph.add_edge(src, nd1, weight=0)
+        elif nd1.index > var_poss[-1]:
+            d_graph.add_edge(nd1, snk, weight=0)
+    return src, snk
+
+
+def create_default_weight_func(
+    dna_pos_n_codons: Dict[int, List[str]]
+) -> Callable[[Gate, Gate], int]:
+    var_pos_arr = np.array(list(dna_pos_n_codons.keys()))
+
+    def edge_weight(nd1: Gate, nd2: Gate) -> int:
+        base_cost = 0
+        if np.any(np.logical_and(nd1.index < var_pos_arr, var_pos_arr < nd2.index)):
+            base_cost = 1
+        return (nd2.index - nd1.index) * np.product(
+            [
+                len(codons) if nd1.index < pos < nd2.index else base_cost
+                for pos, codons in dna_pos_n_codons.items()
+            ]
+        )
+
+    return edge_weight
+
+
+def make_edges(
+    d_graph: nx.DiGraph,
+    is_valid_edge: Callable[[Gate, Gate], bool],
+    edge_weight: Callable[[Gate, Gate], Union[float, int]],
+) -> None:
+    for nd1, nd2 in permutations(d_graph.nodes, 2):
+        if is_valid_edge(nd1, nd2):
+            d_graph.add_edge(nd1, nd2, weight=edge_weight(nd1, nd2))
+
+
+def build_custom_graph(
+    gm: GraphMaker,
+    dna: str,
+    var_poss: List[int],
+    is_valid_node: Callable[[str, int], bool],
+    is_valid_edge: Callable[[Gate, Gate], bool],
+    edge_weight: Callable[[Gate, Gate], Union[float, int]],
+) -> Tuple[nx.DiGraph, Gate, Gate]:
+    d_graph: nx.DiGraph = nx.DiGraph()
+    make_nodes(d_graph, dna, is_valid_node)
+    make_edges(d_graph, is_valid_edge, edge_weight)
+    src, snk = _add_source_sink(d_graph, dna, var_poss)
+    return d_graph, src, snk
+
+
+def make_default_graph(
+    gm: GraphMaker,
+    dna: str,
+    var_poss: List[int],
+    dna_pos_n_codons: Dict[int, List[str]],
+    min_oligo_length: int,
+    max_oligo_length: int,
+    min_const_oligo_length: int,
+    gate_self_binding_min: int = 2000,
+    gate_crosstalk_max: int = 1000,
+) -> Tuple[nx.DiGraph, Gate, Gate]:
+    acceptable_fcws = gm.gg_data.filter_self_binding_gates(gate_self_binding_min)
+    is_valid_node = create_default_valid_node_function(acceptable_fcws, var_poss)
+    is_valid_edge = gm.create_default_valid_edge_func(
+        var_poss,
+        min_oligo_length,
+        max_oligo_length,
+        min_const_oligo_length,
+        gate_crosstalk_max,
+    )
+    edge_weight = create_default_weight_func(dna_pos_n_codons)
+    return build_custom_graph(
+        gm, dna, var_poss, is_valid_node, is_valid_edge, edge_weight
+    )
