@@ -31,9 +31,9 @@ np.random.seed(0)
 
 dna = parse_dna(f"{os.path.dirname(__file__)}/tests/input_921/921_DNA_seq")
 resfile = parse_resfile(f"{os.path.dirname(__file__)}/tests/input_921/resfile_921")
-aa_var_poss: List[int] = list(resfile.keys())
+aa_var_poss: List[int] = np.array(list(resfile.keys()))
 dna_var_poss: List[int] = find_dna_var_poss(aa_var_poss)
-const_dna_poss = [p for p in range(len(dna)) if p not in dna_var_poss]
+const_dna_poss = sorted(set(list(range(1, len(dna)))) - set(dna_var_poss))
 
 #%%
 codon_selector = CodonSelector("37762")

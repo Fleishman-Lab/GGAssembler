@@ -1,4 +1,4 @@
-from typing import Generator, List, Set, Tuple
+from typing import Generator, List, Set
 
 import networkx as nx
 
@@ -29,13 +29,13 @@ def find_compatible_paths(
             )
         ]
         while stack:
-            parent, depth_now, children, pth, compatible_neighbors = stack[-1]
+            _, depth_now, children, pth, compatible_neighbors = stack[-1]
             try:
                 child = next(children)
                 if child not in compatible_neighbors:
                     continue
                 if child not in visited:
-                    # yield pth + [child]
+                    yield pth + [child]
                     visited.add(child)
                     if depth_now > 1:
                         stack.append(
