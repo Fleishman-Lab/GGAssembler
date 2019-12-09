@@ -1,6 +1,6 @@
 import os
 from itertools import chain
-from typing import Callable, Generator, Iterable, List, Optional, Tuple, Dict
+from typing import Callable, Generator, Iterable, List, Dict
 import logging
 import networkx as nx
 import pandas as pd
@@ -10,6 +10,7 @@ from dawdlib.golden_gate.gate_restriction import create_path_validator
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.graph_maker import make_default_graph, GraphMaker
 from dawdlib.degenerate_dna.deg_table import TableColNames
+from dawdlib.golden_gate.utils import parse_dna, expand_dna_var_poss
 
 GATESET_FILENAME = "{}_oligos_gate_set_{}.csv"
 
@@ -84,19 +85,17 @@ def write_oligo_gatesets(gatesets: Iterable[GateSet], outdir: str):
             )
             gateset.table.to_csv(gateset_filename, index=False)
     except ValueError:
-        LOGGER.exception("Failed writing gateset to file %s", gateset_filename)
+        LOGGER.exception("Failed writing gateset.")
     except nx.NetworkXNoPath:
-        LOGGER.exception(
-            "Failed writing gateset to file %s! No path was found!", gateset_filename
-        )
+        LOGGER.exception("Failed writing gateset! No path was found!")
 
 
 def deg_table_to_dict(deg_table: pd.DataFrame) -> Dict[int, List[str]]:
     keys: List[int] = deg_table[TableColNames.DNA_POS.value].tolist()
     values: List[List[str]] = [
-        list(filter(None, sub_list))
+        list(filter(len, sub_list))
         for sub_list in deg_table.filter(
-            regex=(TableColNames.AMBIGUOUS_CODONS.value+r'[\d]+')
+            regex=(TableColNames.AMBIGUOUS_CODONS.value + r"[\d]+")
         ).values
     ]
     return dict(zip(keys, values))
@@ -104,8 +103,8 @@ def deg_table_to_dict(deg_table: pd.DataFrame) -> Dict[int, List[str]]:
 
 def gate_deg_codons(
     dna: str,
-    ggdata: GGData,
     deg_table: pd.DataFrame,
+    ggdata: GGData,
     min_var_oligo_length: int,
     max_var_oligo_length: int,
     min_const_oligo_length: int,
@@ -119,10 +118,12 @@ def gate_deg_codons(
     is_valid_path = create_path_validator(
         ggdata, gate_self_binding_min, gate_crosstalk_max
     )
+    var_poss = deg_table[TableColNames.DNA_POS.value].tolist()
+    var_poss = expand_dna_var_poss(var_poss)
     d_graph, src, target = make_default_graph(
         GraphMaker(ggdata),
         dna,
-        deg_table["DNA_POS"].tolist(),
+        var_poss,
         deg_table_to_dict(deg_table),
         min_var_oligo_length,
         max_var_oligo_length,
@@ -133,3 +134,35 @@ def gate_deg_codons(
     return gen_gateset_for_oligo_no(
         d_graph, src, target, is_valid_path, no_solutions, min_oligos, max_oligos
     )
+
+
+def create_goldengates(
+    dna_filename: str,
+    deg_table_filename: str,
+    output_dir: str,
+    min_var_oligo_length: int,
+    max_var_oligo_length: int,
+    min_const_oligo_length: int,
+    no_solutions: int = 1,
+    min_oligos: int = None,
+    max_oligos: int = None,
+    gate_self_binding_min: int = 2000,
+    gate_crosstalk_max: int = 1000,
+):
+    dna = parse_dna(dna_filename)
+    deg_table = pd.read_csv(deg_table_filename, index_col=False, na_filter=True, keep_default_na=False)
+    ggdata = GGData()
+    gatesets = gate_deg_codons(
+        dna,
+        deg_table,
+        ggdata,
+        min_var_oligo_length,
+        max_var_oligo_length,
+        min_const_oligo_length,
+        no_solutions,
+        min_oligos,
+        max_oligos,
+        gate_self_binding_min,
+        gate_crosstalk_max,
+    )
+    write_oligo_gatesets(gatesets, output_dir)

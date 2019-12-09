@@ -28,15 +28,15 @@ class GraphMaker:
         dna_var_arr = np.array(dna_var_poss)
 
         def _is_valid_edge(nd1: Gate, nd2: Gate) -> bool:
-            if nd1.index + 3 >= nd2.index:
+            if nd1.idx + 3 >= nd2.idx:
                 return False
             # segments with variable positions between them
             # are required to be at a certain length
-            if np.any(np.logical_and(nd1.index < dna_var_arr, dna_var_arr < nd2.index)):
-                if not (min_oligo_length < nd2.index - nd1.index < max_oligo_length):
+            if np.any(np.logical_and(nd1.idx < dna_var_arr, dna_var_arr < nd2.idx)):
+                if not (min_oligo_length < nd2.idx - nd1.idx < max_oligo_length):
                     return False
             else:
-                if nd2.index - nd1.index < min_const_oligo_length:
+                if nd2.idx - nd1.idx < min_const_oligo_length:
                     return False
             if ggdata.gates_all_scores(nd1.bps, nd2.bps) > max_gate_crosstalk:
                 return False
@@ -76,9 +76,9 @@ def _add_source_sink(
     d_graph.add_node(src)
     d_graph.add_node(snk)
     for nd1 in d_graph.nodes:
-        if nd1.index < var_poss[0]:
+        if nd1.idx < var_poss[0]:
             d_graph.add_edge(src, nd1, weight=0)
-        elif nd1.index > var_poss[-1]:
+        elif nd1.idx > var_poss[-1]:
             d_graph.add_edge(nd1, snk, weight=0)
     return src, snk
 
@@ -90,11 +90,11 @@ def create_default_weight_func(
 
     def edge_weight(nd1: Gate, nd2: Gate) -> int:
         base_cost = 0
-        if np.any(np.logical_and(nd1.index < var_pos_arr, var_pos_arr < nd2.index)):
+        if np.any(np.logical_and(nd1.idx < var_pos_arr, var_pos_arr < nd2.idx)):
             base_cost = 1
-        return (nd2.index - nd1.index) * np.product(
+        return 1 + (nd2.idx - nd1.idx) * np.product(
             [
-                len(codons) if nd1.index < pos < nd2.index else base_cost
+                len(codons) if nd1.idx < pos < nd2.idx else base_cost
                 for pos, codons in dna_pos_n_codons.items()
             ]
         )
