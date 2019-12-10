@@ -49,8 +49,8 @@ def make_nodes(d_graph, dna: str, is_valid_node: Callable[[str, int], bool]) -> 
     for ind in range(len(dna) - 3):
         gate_idxs = slice(ind, ind + 4)
         fcw = dna[gate_idxs]
-        if is_valid_node(fcw, ind+1):
-            d_graph.add_node(Gate(ind+1, fcw))
+        if is_valid_node(fcw, ind):
+            d_graph.add_node(Gate(ind, fcw))
 
 
 def create_default_valid_node_function(

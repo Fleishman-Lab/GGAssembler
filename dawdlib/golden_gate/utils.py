@@ -18,7 +18,7 @@ def find_dna_var_poss(var_poss: List[int]) -> List[int]:
 
 
 def expand_dna_var_poss(var_poss: List[int]) -> List[int]:
-    return list(chain(*([pos - 2, pos - 1, pos] for pos in var_poss)))
+    return list(chain(*([pos - 1, pos, pos + 1] for pos in var_poss)))
 
 
 def parse_resfile(in_file: str) -> Dict[int, str]:

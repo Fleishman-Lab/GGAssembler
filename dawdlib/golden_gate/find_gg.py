@@ -91,7 +91,7 @@ def write_oligo_gatesets(gatesets: Iterable[GateSet], outdir: str):
 
 
 def deg_table_to_dict(deg_table: pd.DataFrame) -> Dict[int, List[str]]:
-    keys: List[int] = deg_table[TableColNames.DNA_POS.value].tolist()
+    keys: List[int] = (deg_table[TableColNames.DNA_POS.value] - 1 ).tolist()
     values: List[List[str]] = [
         list(filter(len, sub_list))
         for sub_list in deg_table.filter(

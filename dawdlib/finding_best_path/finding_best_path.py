@@ -1,7 +1,13 @@
 #%%
+# %%
+import cProfile
 import pickle
-from typing import Dict, Generator, List, Set, Tuple
+# %%
+import pstats
 import random
+import time
+import timeit
+from typing import Callable, Dict, Generator, List, Set, Tuple
 
 import networkx as nx
 import numpy as np
@@ -9,6 +15,8 @@ import pandas as pd
 
 from dawdlib.gg_dc_combine.gg_dc_combine import parse_degenerate_codon_csv
 from dawdlib.golden_gate.gate import Gate
+from dawdlib.golden_gate.gate_data import GGData
+from dawdlib.golden_gate.gate_restriction import create_path_validator
 
 # %%
 di_graph = nx.read_gpickle(
@@ -20,6 +28,17 @@ dc_df = parse_degenerate_codon_csv(
 edge_data = pickle.load(
     open(
         "/home/labs/fleishman/jonathaw/gg_n_dc/dawdlib/dawdlib/finding_best_path/tests/921_var_edge_props.pickle",
+        "rb",
+    )
+)
+
+#%%
+di_graph_4 = nx.read_gpickle(
+    "/home/labs/fleishman/jonathaw/gg_n_dc/dawdlib/dawdlib/finding_best_path/tests/921_4_var_segments_graph.pickle"
+)
+edge_data_4 = pickle.load(
+    open(
+        "/home/labs/fleishman/jonathaw/gg_n_dc/dawdlib/dawdlib/finding_best_path/tests/921_4_var_edge_props.pickle",
         "rb",
     )
 )
@@ -113,27 +132,78 @@ print(v_pos_n_codons)
 
 # print(score_path([], v_pos_n_codons))
 
+#%%
+def recursively_assign_subgraph_scores(di_graph: nx.DiGraph, edge_data) -> None:
+    nx.set_node_attributes(di_graph, 0, "subgraph_score")
+    visited = set()
+    stack = [n for n, d in di_graph.in_degree() if d == 0]
+    while stack:
+        node = stack[-1]
+
+        # reached end of graph
+        if di_graph.out_degree[node] == 0:
+            nx.set_node_attributes(
+                di_graph, {node: {"subgraph_score": edge_data[node]["weight"]}}
+            )
+            stack.pop()
+            visited.add(node)
+            continue
+
+        # node is visited if all it's children are visited
+        if node in visited:
+            sg_score = edge_data[node]["weight"]
+            for child in di_graph.successors(node):
+                sg_score += di_graph.nodes[child]["subgraph_score"]
+            nx.set_node_attributes(di_graph, {node: {"subgraph_score": sg_score}})
+            stack.pop()
+            continue
+
+        # if node is not visited, than the children need to be visited
+        for child in di_graph.successors(node):
+            if child in visited:
+                continue
+            stack.append(child)
+        visited.add(node)
+
+
+recursively_assign_subgraph_scores(di_graph_4, edge_data=edge_data_4)
+recursively_assign_subgraph_scores(di_graph, edge_data=edge_data)
 
 #%%
-def get_edge_score(rec_path: List[Tuple[Gate, Gate]], node: Tuple[Gate, Gate]) -> int:
-    if len(rec_path) == 0:
-        return 0
-    return edge_data[(rec_path[-1], node)]
+
+
+def validate_node_path(
+    path_validator: Callable, node_path: List[Tuple[Gate, Gate]]
+) -> bool:
+    gates = []
+    for node in node_path:
+        gates.append(node[0])
+        gates.append(node[1])
+    return path_validator(gates)
 
 
 def find_all_paths(
-    di_graph: nx.DiGraph
+    di_graph: nx.DiGraph, edge_data: Dict[Tuple[Gate, Gate], int], max_nodes: int = 8
 ) -> Tuple[Dict[int, List[Tuple[Gate, Gate]]], Dict[int, int]]:
-    best_score: Dict[int, int] = {l: np.inf for l in range(1, 21)}
-    best_path: Dict[int, List[Tuple[Gate, Gate]]] = {l: [] for l in range(1, 21)}
+    gg_data = GGData()
+    LEARN = 100
 
-    stack: List[Tuple[Tuple[Gate, Gate], int]] = [
-        (n, edge_data[n]["weight"]) for n, d in di_graph.in_degree() if d == 0
-    ]
+    p_valid = create_path_validator(gg_data, 2000, 1000)
+
+    best_score: Dict[int, List[int]] = {l: [np.inf] for l in range(1, max_nodes + 1)}
+    best_path: Dict[int, List[Tuple[Gate, Gate]]] = {
+        l: [] for l in range(1, max_nodes + 1)
+    }
+
+    pre_stack: List[Tuple[int, Tuple[Gate, Gate]]] = sorted(
+        [(edge_data[n]["weight"], n) for n, d in di_graph.in_degree() if d == 0]
+    )
+    stack: List[Tuple[Tuple[Gate, Gate], int]] = [(n[1], 0) for n in pre_stack]
     rec_path: List[Tuple[Gate, Gate]] = []
     visited: Set[Tuple[Gate, Gate]] = set()
 
-    i = 0
+    finished: Dict[int, bool] = {}
+
     while stack:
         node, upto_node_score = stack[-1]
         if node in visited:
@@ -143,41 +213,129 @@ def find_all_paths(
             continue
         with_node_score = upto_node_score + edge_data[node]["weight"]
         rec_path.append(node)
-        if with_node_score > best_score[len(rec_path)]:
-            stack.pop()
-            rec_path.pop()
-            continue
-
         # reached end of graph
         if di_graph.out_degree[node] == 0:
             stack.pop()
-            if best_score[len(rec_path)] > with_node_score:
-                best_score[len(rec_path)] = with_node_score
+            # print("reached end")
+            if best_score[len(rec_path)][-1] > with_node_score:
+                best_score[len(rec_path)].append(with_node_score)
                 best_path[len(rec_path)] = rec_path[:]
+                if len(best_score[len(rec_path)]) > LEARN:
+                    finished[len(rec_path)] = all(
+                        [
+                            sc1 > 0.995 * sc2
+                            for sc1, sc2 in zip(
+                                best_score[len(rec_path)][-LEARN-1:],
+                                best_score[len(rec_path)][-LEARN:-1],
+                            )
+                        ]
+                    )
+                    print(best_score[len(rec_path)][-10:], all(list(finished.values())))
+                    if all(list(finished.values())):
+                        break
+
+            rec_path.pop()
+            continue
+
+        # dead-end elimination - if the path up to node has a worse score,
+        # or the gates are not comlementary, remove this path
+        if (
+            len(rec_path) + 1 > max_nodes
+            or all(
+                [
+                    with_node_score > best_score[size_][-1]
+                    for size_ in range(len(rec_path) + 1, max_nodes + 1)
+                ]
+            )
+            or not validate_node_path(p_valid, rec_path)
+        ):
+            stack.pop()
             rec_path.pop()
             continue
 
         # if node is not visited, than the children need to be visited
-        for child in di_graph.successors(node):
+        srtd_children = sorted(
+            [
+                (di_graph.nodes[n]["subgraph_score"], n)
+                for n in di_graph.successors(node)
+            ]
+        )
+
+        for _, child in srtd_children:
             stack.append((child, with_node_score))
         visited.add(node)
-    return best_path, best_score
+    return best_path, {k: v[-1] for k, v in best_score.items()}
 
 
 # %%
-n = 50
+n = 10
 keep_nodes = random.sample([n for n, d in di_graph.in_degree() if d == 0], n)
 keep_nodes += random.sample(
     [n for n, d in di_graph.in_degree() if d != 0 and di_graph.out_degree(n) != 0], n
 )
 keep_nodes += random.sample([n for n, d in di_graph.out_degree() if d == 0], n)
-print(keep_nodes)
+# print(keep_nodes)
 sub_graph = di_graph.subgraph(keep_nodes)
 
 print(len(sub_graph.edges))
+start = timeit.default_timer()
+best_paths, best_score = find_all_paths(sub_graph, edge_data)
+stop = timeit.default_timer()
+# %timeit -n 1 -r 1 find_all_paths(sub_graph, edge_data)
+for length in range(1, 13):
+    if length in best_paths.keys():
+        if best_paths[length]:
+            print(length)
+            print(best_paths[length])
+            print(best_score[length])
+print("stop - start", stop - start)
 #%%
-best_path, best_score = find_all_paths(di_graph)
-print(best_path)
-print(best_score)
+start = timeit.default_timer()
+best_paths, best_score = find_all_paths(di_graph, edge_data)
+stop = timeit.default_timer()
+for length in range(1, 13):
+    if length in best_paths.keys():
+        print(length)
+        print(best_paths[length])
+        print(best_score[length])
+print("stop - start", stop - start)
+# %%
+
+
+# %timeit -n 1 -r 1 best_paths, best_score = find_all_paths(di_graph_4, edge_data_4)
+start = timeit.default_timer()
+best_paths, best_score = find_all_paths(di_graph_4, edge_data_4, max_nodes=13)
+stop = timeit.default_timer()
+for length in range(1, 13):
+    if length in best_paths.keys():
+        if best_paths[length]:
+            print(length)
+            print(best_paths[length])
+            print(best_score[length])
+print("stop - start", stop - start)
+
+# %%
+
+# %%
+
+
+
+def t(a):
+    time.sleep(5000)
+    print(111111111111111111)
+    return False
+
+
+if True or t("A"):
+    print(222222222)
+
+
+cProfile.run(
+    "find_all_paths(di_graph_4, edge_data_4)", "/home/labs/fleishman/jonathaw/aaaa4"
+)
+
+
+p = pstats.Stats("/home/labs/fleishman/jonathaw/aaaa")
+p.sort_stats("cumulative").print_stats(100)
 
 # %%
