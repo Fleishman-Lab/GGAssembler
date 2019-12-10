@@ -91,7 +91,10 @@ def all_shortest_paths(
         while top >= 0:
             node, i, l = stack[top]
             if node == source:
-                yield [p for p, n, l in reversed(stack[: top + 1])]
+                yield (
+                    [p for p, n, l in reversed(stack[: top + 1])],
+                    dist[target][path_len],
+                )
             if len(pred[node][l]) > i:
                 top += 1
                 if top == len(stack):
