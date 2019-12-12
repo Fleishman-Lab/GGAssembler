@@ -96,7 +96,7 @@ class GGData:
         return [
             g
             for g, score in zip(self.lig_df.columns, self.self_binding_scores())
-            if score > threshold
+            if score > threshold and g != reverse_complement(g)
         ]
 
     def gate_set_has_off_target(self, gates: List[str], threshold: int = 1000) -> bool:
