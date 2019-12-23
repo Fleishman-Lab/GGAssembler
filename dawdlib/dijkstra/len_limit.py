@@ -15,7 +15,7 @@ def nested_defaultdict(default_factory, depth=1):
 
 
 def all_shortest_paths(
-    G, source, target, weight=None, method="dijkstra", cutoff=None, len_cutoff=None
+    G, source, target, len_cutoff, weight=None, method="dijkstra", cutoff=None
 ):
     """Compute all shortest paths in the graph.
 
@@ -107,7 +107,7 @@ def all_shortest_paths(
 
 
 def dijkstra_predecessor_and_distance(
-    G, source, cutoff=None, weight="weight", len_cutoff=None
+    G, source, len_cutoff=None, cutoff=None, weight="weight"
 ):
     """Compute weighted shortest path length and predecessors.
 
@@ -186,7 +186,7 @@ def dijkstra_predecessor_and_distance(
 
 
 def _dijkstra(
-    G, source, weight, pred=None, paths=None, cutoff=None, target=None, len_cutoff=None
+    G, source, weight, len_cutoff, pred=None, paths=None, cutoff=None, target=None
 ):
     """Uses Dijkstra's algorithm to find shortest weighted paths from a
     single source.
@@ -209,7 +209,7 @@ def _dijkstra(
 
 
 def _dijkstra_multisource(
-    G, sources, weight, pred=None, paths=None, cutoff=None, len_cutoff=None, target=None
+    G, sources, weight, len_cutoff, pred=None, paths=None, cutoff=None, target=None
 ):
     """Uses Dijkstra's algorithm to find shortest weighted paths
 
@@ -291,7 +291,7 @@ def _dijkstra_multisource(
                     continue
             vu_len = l + 1
             if len_cutoff is not None:
-                if vu_len > len_cutoff:
+                if vu_len >= len_cutoff:
                     continue
             if u in dist and vu_len in dist[u]:
                 if vu_dist < dist[u][vu_len]:
