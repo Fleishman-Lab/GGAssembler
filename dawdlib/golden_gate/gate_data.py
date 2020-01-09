@@ -7,7 +7,7 @@ import pandas as pd
 
 class GGData:
 
-    default_df = "%s/resources/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__)
+    default_df = "%s/resources/FileS01_T4_18h_37C.csv" % os.path.dirname(__file__)
 
     def __init__(self, init_df=True) -> None:
         self.lig_df: pd.DataFrame = None
