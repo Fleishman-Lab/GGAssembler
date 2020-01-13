@@ -9,9 +9,9 @@ import pandas as pd
 class GGData:
 
     df_files = {
-        (18, 37): "%s/resources/FileS01_T4_18h_37C.csv" % os.path.dirname(__file__),
-        (18, 25): "%s/resources/FileS03_T4_18h_25C.csv" % os.path.dirname(__file__),
-        (1, 25): "%s/resources/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__)
+        (18, 37): "%s/resources/FileS_T4_18h_37C.csv" % os.path.dirname(__file__),
+        (18, 25): "%s/resources/FileS_T4_18h_25C.csv" % os.path.dirname(__file__),
+        (1, 25): "%s/resources/FileS_T4_01h_25C.csv" % os.path.dirname(__file__)
     }
 
     def __init__(self, init_df=True, neb_table_temp: int = 25, neb_table_time: int = 18, init_dicts=True) -> None:
