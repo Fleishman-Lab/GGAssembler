@@ -249,36 +249,36 @@ def _optimise_codons_graph(
     return best_codon
 
 
-def _optimise_codons_reverse_graph(
-    amino_acids: tp.List[str],
-    codons: tp.Optional[tp.List[tp.Dict]] = None,
-    graph: tp.Optional[nx.Graph] = None,
-) -> tp.Optional[tp.Dict]:
-    """
-    Build a graph of possible degenerate codons
-        that only encode the required given codons.
-
-    The nodes are different degenerate codons.
-
-    Edges connect between nodes that are mutually exculsive.
-        For example: 'AFL'<->'HK' but 'AFL'|'LHK'.
-    """
-    best_codon = None
-    best_codon_score = np.NINF
-
-    if codons is not None:
-        g, source, target = _generate_reverse_codons_graph(amino_acids, codons)
-    else:
-        g = graph
-
-    for path in nx.all_shortest_paths(g, source, target):
-        codons_list = [g[v1][v2]["codon"] for v1, v2 in zip(path[:-1], path[1:])]
-        codon_comb = _combine_condons(codons_list)
-        if codon_comb["score"] > best_codon_score:
-            best_codon = codon_comb
-            best_codon_score = codon_comb["score"]
-
-    return best_codon
+# def _optimise_codons_reverse_graph(
+#     amino_acids: tp.List[str],
+#     codons: tp.Optional[tp.List[tp.Dict]] = None,
+#     graph: tp.Optional[nx.Graph] = None,
+# ) -> tp.Optional[tp.Dict]:
+#     """
+#     Build a graph of possible degenerate codons
+#         that only encode the required given codons.
+#
+#     The nodes are different degenerate codons.
+#
+#     Edges connect between nodes that are mutually exculsive.
+#         For example: 'AFL'<->'HK' but 'AFL'|'LHK'.
+#     """
+#     best_codon = None
+#     best_codon_score = np.NINF
+#
+#     if codons is not None:
+#         g, source, target = _generate_reverse_codons_graph(amino_acids, codons)
+#     else:
+#         g = graph
+#
+#     for path in nx.all_shortest_paths(g, source, target):
+#         codons_list = [g[v1][v2]["codon"] for v1, v2 in zip(path[:-1], path[1:])]
+#         codon_comb = _combine_condons(codons_list)
+#         if codon_comb["score"] > best_codon_score:
+#             best_codon = codon_comb
+#             best_codon_score = codon_comb["score"]
+#
+#     return best_codon
 
 
 def _generate_codons_graph(
