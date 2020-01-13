@@ -36,8 +36,8 @@ def codon_table() -> Dict[str, str]:
     bases = "TCAG"
     codons = [a + b + c for a in bases for b in bases for c in bases]
     amino_acids = 'FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG'
-    codon_table = dict(zip(codons, amino_acids))
-    return codon_table
+    cdn_table = dict(zip(codons, amino_acids))
+    return cdn_table
 
 
 def amino_acid_codon_table() -> Dict[str, Set[str]]:
