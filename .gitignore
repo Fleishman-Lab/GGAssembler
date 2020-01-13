@@ -111,5 +111,4 @@ venv.bak/
 *.code-workspace
 
 # Project specific
-dawdlib/dijkstra/colorful.cpp
 dawdlib/dijkstra/colorful.html
