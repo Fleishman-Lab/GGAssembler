@@ -1,6 +1,7 @@
 import os
-from itertools import combinations
-from typing import List
+from itertools import combinations, combinations_with_replacement
+from typing import List, Dict, FrozenSet
+from functools import lru_cache
 
 import pandas as pd
 
@@ -9,10 +10,20 @@ class GGData:
 
     default_df = "%s/resources/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__)
 
-    def __init__(self, init_df=True) -> None:
+    def __init__(self, init_df=True, init_dicts=True) -> None:
         self.lig_df: pd.DataFrame = None
+        self.score_dict: Dict[FrozenSet, int] = {}
+        self.all_score_dict: Dict[FrozenSet, int] = {}
+        self._rev_dict: Dict[str, str] = {}
         if init_df:
             self.lig_df = self._parse_ligation_df()
+        if init_dicts:
+            abc = 'ACGT'
+            for g1, g2 in combinations(combinations_with_replacement(abc, 4), 2):
+                gate1 = ''.join(g1)
+                gate2 = ''.join(g2)
+                self.gates_scores(gate1, gate2)
+                self.gates_all_scores(gate1, gate2)
 
     def _load_ligation_df(self, df_path: str, *args, **kwargs) -> pd.DataFrame:
         return pd.read_csv(df_path, *args, **kwargs)
@@ -21,16 +32,35 @@ class GGData:
         return self._load_ligation_df(self.default_df, index_col=0)
 
     def gates_scores(self, gate1: str, gate2: str) -> int:
-        score1 = self.lig_df.loc[gate1, gate2]
-        score2 = self.lig_df.loc[gate2, gate1]
-        return int((score1 + score2) / 2)
+        gate_set = frozenset([gate1, gate2])
+        score = self.score_dict.get(gate_set, None)
+        if score is None:
+            score1 = self.lig_df.loc[gate1, gate2]
+            score2 = self.lig_df.loc[gate2, gate1]
+            score = int((score1 + score2) / 2)
+            self.score_dict[gate_set] = score
+        return score
 
     def gates_all_scores(self, gate1: str, gate2: str) -> int:
-        score = 0
-        score += self.gates_scores(gate1, gate2)
-        score += self.gates_scores(gate1, reverse_complement(gate2))
-        score += self.gates_scores(gate2, reverse_complement(gate1))
-        score += self.gates_scores(reverse_complement(gate1), reverse_complement(gate2))
+        rev_gate1 = self._rev_dict.get(gate1, None)
+        if rev_gate1 is None:
+            rev_gate1 = reverse_complement(gate1)
+            self._rev_dict[gate1] = rev_gate1
+
+        rev_gate2 = self._rev_dict.get(gate2, None)
+        if rev_gate2 is None:
+            rev_gate2 = reverse_complement(gate2)
+            self._rev_dict[gate2] = rev_gate2
+            
+        gate_set = frozenset([gate1, gate2, rev_gate1, rev_gate2])
+        score = self.all_score_dict.get(gate_set, None)
+        if score is None:
+            score = 0
+            score += self.gates_scores(gate1, gate2)
+            score += self.gates_scores(gate1, reverse_complement(gate2))
+            score += self.gates_scores(gate2, reverse_complement(gate1))
+            score += self.gates_scores(reverse_complement(gate1), reverse_complement(gate2))
+            self.all_score_dict[gate_set] = score
         return score
 
     def score_gate_clique(self, gates_clq: List[str]) -> int:
@@ -106,6 +136,7 @@ class GGData:
         return False
 
 
+@lru_cache(maxsize=256)
 def reverse_complement(seq) -> str:
     complement = {"A": "T", "T": "A", "G": "C", "C": "G"}
     return "".join([complement[a] for a in seq[::-1]])

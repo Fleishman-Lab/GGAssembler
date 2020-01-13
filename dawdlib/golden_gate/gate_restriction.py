@@ -9,7 +9,6 @@ from dawdlib.golden_gate.gate import Gate
 def gen_gate_restriction_graph(
     ggdata: GGData, gate_self_binding_min: int, gate_crosstalk_max: int
 ) -> nx.Graph:
-    ggdata = GGData()
     nodes = ggdata.filter_self_binding_gates(gate_self_binding_min)
     edges = [
         (v1, v2)

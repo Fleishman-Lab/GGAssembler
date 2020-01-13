@@ -4,7 +4,7 @@ from typing import Callable, Generator, Iterable, List, Dict
 import logging
 import networkx as nx
 import pandas as pd
-from dawdlib.golden_gate.dijkstra import all_shortest_paths
+from dawdlib.dijkstra.len_limit import all_shortest_paths
 from dawdlib.golden_gate.gate import Gate, GateSet
 from dawdlib.golden_gate.gate_restriction import create_path_validator
 from dawdlib.golden_gate.gate_data import GGData

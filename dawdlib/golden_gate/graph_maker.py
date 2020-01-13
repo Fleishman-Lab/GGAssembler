@@ -1,4 +1,4 @@
-from itertools import permutations
+from itertools import combinations
 from typing import List, Tuple, Dict, Callable, Union
 
 import networkx as nx
@@ -6,6 +6,8 @@ import numpy as np
 
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.gate import Gate
+
+from .utils import syn_muts
 
 
 SOURCE_NODE = "src"
@@ -45,12 +47,17 @@ class GraphMaker:
         return _is_valid_edge
 
 
-def make_nodes(d_graph, dna: str, is_valid_node: Callable[[str, int], bool]) -> None:
+def make_nodes(d_graph, dna: str, is_valid_node: Callable[[Gate], bool], add_syn: bool = False) -> None:
+    if add_syn and len(dna) % 3 == 0:
+        add_syn = True
+    possible_nodes: List[Tuple[str, int, bool]] = []
     for ind in range(len(dna) - 3):
         gate_idxs = slice(ind, ind + 4)
         fcw = dna[gate_idxs]
-        if is_valid_node(fcw, ind):
-            d_graph.add_node(Gate(ind, fcw))
+        possible_nodes.append(Gate(ind, fcw, False, ()))
+    if add_syn:
+        possible_nodes += syn_muts(dna)
+    d_graph.add_nodes_from(filter(is_valid_node, possible_nodes))
 
 
 def create_default_valid_node_function(
@@ -58,10 +65,11 @@ def create_default_valid_node_function(
 ) -> Callable[[str, int], bool]:
     var_dna_arr = np.array(var_dna_poss)
 
-    def _is_valid_node(fcw: str, ind: int) -> bool:
-        if fcw not in acceptable_fcws:
+    def _is_valid_node(gate: Gate) -> bool:
+
+        if gate.bps not in acceptable_fcws:
             return False
-        if np.any(np.logical_and(ind <= var_dna_arr, var_dna_arr <= ind + 3)):
+        if np.any(np.logical_and(gate.idx <= var_dna_arr, var_dna_arr <= gate.idx + 3)):
             return False
         return True
 
@@ -107,9 +115,18 @@ def make_edges(
     is_valid_edge: Callable[[Gate, Gate], bool],
     edge_weight: Callable[[Gate, Gate], Union[float, int]],
 ) -> None:
-    for nd1, nd2 in permutations(d_graph.nodes, 2):
-        if is_valid_edge(nd1, nd2):
-            d_graph.add_edge(nd1, nd2, weight=edge_weight(nd1, nd2))
+    d_graph.add_weighted_edges_from(
+        map(
+            lambda x: x + (edge_weight(*x), ),
+            filter(
+                lambda x: is_valid_edge(*x),
+                map(
+                    lambda x: x if x[0].idx <= x[1].idx else (x[1], x[0]),
+                    combinations(d_graph.nodes, 2)
+                )
+            )
+        )
+    )
 
 
 def build_custom_graph(

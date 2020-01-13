@@ -29,6 +29,9 @@ def all_shortest_paths(
     target : node
        Ending node for path.
 
+    len_cutoff: int
+        The maximum path length
+
     weight : None or string, optional (default = None)
        If None, every edge has weight/distance/cost 1.
        If a string, use this edge attribute as the edge weight.
@@ -36,10 +39,11 @@ def all_shortest_paths(
 
     method : string, optional (default = 'dijkstra')
        The algorithm to use to compute the path lengths.
-       Supported options: 'dijkstra', 'bellman-ford'.
+       Supported options: 'dijkstra'.
        Other inputs produce a ValueError.
-       If `weight` is None, unweighted graph methods are used, and this
-       suggestion is ignored.
+
+    cutoff: numeric, optional (default = None)
+        Maximum path weight
 
     Returns
     -------
@@ -54,23 +58,11 @@ def all_shortest_paths(
     NetworkXNoPath
         If `target` cannot be reached from `source`.
 
-    Examples
-    --------
-    >>> G = nx.Graph()
-    >>> nx.add_path(G, [0, 1, 2])
-    >>> nx.add_path(G, [0, 10, 2])
-    >>> print([p for p in nx.all_shortest_paths(G, source=0, target=2)])
-    [[0, 1, 2], [0, 10, 2]]
 
     Notes
     -----
     There may be many shortest paths between the source and target.
 
-    See Also
-    --------
-    shortest_path()
-    single_source_shortest_path()
-    all_pairs_shortest_path()
     """
     method = "unweighted" if weight is None else method
     if method == "dijkstra":

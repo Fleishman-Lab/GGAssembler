@@ -1,7 +1,7 @@
-from typing import List, Dict
-from collections import OrderedDict
-from itertools import chain
-
+from typing import List, Dict, Set, Tuple, Generator
+from collections import OrderedDict, defaultdict
+from itertools import chain, product
+from .gate import SynMut, Gate
 
 def parse_dna(dna_file: str) -> str:
     return [a.rstrip() for a in open(dna_file, "r") if ">" not in a and a != ""][0]
@@ -30,3 +30,46 @@ def parse_resfile(in_file: str) -> Dict[int, str]:
         aas = lin.split()[-1]
         results[pos] = aas
     return results
+
+
+def codon_table() -> Dict[str, str]:
+    bases = "TCAG"
+    codons = [a + b + c for a in bases for b in bases for c in bases]
+    amino_acids = 'FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG'
+    codon_table = dict(zip(codons, amino_acids))
+    return codon_table
+
+
+def amino_acid_codon_table() -> Dict[str, Set[str]]:
+    table: Dict[str, Set[str]] = {}
+    for key, val in codon_table().items():
+        table.setdefault(val, set()).add(key)
+    return table
+
+
+def syn_muts(dna: str) -> Generator[Gate, None, None]:
+    # synonymous mutations
+    # gate section is from "|" to "|", the codons are seperated by ":"
+    # |---:-|-- happens when ind %3 = 0
+    # -|--:--|- happens when ind %3 = 1
+    # --|-:---| happens when ind %3 = 2
+    slices = [slice(0, 4), slice(1, 5), slice(2, 6)]
+    cdn_trans = codon_table()
+    aa_trans = amino_acid_codon_table()
+    for idx in range(0, len(dna) - 3, 3):
+        aa1 = cdn_trans[dna[idx:idx + 3]]
+        cdn1s = aa_trans[aa1]
+        aa2 = cdn_trans[dna[idx+3:idx + 6]]
+        cdn2s = aa_trans[aa2]
+
+        for bps_slice in slices:
+            for cdn1, cdn2 in product(cdn1s, cdn2s):
+                yield Gate(
+                    idx,
+                    (cdn1+cdn2)[bps_slice],
+                    True,
+                    (
+                        SynMut(idx, aa1, cdn1),
+                        SynMut(idx+4, aa2, cdn2)
+                    )
+                )
