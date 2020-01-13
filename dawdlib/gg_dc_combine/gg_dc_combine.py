@@ -1,9 +1,9 @@
-import pandas as pd
 from itertools import product
 from typing import List, Tuple
-import numpy as np
 
-from dawdlib.golden_gate.utils import find_dna_var_poss, parse_dna, parse_resfile
+import numpy as np
+import pandas as pd
+
 
 def parse_gg_segments_csv(csv_file: str) -> pd.DataFrame:
     return pd.read_csv(csv_file, index_col=False)

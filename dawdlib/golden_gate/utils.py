@@ -1,7 +1,8 @@
-from typing import List, Dict, Set, Tuple, Generator
-from collections import OrderedDict, defaultdict
+from typing import List, Dict, Set, Generator
+from collections import OrderedDict
 from itertools import chain, product
 from .gate import SynMut, Gate
+
 
 def parse_dna(dna_file: str) -> str:
     return [a.rstrip() for a in open(dna_file, "r") if ">" not in a and a != ""][0]
