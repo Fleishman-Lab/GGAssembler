@@ -71,7 +71,8 @@ def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, 
        Ending node for path.
 
     no_colors: int
-        The number of colors to use in the random recoloring
+        The number of colors to use in the random recoloring.
+        The currently supported maximum is set to 18.
 
     len_cutoff: int, optional (default = 0)
         The maximum path length
@@ -98,6 +99,7 @@ def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, 
     ------
     ValueError
         If `method` is not among the supported options.
+        If `no_colors` is greater than 18.
 
     NetworkXNoPath
         If `target` cannot be reached from `source`.
@@ -108,6 +110,11 @@ def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, 
     There may be many shortest paths between the source and target.
 
     """
+    if method != 'dijkstra':
+        raise ValueError("method not supported: {}".format(method))
+    if no_colors > 18:
+        raise ValueError("No. of colors {} exceeds maximum allowed".format(no_colors))
+
     gate_colors = color_gates(G, GGData())
     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = nxtonumpy(G, [source], target, gate_colors.get, no_colors)
     try:
@@ -158,8 +165,6 @@ def all_colorful_shortest_paths(
         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred) for src in sources))
     else:
         raise nx.NetworkXNoPath()
-        #     "Target {} cannot be reached" "from Source {}".format(target, source)
-        # )
 
 
 def find_shortest_paths(
