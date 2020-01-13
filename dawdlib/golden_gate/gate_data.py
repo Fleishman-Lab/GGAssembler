@@ -8,13 +8,21 @@ import pandas as pd
 
 class GGData:
 
+    default_df = "%s/resources/FileS01_T4_18h_37C.csv" % os.path.dirname(__file__)
+    default_df = "%s/resources/FileS03_T4_18h_25C.csv" % os.path.dirname(__file__)
     default_df = "%s/resources/FileS01_T4_01h_25C.csv" % os.path.dirname(__file__)
 
+<<<<<<< HEAD
     def __init__(self, init_df=True, init_dicts=True) -> None:
         self.lig_df: pd.DataFrame = None
         self.score_dict: Dict[FrozenSet, int] = {}
         self.all_score_dict: Dict[FrozenSet, int] = {}
         self._rev_dict: Dict[str, str] = {}
+=======
+    def __init__(self, init_df=True, neb_table_temp: str = 25, neb_table_time: str = 18) -> None:
+        self.lig_df: pd.DataFrame = None
+        self.default_df = f"{os.path.dirname(__file__)}/resources/FileS_T4_{neb_table_time}h_{neb_table_temp}C.csv"
+>>>>>>> e9c9413d5d082ec053271b91af9e2bb1eaec0807
         if init_df:
             self.lig_df = self._parse_ligation_df()
         if init_dicts:
