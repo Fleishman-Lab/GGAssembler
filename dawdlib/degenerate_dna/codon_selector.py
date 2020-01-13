@@ -327,7 +327,7 @@ def _generate_codons_set_graph(
 
 def _generate_reverse_codons_graph(
     amino_acids: tp.List[str], codons: tp.List[tp.Dict]
-) -> nx.Graph:
+) -> tp.Tuple[nx.Graph, tp.Tuple[frozenset, dict], tp.Tuple[frozenset, dict]]:
     nodes = [(codon["encoded_acids"], codon) for codon in codons]
     source: tp.Tuple[frozenset, tp.Dict] = (frozenset(), {})
     target: tp.Tuple[frozenset, tp.Dict] = (frozenset(amino_acids), {})

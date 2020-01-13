@@ -50,11 +50,11 @@ class GraphMaker:
 def make_nodes(d_graph, dna: str, is_valid_node: Callable[[Gate], bool], add_syn: bool = False) -> None:
     if add_syn and len(dna) % 3 == 0:
         add_syn = True
-    possible_nodes: List[Tuple[str, int, bool]] = []
+    possible_nodes: List[Gate] = []
     for ind in range(len(dna) - 3):
         gate_idxs = slice(ind, ind + 4)
         fcw = dna[gate_idxs]
-        possible_nodes.append(Gate(ind, fcw, False, ()))
+        possible_nodes.append(Gate(ind, fcw, False))
     if add_syn:
         possible_nodes += syn_muts(dna)
     d_graph.add_nodes_from(filter(is_valid_node, possible_nodes))
@@ -62,7 +62,7 @@ def make_nodes(d_graph, dna: str, is_valid_node: Callable[[Gate], bool], add_syn
 
 def create_default_valid_node_function(
     acceptable_fcws: List[str], var_dna_poss: List[int]
-) -> Callable[[str, int], bool]:
+) -> Callable[[Gate], bool]:
     var_dna_arr = np.array(var_dna_poss)
 
     def _is_valid_node(gate: Gate) -> bool:
@@ -133,7 +133,7 @@ def build_custom_graph(
     gm: GraphMaker,
     dna: str,
     var_poss: List[int],
-    is_valid_node: Callable[[str, int], bool],
+    is_valid_node: Callable[[Gate], bool],
     is_valid_edge: Callable[[Gate, Gate], bool],
     edge_weight: Callable[[Gate, Gate], Union[float, int]],
 ) -> Tuple[nx.DiGraph, Gate, Gate]:

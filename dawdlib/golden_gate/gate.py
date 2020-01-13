@@ -12,7 +12,7 @@ class Gate(NamedTuple):
     idx: int
     bps: str
     req_primer: bool = False
-    syn_mut: Tuple[SynMut] = ()
+    syn_mut: Tuple[SynMut, ...] = ()
 
 
 class GateSet(NamedTuple):
