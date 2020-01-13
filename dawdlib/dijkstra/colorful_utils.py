@@ -53,14 +53,14 @@ def _MCSCliqueTree(
         marku = heap.pop(u)
         if marku <= previousmark:
             j += 1
-            C[j] = M[u] | set([u])
+            C[j] = M[u] | {u}
             T.append((j, C_dict[last[u]]))
         else:
-            C[j] = C[j] | set([u])
+            C[j] = C[j] | {u}
         for v in G[u]:
             try:
                 heap[v] += 1
-                M[v] = M[v] | set([u])
+                M[v] = M[v] | {u}
                 last[v] = u
             except KeyError:
                 pass
