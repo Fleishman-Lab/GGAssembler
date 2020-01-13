@@ -4,9 +4,6 @@ from setuptools import setup, find_packages
 from distutils.extension import Extension
 import numpy
 
-# import Cython
-from Cython.Compiler import Options
-Options.docstrings = True
 #
 # directive_defaults = Options.get_directive_defaults()
 # directive_defaults['profile'] = True
@@ -18,13 +15,15 @@ USE_CYTHON = True
 if USE_CYTHON:
     try:
         from Cython.Build import cythonize
+        from Cython.Compiler import Options
+        Options.docstrings = True
     except ImportError:
         if USE_CYTHON == 'auto':
             USE_CYTHON = False
         else:
             raise
 
-ext = '.pyx' if USE_CYTHON else '.c'
+ext = '.pyx' if USE_CYTHON else '.cpp'
 
 ext_modules = [
     Extension(
