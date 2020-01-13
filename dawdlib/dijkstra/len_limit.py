@@ -114,6 +114,9 @@ def dijkstra_predecessor_and_distance(
     source : node label
        Starting node for path
 
+    len_cutoff: int
+        The maximum path length
+
     cutoff : integer or float, optional
        Depth to stop the search. Only return paths with length <= cutoff.
 
