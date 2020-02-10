@@ -1,11 +1,13 @@
 from typing import List, Dict, Set, Generator
 from collections import OrderedDict
 from itertools import chain, product
+from Bio import SeqIO
 from .gate import SynMut, Gate
 
 
-def parse_dna(dna_file: str) -> str:
-    return [a.rstrip() for a in open(dna_file, "r") if ">" not in a and a != ""][0]
+def parse_dna(dna_file: str, frmt = 'fasta') -> str:
+    record = SeqIO.read(dna_file, frmt)
+    return str(record.seq)
 
 
 def find_dna_var_poss(var_poss: List[int]) -> List[int]:

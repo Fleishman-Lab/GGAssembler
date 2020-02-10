@@ -17,8 +17,9 @@ class TableColNames(Enum):
 
 
 def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> Dict:
+    # return codon_selector.optimise_codons(aas, mode='lp')
     length = len(aas)
-    if length > 12:
+    if length > 15:
         return codon_selector.optimise_codons(aas, mode="greedy")
     if length < 4:
         return codon_selector.optimise_codons(aas, mode="exact")

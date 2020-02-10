@@ -3,6 +3,7 @@ from itertools import chain, combinations, product
 
 import networkx as nx
 import numpy as np
+import cvxpy as cp
 from dawdlib.degenerate_dna.codon_utils import CodonSelector as UtilsCodonSelector
 from dawdlib.degenerate_dna.codon_utils import _get_score
 
@@ -119,7 +120,9 @@ class CodonSelector(object):
             codons = _remove_duplicate_codons(codons)
         codons = sorted(codons, key=lambda x: len(x["encoded_acids"]), reverse=True)
 
-        if mode == "graph":
+        if mode == 'lp':
+            return _optimise_codons_lp(amino_acids, codons)
+        elif mode == "graph":
             return _optimise_codons_graph(amino_acids, codons)
         # TODO:
         # Not supported yet - still have to figure out how to solve this
@@ -372,3 +375,25 @@ def _optimise_codons_exact(
         best_codon_len = len(codon_comb["ambiguous_codons"])
         best_codon_score = codon_comb["score"]
     return best_codon
+
+
+def _populate_set_matrix(a: np.array, amino_acids: tp.List[str], codons: tp.List[tp.Dict]) -> None:
+    for i, codon in enumerate(codons):
+        for aa in codon['encoded_acids']:
+            a[amino_acids.index(aa), i] = 1
+
+
+def _optimise_codons_lp(
+        amino_acids: tp.List[str], codons: tp.List[tp.Dict]
+) -> tp.Dict:
+
+    x = cp.Variable(len(codons), boolean=True)
+    a = np.zeros((len(amino_acids), len(codons)))
+    _populate_set_matrix(a, amino_acids, codons)
+    req = np.ones((len(amino_acids),))
+    constraints = [a@x >= req]
+    objective = cp.Minimize(cp.sum(x))
+    problem = cp.Problem(objective, constraints=constraints)
+    res = problem.solve()
+    selected_codons = [codons[i] for i, val in enumerate(x.value) if val >= 0.5]
+    return _combine_condons(selected_codons)

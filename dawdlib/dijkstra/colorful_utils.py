@@ -172,3 +172,27 @@ def nxtonumpy(graph, sources, target, color, no_colors, weight="weight"):
         dist,
         seen,
     )
+
+
+def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred):
+    pred_dict = defaultdict(list)
+    for key, val in np.argwhere(pred).tolist():
+        pred_dict[key].append(val)
+    stack = [[trgt, 0, node_colors[trgt]]]
+    top = 0
+    while top >= 0:
+        node, i, color = stack[top]
+        if node == src:
+            yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
+        if len(pred_dict[node]) > i:
+            if not (color & node_colors[pred_dict[node][i]]):
+                top += 1
+                if top == len(stack):
+                    stack.append([pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]])
+                else:
+                    stack[top] = [pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]]
+            else:
+                stack[top][1] += 1
+        else:
+            stack[top-1][1] += 1
+            top -= 1
