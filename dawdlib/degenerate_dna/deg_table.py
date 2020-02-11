@@ -23,7 +23,7 @@ def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> Dict:
         return codon_selector.optimise_codons(aas, mode="greedy")
     if length < 4:
         return codon_selector.optimise_codons(aas, mode="exact")
-    return codon_selector.optimise_codons(aas, mode="graph")
+    return codon_selector.optimise_codons(aas)
 
 
 def resfile_aa_codons(
@@ -56,10 +56,8 @@ def dna_pos_ambiguous_codons(
     aa_pos_deg_codons: Dict[int, List[str]], dna_var_poss: List[int]
 ) -> Dict[int, List[str]]:
     return OrderedDict(
-        [
-            (dna_pos, aas)
-            for dna_pos, aas in zip(dna_var_poss[::3], aa_pos_deg_codons.values())
-        ]
+        (dna_pos, aas)
+        for dna_pos, aas in zip(dna_var_poss[::3], aa_pos_deg_codons.values())
     )
 
 

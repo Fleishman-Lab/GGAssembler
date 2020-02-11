@@ -2,14 +2,10 @@
 import os
 import unittest
 
-from dawdlib.gg_dc_combine.gg_dc_combine import (create_all_dc_oligos,
-                                                 create_dc_oligo,
-                                                 find_codons_for_oligo,
-                                                 find_oligos,
-                                                 parse_degenerate_codon_csv,
-                                                 parse_gg_segments_csv)
-from dawdlib.golden_gate.utils import (find_dna_var_poss, parse_dna,
-                                       parse_resfile)
+from dawdlib.gg_dc_combine.gg_dc_combine import (
+    create_all_dc_oligos, create_dc_oligo, find_codons_for_oligo, find_oligos, parse_degenerate_codon_csv,
+    parse_gg_segments_csv)
+from dawdlib.golden_gate.utils import find_dna_var_poss, parse_dna, parse_resfile
 
 
 class GGDCCombneTest(unittest.TestCase):
@@ -78,6 +74,7 @@ class GGDCCombneTest(unittest.TestCase):
 
     def test_create_all_dc_oligos(self):
         create_all_dc_oligos(self.dna, self.gg_df, self.dc_df)
+
 
 if __name__ == "__main__":
     unittest.main()

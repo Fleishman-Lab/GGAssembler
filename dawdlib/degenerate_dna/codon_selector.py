@@ -1,9 +1,9 @@
 import typing as tp
 from itertools import chain, combinations, product
 
+import cvxpy as cp
 import networkx as nx
 import numpy as np
-import cvxpy as cp
 from dawdlib.degenerate_dna.codon_utils import CodonSelector as UtilsCodonSelector
 from dawdlib.degenerate_dna.codon_utils import _get_score
 
@@ -26,7 +26,7 @@ DEG_NUCL_CODES = [
 ]
 
 
-class CodonSelector(object):
+class CodonSelector:
     """Usage:
     initiate giving an organism id as an NCBI Taxonomy id
         See: https://doi.org/10.1093/nar/gkr1178
@@ -62,9 +62,9 @@ class CodonSelector(object):
         self, amino_acids: str
     ) -> tp.Generator[tp.Any, None, None]:
         for codon in self.cod_sel.optimise_codons(amino_acids, self.organism_id):
-            codon_aas = set(
+            codon_aas = {
                 [amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]]
-            )
+            }
             if set(list(amino_acids)).issuperset(set(codon_aas)):
                 yield codon
 
@@ -73,9 +73,9 @@ class CodonSelector(object):
     ) -> tp.Generator[tp.Any, None, None]:
         for bps in product(DEG_NUCL_CODES, repeat=3):
             for codon in self.cod_sel.analyse_codon("".join(bps), self.organism_id):
-                codon_aas = set(
+                codon_aas = {
                     [amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]]
-                )
+                }
                 if set(list(amino_acids)).issuperset(set(codon_aas)):
                     for amino_acid in codon["amino_acids"]:
                         amino_acid["type"] = 1
@@ -120,24 +120,20 @@ class CodonSelector(object):
             codons = _remove_duplicate_codons(codons)
         codons = sorted(codons, key=lambda x: len(x["encoded_acids"]), reverse=True)
 
-        if mode == 'lp':
+        if mode == "lp":
             return _optimise_codons_lp(amino_acids, codons)
-        elif mode == "graph":
+        if mode == "graph":
             return _optimise_codons_graph(amino_acids, codons)
-        # TODO:
-        # Not supported yet - still have to figure out how to solve this
-        # if mode == 'reverse_graph':
-        #     return _optimise_codons_reverse_graph(amino_acids, codons)
-        elif mode == "greedy":
+        if mode == "greedy":
             return _optimise_codons_greedy(amino_acids, codons)
-        elif mode == "exact":
+        if mode == "exact":
             return _optimise_codons_exact(amino_acids, codons)
-        else:
-            raise ValueError(
-                "Unknown value %s for mode given.\
-                    Allowed value are: graph, greedy, exact",
-                mode,
-            )
+
+        raise ValueError(
+            "Unknown value %s for mode given.\
+                Allowed value are: lp, graph, greedy, exact"
+            % mode
+        )
 
 
 P = tp.TypeVar("P")
@@ -237,8 +233,7 @@ def _optimise_codons_graph(
     aa_set = frozenset(amino_acids)
 
     if codons is not None:
-        # g = _generate_codons_graph(amino_acids, codons)
-        g = _generate_codons_set_graph(amino_acids, codons)
+        g = _generate_codons_set_graph(codons)
     else:
         g = graph
 
@@ -250,38 +245,6 @@ def _optimise_codons_graph(
             best_codon_score = codon_comb["score"]
 
     return best_codon
-
-
-# def _optimise_codons_reverse_graph(
-#     amino_acids: tp.List[str],
-#     codons: tp.Optional[tp.List[tp.Dict]] = None,
-#     graph: tp.Optional[nx.Graph] = None,
-# ) -> tp.Optional[tp.Dict]:
-#     """
-#     Build a graph of possible degenerate codons
-#         that only encode the required given codons.
-#
-#     The nodes are different degenerate codons.
-#
-#     Edges connect between nodes that are mutually exculsive.
-#         For example: 'AFL'<->'HK' but 'AFL'|'LHK'.
-#     """
-#     best_codon = None
-#     best_codon_score = np.NINF
-#
-#     if codons is not None:
-#         g, source, target = _generate_reverse_codons_graph(amino_acids, codons)
-#     else:
-#         g = graph
-#
-#     for path in nx.all_shortest_paths(g, source, target):
-#         codons_list = [g[v1][v2]["codon"] for v1, v2 in zip(path[:-1], path[1:])]
-#         codon_comb = _combine_condons(codons_list)
-#         if codon_comb["score"] > best_codon_score:
-#             best_codon = codon_comb
-#             best_codon_score = codon_comb["score"]
-#
-#     return best_codon
 
 
 def _generate_codons_graph(
@@ -297,15 +260,11 @@ def _generate_codons_graph(
     return g
 
 
-def _generate_codons_set_graph(
-    amino_acids: tp.List[str], codons: tp.List[tp.Dict]
-) -> nx.Graph:
+def _generate_codons_set_graph(codons: tp.List[tp.Dict]) -> nx.Graph:
 
-    stack: tp.List[frozenset] = []
-    stack.append(frozenset())
+    stack: tp.List[frozenset] = [frozenset()]
 
-    nodes: tp.List[tp.Tuple[frozenset, tp.Dict]] = []
-    nodes.append((frozenset(), {}))
+    nodes: tp.List[tp.Tuple[frozenset, tp.Dict]] = [(frozenset(), {})]
     edges: tp.List[tp.Tuple[frozenset, frozenset, tp.Dict]] = []
 
     visited = set()
@@ -377,23 +336,23 @@ def _optimise_codons_exact(
     return best_codon
 
 
-def _populate_set_matrix(a: np.array, amino_acids: tp.List[str], codons: tp.List[tp.Dict]) -> None:
+def _populate_set_matrix(
+    a: np.array, amino_acids: tp.List[str], codons: tp.List[tp.Dict]
+) -> None:
     for i, codon in enumerate(codons):
-        for aa in codon['encoded_acids']:
+        for aa in codon["encoded_acids"]:
             a[amino_acids.index(aa), i] = 1
 
 
-def _optimise_codons_lp(
-        amino_acids: tp.List[str], codons: tp.List[tp.Dict]
-) -> tp.Dict:
+def _optimise_codons_lp(amino_acids: tp.List[str], codons: tp.List[tp.Dict]) -> tp.Dict:
 
     x = cp.Variable(len(codons), boolean=True)
     a = np.zeros((len(amino_acids), len(codons)))
     _populate_set_matrix(a, amino_acids, codons)
     req = np.ones((len(amino_acids),))
-    constraints = [a@x >= req]
+    constraints = [a @ x >= req]
     objective = cp.Minimize(cp.sum(x))
     problem = cp.Problem(objective, constraints=constraints)
-    res = problem.solve()
+    problem.solve()
     selected_codons = [codons[i] for i, val in enumerate(x.value) if val >= 0.5]
     return _combine_condons(selected_codons)

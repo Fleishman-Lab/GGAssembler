@@ -1,6 +1,7 @@
 import fire
 from dawdlib.golden_gate.find_gg import create_goldengates as cg_main
 
+
 def create_goldengates(
     dna_file: str,
     deg_table_file: str,

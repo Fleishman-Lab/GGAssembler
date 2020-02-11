@@ -11,7 +11,7 @@ from networkx.algorithms.shortest_paths.weighted import _weight_function
 
 
 def _MCSCliqueTree(
-    G: nx.Graph
+    G: nx.Graph,
 ) -> tp.Tuple[tp.List[tp.Tuple[int, int]], tp.Dict[int, tp.Set], tp.Dict[tp.Any, int]]:
     """
     Ref: Galinier et al. - Chordal graphs and their clique graphs (2005)
@@ -56,11 +56,11 @@ def _MCSCliqueTree(
             C[j] = M[u] | {u}
             T.append((j, C_dict[last[u]]))
         else:
-            C[j] = C[j] | {u}
+            C[j] |= {u}
         for v in G[u]:
             try:
                 heap[v] += 1
-                M[v] = M[v] | {u}
+                M[v] |= {u}
                 last[v] = u
             except KeyError:
                 pass
@@ -73,7 +73,7 @@ def _MCSCliqueTree(
 def _enumerate_cliques(graph: nx.Graph) -> tp.Dict[int, tp.Set[tp.Any]]:
     cliques: tp.List[tp.Set] = []
     for cc in nx.connected_components(graph):
-        tree_struct, clique_dict, alpha = _MCSCliqueTree(graph.subgraph(cc))
+        _, clique_dict, _ = _MCSCliqueTree(graph.subgraph(cc))
         cliques.extend(clique_dict.values())
 
     return dict(enumerate(cliques))
@@ -126,7 +126,9 @@ def _nxweighttonp(
     return weight_arr
 
 
-def _nxcolortonp(color: tp.Callable[[tp.Any], tp.FrozenSet[int]], nodes: tp.List):
+def _nxcolortonp(
+    color: tp.Callable[[tp.Any], tp.FrozenSet[int]], nodes: tp.List
+) -> np.array:
     colors = np.unique(list(reduce(set.union, [set(color(node)) for node in nodes])))
     color_arr = np.zeros((len(nodes), colors.shape[0]), dtype=np.ubyte)
     for node in nodes:
@@ -146,7 +148,14 @@ def _nxgraphtomap(weight_arr: np.array) -> tp.Dict:
     return colorful.graphdict2map(cgraph)
 
 
-def nxtonumpy(graph, sources, target, color, no_colors, weight="weight"):
+def nxtonumpy(
+    graph: nx.Graph,
+    sources: tp.List,
+    target,
+    color: tp.Callable[[tp.Any], tp.FrozenSet[int]],
+    no_colors: int,
+    weight="weight",
+):
     nodes = sorted(graph.nodes)
 
     weight_arr = _nxweighttonp(graph, nodes, weight)
@@ -183,16 +192,22 @@ def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred):
     while top >= 0:
         node, i, color = stack[top]
         if node == src:
-            yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
+            yield [nodes[p] for p, n, c in reversed(stack[: top + 1])]
         if len(pred_dict[node]) > i:
             if not (color & node_colors[pred_dict[node][i]]):
                 top += 1
                 if top == len(stack):
-                    stack.append([pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]])
+                    stack.append(
+                        [pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]]
+                    )
                 else:
-                    stack[top] = [pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]]
+                    stack[top] = [
+                        pred_dict[node][i],
+                        0,
+                        color | node_colors[pred_dict[node][i]],
+                    ]
             else:
                 stack[top][1] += 1
         else:
-            stack[top-1][1] += 1
+            stack[top - 1][1] += 1
             top -= 1
