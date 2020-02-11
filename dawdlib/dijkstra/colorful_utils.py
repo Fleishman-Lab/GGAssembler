@@ -73,7 +73,7 @@ def _MCSCliqueTree(
 def _enumerate_cliques(graph: nx.Graph) -> tp.Dict[int, tp.Set[tp.Any]]:
     cliques: tp.List[tp.Set] = []
     for cc in nx.connected_components(graph):
-        tree_struct, clique_dict, alpha = _MCSCliqueTree(graph.subgraph(cc))
+        _, clique_dict, _ = _MCSCliqueTree(graph.subgraph(cc))
         cliques.extend(clique_dict.values())
 
     return dict(enumerate(cliques))

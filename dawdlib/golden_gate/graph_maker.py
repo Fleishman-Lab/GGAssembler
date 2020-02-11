@@ -4,13 +4,10 @@ from typing import Callable, Dict, List, Tuple, Union
 import networkx as nx
 import numpy as np
 
-from .constants import *
+from .constants import CONST_COST, OLIGO_PREFIX, OLIGO_SUFFIX, VAR_ADD_COST
 from .gate import Gate
 from .gate_data import GGData
 from .utils import syn_muts
-
-SOURCE_NODE = "src"
-SINK_NODE = "snk"
 
 
 class GraphMaker:

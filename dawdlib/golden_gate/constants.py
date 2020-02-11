@@ -8,4 +8,14 @@ VAR_ADD_COST = len(OLIGO_PREFIX) + len(OLIGO_SUFFIX)
 # therefore the incur a constant cost of a pair of primers
 CONST_COST = 40
 
-__all__ = ['OLIGO_PREFIX', 'OLIGO_SUFFIX', 'CONST_COST', 'VAR_ADD_COST']
+SOURCE_NODE = "src"
+SINK_NODE = "snk"
+
+__all__ = [
+    "OLIGO_PREFIX",
+    "OLIGO_SUFFIX",
+    "CONST_COST",
+    "VAR_ADD_COST",
+    "SINK_NODE",
+    "SOURCE_NODE",
+]
