@@ -26,7 +26,7 @@ DEG_NUCL_CODES = [
 ]
 
 
-class CodonSelector(object):
+class CodonSelector:
     """Usage:
     initiate giving an organism id as an NCBI Taxonomy id
         See: https://doi.org/10.1093/nar/gkr1178
@@ -62,9 +62,9 @@ class CodonSelector(object):
         self, amino_acids: str
     ) -> tp.Generator[tp.Any, None, None]:
         for codon in self.cod_sel.optimise_codons(amino_acids, self.organism_id):
-            codon_aas = set(
+            codon_aas = {
                 [amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]]
-            )
+            }
             if set(list(amino_acids)).issuperset(set(codon_aas)):
                 yield codon
 
@@ -73,9 +73,9 @@ class CodonSelector(object):
     ) -> tp.Generator[tp.Any, None, None]:
         for bps in product(DEG_NUCL_CODES, repeat=3):
             for codon in self.cod_sel.analyse_codon("".join(bps), self.organism_id):
-                codon_aas = set(
+                codon_aas = {
                     [amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]]
-                )
+                }
                 if set(list(amino_acids)).issuperset(set(codon_aas)):
                     for amino_acid in codon["amino_acids"]:
                         amino_acid["type"] = 1
@@ -122,18 +122,18 @@ class CodonSelector(object):
 
         if mode == "lp":
             return _optimise_codons_lp(amino_acids, codons)
-        elif mode == "graph":
+        if mode == "graph":
             return _optimise_codons_graph(amino_acids, codons)
-        elif mode == "greedy":
+        if mode == "greedy":
             return _optimise_codons_greedy(amino_acids, codons)
-        elif mode == "exact":
+        if mode == "exact":
             return _optimise_codons_exact(amino_acids, codons)
-        else:
-            raise ValueError(
-                "Unknown value %s for mode given.\
-                    Allowed value are: lp, graph, greedy, exact"
-                % mode
-            )
+
+        raise ValueError(
+            "Unknown value %s for mode given.\
+                Allowed value are: lp, graph, greedy, exact"
+            % mode
+        )
 
 
 P = tp.TypeVar("P")

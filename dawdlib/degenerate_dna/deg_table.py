@@ -56,10 +56,8 @@ def dna_pos_ambiguous_codons(
     aa_pos_deg_codons: Dict[int, List[str]], dna_var_poss: List[int]
 ) -> Dict[int, List[str]]:
     return OrderedDict(
-        [
-            (dna_pos, aas)
-            for dna_pos, aas in zip(dna_var_poss[::3], aa_pos_deg_codons.values())
-        ]
+        (dna_pos, aas)
+        for dna_pos, aas in zip(dna_var_poss[::3], aa_pos_deg_codons.values())
     )
 
 
