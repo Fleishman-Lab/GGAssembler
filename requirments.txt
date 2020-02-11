@@ -1,1 +1,7 @@
 synbiochem-py
+networkx
+numpy
+cvxpy
+biopython
+pandas
+fire
