@@ -11,7 +11,7 @@ from networkx.algorithms.shortest_paths.weighted import _weight_function
 
 
 def _MCSCliqueTree(
-    G: nx.Graph
+    G: nx.Graph,
 ) -> tp.Tuple[tp.List[tp.Tuple[int, int]], tp.Dict[int, tp.Set], tp.Dict[tp.Any, int]]:
     """
     Ref: Galinier et al. - Chordal graphs and their clique graphs (2005)
@@ -126,7 +126,9 @@ def _nxweighttonp(
     return weight_arr
 
 
-def _nxcolortonp(color: tp.Callable[[tp.Any], tp.FrozenSet[int]], nodes: tp.List):
+def _nxcolortonp(
+    color: tp.Callable[[tp.Any], tp.FrozenSet[int]], nodes: tp.List
+) -> np.array:
     colors = np.unique(list(reduce(set.union, [set(color(node)) for node in nodes])))
     color_arr = np.zeros((len(nodes), colors.shape[0]), dtype=np.ubyte)
     for node in nodes:
@@ -146,7 +148,14 @@ def _nxgraphtomap(weight_arr: np.array) -> tp.Dict:
     return colorful.graphdict2map(cgraph)
 
 
-def nxtonumpy(graph, sources, target, color, no_colors, weight="weight"):
+def nxtonumpy(
+    graph: nx.Graph,
+    sources: tp.List,
+    target,
+    color: tp.Callable[[tp.Any], tp.FrozenSet[int]],
+    no_colors: int,
+    weight="weight",
+):
     nodes = sorted(graph.nodes)
 
     weight_arr = _nxweighttonp(graph, nodes, weight)
@@ -183,16 +192,22 @@ def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred):
     while top >= 0:
         node, i, color = stack[top]
         if node == src:
-            yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
+            yield [nodes[p] for p, n, c in reversed(stack[: top + 1])]
         if len(pred_dict[node]) > i:
             if not (color & node_colors[pred_dict[node][i]]):
                 top += 1
                 if top == len(stack):
-                    stack.append([pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]])
+                    stack.append(
+                        [pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]]
+                    )
                 else:
-                    stack[top] = [pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]]
+                    stack[top] = [
+                        pred_dict[node][i],
+                        0,
+                        color | node_colors[pred_dict[node][i]],
+                    ]
             else:
                 stack[top][1] += 1
         else:
-            stack[top-1][1] += 1
+            stack[top - 1][1] += 1
             top -= 1
