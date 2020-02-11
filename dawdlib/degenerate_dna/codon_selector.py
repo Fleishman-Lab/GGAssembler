@@ -262,11 +262,9 @@ def _generate_codons_graph(
 
 def _generate_codons_set_graph(codons: tp.List[tp.Dict]) -> nx.Graph:
 
-    stack: tp.List[frozenset] = []
-    stack.append(frozenset())
+    stack: tp.List[frozenset] = [frozenset()]
 
-    nodes: tp.List[tp.Tuple[frozenset, tp.Dict]] = []
-    nodes.append((frozenset(), {}))
+    nodes: tp.List[tp.Tuple[frozenset, tp.Dict]] = [(frozenset(), {})]
     edges: tp.List[tp.Tuple[frozenset, frozenset, tp.Dict]] = []
 
     visited = set()

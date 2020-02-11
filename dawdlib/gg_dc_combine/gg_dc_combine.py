@@ -54,11 +54,14 @@ def find_codons_for_oligo(
         oligo_codons.append(combination)
     return oligo_codons
 
-def create_dc_oligo(dna: str, pos_codons: List[Tuple[int, str]], oligo: Tuple[int, int]) -> str:
+
+def create_dc_oligo(
+    dna: str, pos_codons: List[Tuple[int, str]], oligo: Tuple[int, int]
+) -> str:
     dna_copy = dna
     for (pos, codon) in pos_codons:
-        dna_copy = dna_copy[:pos] + codon + dna_copy[pos+4:]
-    return dna_copy[oligo[0]: oligo[1]+3]
+        dna_copy = dna_copy[:pos] + codon + dna_copy[pos + 4 :]
+    return dna_copy[oligo[0] : oligo[1] + 3]
 
 
 def create_all_dc_oligos(dna: str, gg_df: pd.DataFrame, dc_df: pd.DataFrame):

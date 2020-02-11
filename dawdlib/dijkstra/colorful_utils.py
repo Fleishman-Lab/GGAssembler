@@ -56,11 +56,11 @@ def _MCSCliqueTree(
             C[j] = M[u] | {u}
             T.append((j, C_dict[last[u]]))
         else:
-            C[j] = C[j] | {u}
+            C[j] |= {u}
         for v in G[u]:
             try:
                 heap[v] += 1
-                M[v] = M[v] | {u}
+                M[v] |= {u}
                 last[v] = u
             except KeyError:
                 pass

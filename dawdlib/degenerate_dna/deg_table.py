@@ -23,7 +23,7 @@ def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> Dict:
         return codon_selector.optimise_codons(aas, mode="greedy")
     if length < 4:
         return codon_selector.optimise_codons(aas, mode="exact")
-    return codon_selector.optimise_codons(aas, mode="graph")
+    return codon_selector.optimise_codons(aas)
 
 
 def resfile_aa_codons(

@@ -1,7 +1,7 @@
 import os
-from itertools import combinations, combinations_with_replacement
-from typing import List, Dict, FrozenSet
 from functools import lru_cache
+from itertools import combinations, combinations_with_replacement
+from typing import Dict, FrozenSet, List
 
 import pandas as pd
 
@@ -11,15 +11,24 @@ class GGData:
     df_files = {
         (18, 37): "%s/resources/FileS_T4_18h_37C.csv" % os.path.dirname(__file__),
         (18, 25): "%s/resources/FileS_T4_18h_25C.csv" % os.path.dirname(__file__),
-        (1, 25): "%s/resources/FileS_T4_01h_25C.csv" % os.path.dirname(__file__)
+        (1, 25): "%s/resources/FileS_T4_01h_25C.csv" % os.path.dirname(__file__),
     }
 
-    def __init__(self, init_df=True, neb_table_temp: int = 25, neb_table_time: int = 18, init_dicts=True) -> None:
-        self.lig_df: pd.DataFrame = None
+    def __init__(
+        self,
+        init_df=True,
+        neb_table_temp: int = 25,
+        neb_table_time: int = 18,
+        init_dicts=True,
+    ) -> None:
+        self.lig_df: pd.DataFrame
         try:
             self.default_df = self.df_files[(neb_table_time, neb_table_temp)]
         except KeyError:
-            raise ValueError("No data was found for the combination of temperature %d C and time %d H." % (neb_table_temp, neb_table_time))
+            raise ValueError(
+                "No data was found for the combination of temperature %d C and time %d H."
+                % (neb_table_temp, neb_table_time)
+            )
 
         self.score_dict: Dict[FrozenSet, int] = {}
         self.all_score_dict: Dict[FrozenSet, int] = {}
@@ -28,10 +37,10 @@ class GGData:
         if init_df:
             self.lig_df = self._parse_ligation_df()
         if init_dicts:
-            abc = 'ACGT'
+            abc = "ACGT"
             for g1, g2 in combinations(combinations_with_replacement(abc, 4), 2):
-                gate1 = ''.join(g1)
-                gate2 = ''.join(g2)
+                gate1 = "".join(g1)
+                gate2 = "".join(g2)
                 self.gates_scores(gate1, gate2)
                 self.gates_all_scores(gate1, gate2)
 
@@ -62,7 +71,7 @@ class GGData:
         if rev_gate2 is None:
             rev_gate2 = reverse_complement(gate2)
             self._rev_dict[gate2] = rev_gate2
-            
+
         gate_set = frozenset([gate1, gate2, rev_gate1, rev_gate2])
         score = self.all_score_dict.get(gate_set, None)
         if score is None:
@@ -70,7 +79,9 @@ class GGData:
             score += self.gates_scores(gate1, gate2)
             score += self.gates_scores(gate1, reverse_complement(gate2))
             score += self.gates_scores(gate2, reverse_complement(gate1))
-            score += self.gates_scores(reverse_complement(gate1), reverse_complement(gate2))
+            score += self.gates_scores(
+                reverse_complement(gate1), reverse_complement(gate2)
+            )
             self.all_score_dict[gate_set] = score
         return score
 

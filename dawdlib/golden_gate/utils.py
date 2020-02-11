@@ -1,11 +1,13 @@
-from typing import List, Dict, Set, Generator
 from collections import OrderedDict
 from itertools import chain, product
+from typing import Dict, Generator, List, Set
+
 from Bio import SeqIO
-from .gate import SynMut, Gate
+
+from .gate import Gate, SynMut
 
 
-def parse_dna(dna_file: str, frmt = 'fasta') -> str:
+def parse_dna(dna_file: str, frmt="fasta") -> str:
     record = SeqIO.read(dna_file, frmt)
     return str(record.seq)
 
@@ -26,7 +28,7 @@ def expand_dna_var_poss(var_poss: List[int]) -> List[int]:
 
 def parse_resfile(in_file: str) -> Dict[int, str]:
     results: Dict[int, str] = OrderedDict()
-    for lin in open(in_file, "r"):
+    for lin in open(in_file):
         if lin.rstrip() in ["nataa", "start"]:
             continue
         pos = int(lin.split()[0])
@@ -38,7 +40,7 @@ def parse_resfile(in_file: str) -> Dict[int, str]:
 def codon_table() -> Dict[str, str]:
     bases = "TCAG"
     codons = [a + b + c for a in bases for b in bases for c in bases]
-    amino_acids = 'FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG'
+    amino_acids = "FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG"
     cdn_table = dict(zip(codons, amino_acids))
     return cdn_table
 
@@ -60,19 +62,16 @@ def syn_muts(dna: str) -> Generator[Gate, None, None]:
     cdn_trans = codon_table()
     aa_trans = amino_acid_codon_table()
     for idx in range(0, len(dna) - 3, 3):
-        aa1 = cdn_trans[dna[idx:idx + 3]]
+        aa1 = cdn_trans[dna[idx : idx + 3]]
         cdn1s = aa_trans[aa1]
-        aa2 = cdn_trans[dna[idx+3:idx + 6]]
+        aa2 = cdn_trans[dna[idx + 3 : idx + 6]]
         cdn2s = aa_trans[aa2]
 
         for bps_slice in slices:
             for cdn1, cdn2 in product(cdn1s, cdn2s):
                 yield Gate(
                     idx,
-                    (cdn1+cdn2)[bps_slice],
+                    (cdn1 + cdn2)[bps_slice],
                     True,
-                    (
-                        SynMut(idx, aa1, cdn1),
-                        SynMut(idx+4, aa2, cdn2)
-                    )
+                    (SynMut(idx, aa1, cdn1), SynMut(idx + 4, aa2, cdn2)),
                 )
