@@ -57,7 +57,7 @@ cdef extern from "cpp_priority_queue.hpp" nogil:
 
 
 @cython.embedsignature(True)
-def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, method="dijkstra", retries = 1):
+def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
     """Compute all shortest paths in the graph.
 
     Parameters
@@ -90,6 +90,9 @@ def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, 
     retries: int, optional (default = 1)
         The number of random coloring retries to check before raising NetworkXNoPath exception
 
+    res_graph: nx.Graph, optional (default = None)
+        Allows the user to provide a custom restriction graph used to color nodes
+
     Returns
     -------
     paths : generator of lists
@@ -115,7 +118,7 @@ def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, 
     if no_colors > 18:
         raise ValueError("No. of colors {} exceeds maximum allowed".format(no_colors))
 
-    gate_colors = color_gates(G, GGData())
+    gate_colors = color_gates(G, GGData(), r_graph=res_graph)
     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = nxtonumpy(G, [source], target, gate_colors.get, no_colors)
     try:
         return all_colorful_shortest_paths(

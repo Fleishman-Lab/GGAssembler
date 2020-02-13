@@ -104,10 +104,12 @@ def color_gates(
     ggdata: GGData,
     gate_self_binding_min: int = 2000,
     gate_crosstalk_max: int = 1000,
+    r_graph: nx.Graph = None,
 ) -> tp.Dict[tp.Any, tp.FrozenSet[int]]:
-    r_graph = gen_gate_restriction_graph(
-        ggdata, gate_self_binding_min, gate_crosstalk_max
-    )
+    if r_graph is None:
+        r_graph = gen_gate_restriction_graph(
+            ggdata, gate_self_binding_min, gate_crosstalk_max
+        )
     clique_colors = _enumerate_cliques(r_graph)
     vertex_colors = _color_vertices(clique_colors)
     return _color_gates(graph, vertex_colors)
