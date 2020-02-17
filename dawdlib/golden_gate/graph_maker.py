@@ -3,18 +3,10 @@ from typing import Callable, Dict, List, Tuple, Union
 
 import networkx as nx
 import numpy as np
-
-from .constants import (
-    CONST_COST,
-    OLIGO_PREFIX,
-    OLIGO_SUFFIX,
-    VAR_ADD_COST,
-    SOURCE_NODE,
-    SINK_NODE,
-)
-from .gate import Gate
-from .gate_data import GGData
-from .utils import syn_muts
+from dawdlib.golden_gate.constants import CONST_COST, OLIGO_PREFIX, OLIGO_SUFFIX, SINK_NODE, SOURCE_NODE, VAR_ADD_COST
+from dawdlib.golden_gate.gate import Gate
+from dawdlib.golden_gate.gate_data import GGData
+from dawdlib.golden_gate.utils import syn_muts
 
 
 class GraphMaker:

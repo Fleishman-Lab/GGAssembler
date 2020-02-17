@@ -1,15 +1,29 @@
 from collections import OrderedDict
 from itertools import chain, product
-from typing import Dict, Generator, List, Set
+from typing import Dict, Generator, Iterator, List, Set
 
 from Bio import SeqIO
-
-from .gate import Gate, SynMut
+from Bio.Data.IUPACData import ambiguous_dna_values as adv
+from dawdlib.golden_gate.gate import Gate, SynMut
 
 
 def parse_dna(dna_file: str, frmt="fasta") -> str:
     record = SeqIO.read(dna_file, frmt)
     return str(record.seq)
+
+
+def ambiguous_dna_unambiguous(dna: str) -> Iterator[str]:
+    """
+
+    Args:
+        dna: An ambiguous dna string
+
+    Returns:
+        An iterator over unambiguous DNAs encoded by the input DNA
+
+    """
+    dnas = [tuple(adv[char]) for char in dna]
+    return map(lambda x: "".join(x), product(*dnas))
 
 
 def find_dna_var_poss(var_poss: List[int]) -> List[int]:
