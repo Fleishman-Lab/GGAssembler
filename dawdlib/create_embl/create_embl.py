@@ -3,14 +3,22 @@ from typing import List
 import pandas as pd
 from Bio import SeqFeature, SeqIO
 
-from dawdlib.create_embl.embl_maker import (create_dc_features, create_path_features, df_to_gate_path,
+from dawdlib.create_embl.embl_maker import (create_dc_features,
+                                            create_path_features,
+                                            df_to_gate_path,
                                             parse_degenerate_codon_csv)
 
 
 def main():
-    deg_table_file = "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/deg_table.csv"
-    embl_file = "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/271_2p48.embl"
-    path_file = "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/271_path_df.csv"
+    deg_table_file = (
+        "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/deg_table.csv"
+    )
+    embl_file = (
+        "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/271_2p48.embl"
+    )
+    path_file = (
+        "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/271_path_df.csv"
+    )
     out_embl = "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/out.embl"
 
     seq_record = SeqIO.read(embl_file, "embl")

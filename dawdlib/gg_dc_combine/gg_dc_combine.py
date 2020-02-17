@@ -76,7 +76,7 @@ def create_dc_oligo(
 
 
 def find_codons_for_oligo(
-        oligo: Tuple[int, int], dc_df: pd.DataFrame
+    oligo: Tuple[int, int], dc_df: pd.DataFrame
 ) -> List[List[Tuple[int, str]]]:
     oligo_codons: List[List[Tuple[int, str]]] = []
     sub_df = dc_df.loc[
@@ -99,23 +99,26 @@ def find_codons_for_oligo(
 
 
 def create_dc_oligo(
-        dna: str, pos_codons: List[Tuple[int, str]], oligo: Tuple[int, int]
+    dna: str, pos_codons: List[Tuple[int, str]], oligo: Tuple[int, int]
 ) -> str:
     dna_copy = dna
     for (pos, codon) in pos_codons:
         dna_copy = dna_copy[: pos - 1] + codon + dna_copy[pos + 3 - 1 :]
     return dna_copy[oligo[0] : oligo[1] + 4]
 
-def create_to_order_df(gate_path: List[Gate], deg_df: pd.DataFrame, dna: str, prefix: str, suffix: str) -> pd.DataFrame:
+
+def create_to_order_df(
+    gate_path: List[Gate], deg_df: pd.DataFrame, dna: str, prefix: str, suffix: str
+) -> pd.DataFrame:
     to_order_df = pd.DataFrame()
     for gate1, gate2 in zip(gate_path[1:-2], gate_path[2:-1]):
         oligo_codons = find_codons_for_oligo((gate1.idx, gate2.idx), deg_df)
         row = {
-                "gate1": gate1,
-                "gate2": gate2,
-                "gate_gate_dist": gate2.idx - gate1.idx + 3,
-                "oligo_codons": oligo_codons,
-                "const": oligo_codons == [[]],
+            "gate1": gate1,
+            "gate2": gate2,
+            "gate_gate_dist": gate2.idx - gate1.idx + 3,
+            "oligo_codons": oligo_codons,
+            "const": oligo_codons == [[]],
         }
         wt_dna = create_dc_oligo(dna, [], (gate1.idx, gate2.idx))
         row["oligo_dna"] = wt_dna
@@ -131,4 +134,3 @@ def create_to_order_df(gate_path: List[Gate], deg_df: pd.DataFrame, dna: str, pr
             row["name"] = f"{gate1.idx}-{gate2.idx}.{len(oligo_codons)}.{ind}"
             to_order_df = to_order_df.append(row, ignore_index=True)
     return to_order_df
-
