@@ -2,8 +2,16 @@ from typing import List
 
 import pandas as pd
 from Bio import SeqFeature, SeqIO
+<<<<<<< HEAD
+
+from dawdlib.create_embl.embl_maker import (create_dc_features,
+                                            create_path_features,
+                                            df_to_gate_path,
+                                            parse_degenerate_codon_csv)
+=======
 from dawdlib.create_embl.embl_maker import (
     create_dc_features, create_path_features, df_to_gate_path, parse_degenerate_codon_csv)
+>>>>>>> a4e0bb3476503a09d466ae9cf621272b591c70cf
 
 
 def main():
