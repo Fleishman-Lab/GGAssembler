@@ -3,10 +3,15 @@ from typing import Callable, Dict, List, Tuple, Union
 
 import networkx as nx
 import numpy as np
-from dawdlib.golden_gate.constants import CONST_COST, OLIGO_PREFIX, OLIGO_SUFFIX, SINK_NODE, SOURCE_NODE, VAR_ADD_COST
+from dawdlib.golden_gate.constants import (
+    CONST_COST,
+    SINK_NODE,
+    SOURCE_NODE,
+    VAR_ADD_COST,
+)
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
-from dawdlib.golden_gate.utils import syn_muts
+from dawdlib.golden_gate.utils import syn_muts, Requirements
 
 
 class GraphMaker:
@@ -41,31 +46,6 @@ class GraphMaker:
             return True
 
         return _is_valid_edge
-
-
-class Requirements:
-    def __init__(
-        self,
-        min_oligo_length: int,
-        max_oligo_length: int,
-        min_const_oligo_length: int,
-        gate_self_binding_min: int = 2000,
-        gate_crosstalk_max: int = 1000,
-        oligo_prefix: str = OLIGO_PREFIX,
-        oligo_suffix: str = OLIGO_SUFFIX,
-        re_calc_lengths: bool = True,
-        const_cost=CONST_COST,
-    ):
-        self.min_oligo_length = min_oligo_length
-        self.max_oligo_length = max_oligo_length
-        self.min_const_oligo_length = min_const_oligo_length
-        self.gate_self_binding_min = gate_self_binding_min
-        self.gate_crosstalk_max = gate_crosstalk_max
-        self.oligo_addition = len(oligo_prefix) + len(oligo_suffix)
-        self.const_cost = const_cost
-        if re_calc_lengths:
-            self.min_oligo_length -= self.oligo_addition
-            self.max_oligo_length -= self.oligo_addition
 
 
 def make_nodes(

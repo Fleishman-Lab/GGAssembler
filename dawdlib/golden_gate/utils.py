@@ -1,10 +1,48 @@
 from collections import OrderedDict
 from itertools import chain, product
-from typing import Dict, Generator, Iterator, List, Set
+from typing import Dict, Generator, Iterator, List, NamedTuple, Set, Tuple
 
 from Bio import SeqIO
 from Bio.Data.IUPACData import ambiguous_dna_values as adv
+from dawdlib.golden_gate.constants import CONST_COST, OLIGO_PREFIX, OLIGO_SUFFIX
 from dawdlib.golden_gate.gate import Gate, SynMut
+
+
+class OligoTableEntry(NamedTuple):
+    wt: bool
+    const: bool
+    full_oligo_dna: str
+    gate1: Gate
+    gate2: Gate
+    gate_gate_dist: int
+    name: str
+    oligo_codons: List[List[Tuple[int, str]]]
+    oligo_dna: str
+
+
+class Requirements:
+    def __init__(
+        self,
+        min_oligo_length: int,
+        max_oligo_length: int,
+        min_const_oligo_length: int,
+        gate_self_binding_min: int = 2000,
+        gate_crosstalk_max: int = 1000,
+        oligo_prefix: str = OLIGO_PREFIX,
+        oligo_suffix: str = OLIGO_SUFFIX,
+        re_calc_lengths: bool = True,
+        const_cost=CONST_COST,
+    ):
+        self.min_oligo_length = min_oligo_length
+        self.max_oligo_length = max_oligo_length
+        self.min_const_oligo_length = min_const_oligo_length
+        self.gate_self_binding_min = gate_self_binding_min
+        self.gate_crosstalk_max = gate_crosstalk_max
+        self.oligo_addition = len(oligo_prefix) + len(oligo_suffix)
+        self.const_cost = const_cost
+        if re_calc_lengths:
+            self.min_oligo_length -= self.oligo_addition
+            self.max_oligo_length -= self.oligo_addition
 
 
 def parse_dna(dna_file: str, frmt="fasta") -> str:

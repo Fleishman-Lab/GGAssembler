@@ -10,8 +10,8 @@ from dawdlib.dijkstra.len_limit import all_shortest_paths
 from dawdlib.golden_gate.gate import Gate, GateSet
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.gate_restriction import create_path_validator
-from dawdlib.golden_gate.graph_maker import GraphMaker, Requirements, make_default_graph
-from dawdlib.golden_gate.utils import expand_dna_var_poss, parse_dna
+from dawdlib.golden_gate.graph_maker import GraphMaker, make_default_graph
+from dawdlib.golden_gate.utils import Requirements, expand_dna_var_poss, parse_dna
 
 GATESET_FILENAME = "{}_oligos_gate_set_{}.csv"
 
