@@ -66,15 +66,6 @@ def create_dc_oligo(
     return dna_copy[oligo[0] : oligo[1] + 3]
 
 
-def create_dc_oligo(
-    dna: str, pos_codons: List[Tuple[int, str]], oligo: Tuple[int, int]
-) -> str:
-    dna_copy = dna
-    for (pos, codon) in pos_codons:
-        dna_copy = dna_copy[: pos - 1] + codon + dna_copy[pos + 3 - 1 :]
-    return dna_copy[oligo[0] : oligo[1] + 4]
-
-
 # def create_all_dc_oligos(dna: str, gg_df: pd.DataFrame, dc_df: pd.DataFrame):
 #     oligos = find_oligos(gg_df)
 #     for oligo in oligos:
@@ -87,6 +78,18 @@ def create_dc_oligo(
 def create_to_order_df(
     gate_path: List[Gate], deg_df: pd.DataFrame, dna: str, prefix: str, suffix: str
 ) -> pd.DataFrame:
+    """
+    combine the Gate list and degenerate codon table to design the DNA oligos required.
+    Args:
+        gate_path:  list of Gates describing the best path
+        deg_df:  dataframe of the degenerate codons
+        dna:
+        prefix:
+        suffix:
+
+    Returns:
+
+    """
     oligo_entries = []
     for gate1, gate2 in zip(gate_path[1:-2], gate_path[2:-1]):
         oligo_codons = find_codons_for_oligo((gate1.idx, gate2.idx), deg_df)
