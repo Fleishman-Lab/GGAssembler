@@ -1,6 +1,4 @@
 import fire
-from dawdlib.golden_gate.find_gg import create_goldengates as cg_main
-from dawdlib.create_embl.create_embl import create_embl
 
 
 def create_goldengates(
@@ -16,6 +14,8 @@ def create_goldengates(
     gate_self_binding_min: int = 2000,
     gate_crosstalk_max: int = 1000,
 ):
+    from dawdlib.golden_gate.find_gg import create_goldengates as cg_main
+
     cg_main(
         dna_file,
         deg_table_file,
@@ -32,11 +32,33 @@ def create_goldengates(
 
 
 def embl(deg_table, embl_in, gate_path, embl_out: str):
+    from dawdlib.create_embl.create_embl import create_embl
+
     create_embl(
         deg_table_file=deg_table,
         embl_file=embl_in,
         path_file=gate_path,
         out_embl_file=embl_out,
+    )
+
+
+def combine(
+    dc_table: str,
+    gate_path: str,
+    dna: str,
+    to_order: str,
+    prefix: str = "CGTGCGGTCTCG",
+    suffix: str = "CGAGACCGCGCCGGGC",
+):
+    from dawdlib.gg_dc_combine.combine_dc_gates import combine_gate_path_deg_codons
+
+    combine_gate_path_deg_codons(
+        dc_table_file=dc_table,
+        gate_path_file=gate_path,
+        dna_file=dna,
+        prefix=prefix,
+        suffix=suffix,
+        to_order_df_file=to_order,
     )
 
 
