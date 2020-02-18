@@ -2,30 +2,27 @@ from typing import List
 
 import pandas as pd
 from Bio import SeqFeature, SeqIO
-<<<<<<< HEAD
 
-from dawdlib.create_embl.embl_maker import (create_dc_features,
-                                            create_path_features,
-                                            df_to_gate_path,
-                                            parse_degenerate_codon_csv)
-=======
 from dawdlib.create_embl.embl_maker import (
-    create_dc_features, create_path_features, df_to_gate_path, parse_degenerate_codon_csv)
->>>>>>> a4e0bb3476503a09d466ae9cf621272b591c70cf
+    create_dc_features,
+    create_path_features,
+    df_to_gate_path,
+    parse_degenerate_codon_csv,
+)
 
 
-def main():
-    deg_table_file = (
-        "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/deg_table.csv"
-    )
-    embl_file = (
-        "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/271_2p48.embl"
-    )
-    path_file = (
-        "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/271_path_df.csv"
-    )
-    out_embl = "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/out.embl"
-
+def create_embl(deg_table_file: str, embl_file: str, path_file: str, out_embl_file: str):
+    # deg_table_file = (
+    #     "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/deg_table.csv"
+    # )
+    # embl_file = (
+    #     "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/271_2p48.embl"
+    # )
+    # path_file = (
+    #     "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/271_path_df.csv"
+    # )
+    # out_embl = "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/out.embl"
+    #
     seq_record = SeqIO.read(embl_file, "embl")
 
     features: List[SeqFeature.SeqFeature] = []
@@ -40,9 +37,6 @@ def main():
         features.extend(create_path_features(gate_path))
 
     seq_record.features.extend(features)
-    with open(out_embl, "w+") as fout:
+    with open(out_embl_file, "w+") as fout:
         SeqIO.write(seq_record, fout, "gb")
 
-
-if __name__ == "__main__":
-    main()

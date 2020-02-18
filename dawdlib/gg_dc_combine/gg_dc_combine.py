@@ -102,7 +102,7 @@ def create_to_order_df(
             gate2=gate2,
             gate_gate_dist=gate2.idx - gate1.idx + 3,
             name=f"{gate1.idx}-{gate2.idx}.wt_dna",
-            oligo_codons=oligo_codons,
+            oligo_codons=[],
             oligo_dna=wt_dna,
         )
         oligo_entries.append(wt_entry)
@@ -114,6 +114,7 @@ def create_to_order_df(
             wt_dict["oligo_dna"] = oligo_dna
             wt_dict["full_oligo_dna"] = prefix + oligo_dna + suffix
             wt_dict["name"] = f"{gate1.idx}-{gate2.idx}.{len(oligo_codons)}.{ind}"
+            wt_dict["oligo_codons"] = oligo_codon
 
             oligo_entries.append(OligoTableEntry(**wt_dict))
     return pd.DataFrame.from_records(oligo_entries, columns=OligoTableEntry._fields)

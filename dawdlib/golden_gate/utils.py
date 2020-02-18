@@ -16,7 +16,7 @@ class OligoTableEntry(NamedTuple):
     gate2: Gate
     gate_gate_dist: int
     name: str
-    oligo_codons: List[List[Tuple[int, str]]]
+    oligo_codons: List[Tuple[int, str]]
     oligo_dna: str
 
 

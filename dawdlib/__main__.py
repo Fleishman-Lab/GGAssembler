@@ -1,5 +1,6 @@
 import fire
 from dawdlib.golden_gate.find_gg import create_goldengates as cg_main
+from dawdlib.create_embl.create_embl import create_embl
 
 
 def create_goldengates(
@@ -27,6 +28,15 @@ def create_goldengates(
         max_oligos,
         gate_self_binding_min,
         gate_crosstalk_max,
+    )
+
+
+def embl(deg_table, embl_in, gate_path, embl_out: str):
+    create_embl(
+        deg_table_file=deg_table,
+        embl_file=embl_in,
+        path_file=gate_path,
+        out_embl_file=embl_out,
     )
 
 
