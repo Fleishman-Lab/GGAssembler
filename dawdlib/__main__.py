@@ -31,7 +31,15 @@ def create_goldengates(
     )
 
 
-def embl(deg_table, embl_in, gate_path, embl_out: str):
+def embl(embl_in: str, embl_out: str, deg_table: str = "", gate_path: str = ""):
+    """
+
+    Args:
+        embl_in (str): file in embl format to write features to
+        embl_out (str): file where to write embl file with all features
+        deg_table (str): (optional) degenerate codon table file in csv format
+        gate_path (str): (optional) file with list of gates
+    """
     from dawdlib.create_embl.create_embl import create_embl
 
     create_embl(
@@ -50,6 +58,17 @@ def combine(
     prefix: str = "CGTGCGGTCTCG",
     suffix: str = "CGAGACCGCGCCGGGC",
 ):
+    """
+    combines the degenerate codons table and the path of gates to create the oligos required to create the library.
+
+    Args:
+        dc_table: degenerate codon table file in csv format
+        gate_path (str): file with list of gates
+        dna (str): file with the full gene DNA
+        to_order (str): file path to write the table of oligos to order
+        prefix (str): the string to add before each oligo. defaults to a BsaI recognition site
+        suffix (str): the string to add after each oligo. defaults to a BsaI recognition site and primer
+    """
     from dawdlib.gg_dc_combine.combine_dc_gates import combine_gate_path_deg_codons
 
     combine_gate_path_deg_codons(
