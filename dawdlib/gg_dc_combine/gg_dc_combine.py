@@ -3,7 +3,6 @@ from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
-
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.utils import OligoTableEntry
 
@@ -134,15 +133,17 @@ def create_to_order_df(
             oligo_dna=wt_dna,
         )
         oligo_entries.append(wt_entry)
-        wt_dict = wt_entry._asdict()
         for ind, oligo_codon in enumerate(oligo_codons):
             oligo_dna = create_dc_oligo(dna, oligo_codon, (gate1.idx, gate2.idx))
             if not oligo_codon:
                 continue
-            wt_dict["oligo_dna"] = oligo_dna
-            wt_dict["full_oligo_dna"] = prefix + oligo_dna + suffix
-            wt_dict["name"] = f"{gate1.idx}-{gate2.idx}.{len(oligo_codons)}.{ind}"
-            wt_dict["oligo_codons"] = oligo_codon
-
-            oligo_entries.append(OligoTableEntry(**wt_dict))
+            oligo_entries.append(
+                wt_entry._replace(
+                    wt=False,
+                    oligo_dna=oligo_dna,
+                    full_oligo_dna=prefix + oligo_dna + suffix,
+                    name=f"{gate1.idx}-{gate2.idx}.{len(oligo_codons)}.{ind}",
+                    oligo_codons=oligo_codon,
+                )
+            )
     return pd.DataFrame.from_records(oligo_entries, columns=OligoTableEntry._fields)
