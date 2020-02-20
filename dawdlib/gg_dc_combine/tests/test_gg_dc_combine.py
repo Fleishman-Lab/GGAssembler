@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
 import os
 import unittest
+from typing import List
 
-from dawdlib.gg_dc_combine.gg_dc_combine import (
-    create_all_dc_oligos, create_dc_oligo, find_codons_for_oligo, find_oligos, parse_degenerate_codon_csv,
-    parse_gg_segments_csv)
-from dawdlib.golden_gate.utils import find_dna_var_poss, parse_dna, parse_resfile
+import pandas as pd
+
+from dawdlib.gg_dc_combine.gg_dc_combine import (create_dc_oligo,
+                                                 create_to_order_df,
+                                                 find_codons_for_oligo,
+                                                 find_oligos,
+                                                 parse_degenerate_codon_csv,
+                                                 parse_gg_segments_csv)
+from dawdlib.golden_gate.gate import Gate
+from dawdlib.golden_gate.utils import (find_dna_var_poss, parse_dna,
+                                       parse_resfile)
 
 
 class GGDCCombneTest(unittest.TestCase):
@@ -70,10 +78,26 @@ class GGDCCombneTest(unittest.TestCase):
         oligos = find_oligos(self.gg_df)
         oligo_codons = find_codons_for_oligo(oligos[1], self.dc_df)
         oligo_dna = create_dc_oligo(self.dna, oligo_codons[0], oligos[1])
-        self.assertEqual(oligo_dna, "TCGACTTCTASCAAATACTWTCT")
+        self.assertEqual(oligo_dna, "TCGACTTCASCAAATACTWTATGT")
 
-    def test_create_all_dc_oligos(self):
-        create_all_dc_oligos(self.dna, self.gg_df, self.dc_df)
+    def test_create_to_order_df(self):
+        deg_df = parse_degenerate_codon_csv(f"{self.here}/271_deg_table.csv")
+        gg_df = parse_gg_segments_csv(f"{self.here}/271_path_df.csv")
+        dna = parse_dna(f"{self.here}/271.fasta")
+        prefix = "CGTGCGGTCTCG"
+        suffix = "CGAGACCGCGCCGGGC"
+        gg_list: List[Gate] = [
+            Gate(idx=g.idx, bps=g.bps, req_primer=g.req_primer, syn_mut=g.syn_mut)
+            for g in gg_df.itertuples()
+        ]
+        to_order_df = create_to_order_df(
+            gate_path=gg_list, deg_df=deg_df, dna=dna, prefix=prefix, suffix=suffix
+        )
+
+        ref_df = pd.read_csv(f"{self.here}/271_to_order_df.csv")
+        self.assertEqual(
+            ref_df["oligo_dna"].tolist(), to_order_df["oligo_dna"].tolist()
+        )
 
 
 if __name__ == "__main__":

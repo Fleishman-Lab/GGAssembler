@@ -1,0 +1,9 @@
+,idx,bps,req_primer,syn_mut
+0,-1,src,False,()
+1,83,GTAT,False,()
+2,105,ATGG,False,()
+3,147,GTGG,False,()
+4,168,GGAG,False,()
+5,302,TGGT,False,()
+6,333,ACAT,False,()
+7,369,snk,False,()

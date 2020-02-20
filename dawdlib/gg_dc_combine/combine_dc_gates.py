@@ -1,9 +1,10 @@
+import json
+
 import pandas as pd
+
 from dawdlib.create_embl.embl_maker import df_to_gate_path
-from dawdlib.gg_dc_combine.gg_dc_combine import (
-    create_to_order_df,
-    parse_degenerate_codon_csv,
-)
+from dawdlib.gg_dc_combine.gg_dc_combine import (create_to_order_df,
+                                                 parse_degenerate_codon_csv)
 from dawdlib.golden_gate.utils import parse_dna
 
 
@@ -39,6 +40,6 @@ def combine_gate_path_deg_codons(
         gate_path, deg_df=dc_df, dna=dna, prefix=prefix, suffix=suffix
     )
     to_order_df["wt"] = to_order_df["name"].str.contains("wt")
-
+    to_order_df["gate1"] = to_order_df["gate1"].map(json.dumps)
+    to_order_df["gate2"] = to_order_df["gate2"].map(json.dumps)
     to_order_df.to_csv(to_order_df_file)
-
