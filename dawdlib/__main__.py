@@ -81,5 +81,11 @@ def combine(
     )
 
 
+def main(args=None):
+    fire.Fire(
+        {"create_goldengates": create_goldengates, "embl": embl, "combine": combine}
+    )
+
+
 if __name__ == "__main__":
-    fire.Fire()
+    main()

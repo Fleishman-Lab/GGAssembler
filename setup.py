@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from distutils.extension import Extension
+# from distutils.extension import Extension
 
-from setuptools import find_packages, setup
+from setuptools import Extension, find_packages, setup
 
 import numpy
 
@@ -12,7 +12,7 @@ import numpy
 # directive_defaults['linetrace'] = True
 # directive_defaults['binding'] = True
 
-USE_CYTHON = True
+USE_CYTHON = "auto"
 
 if USE_CYTHON:
     try:
@@ -58,4 +58,5 @@ setup(
         "pandas",
         "fire",
     ],
+    entry_points={"console_scripts": ["dawdlib=dawdlib.__main__:main"]},
 )
