@@ -2,16 +2,13 @@ from typing import List
 
 import pandas as pd
 from Bio import SeqFeature, SeqIO
-
 from dawdlib.create_embl.embl_maker import (
-    create_dc_features,
-    create_path_features,
-    df_to_gate_path,
-    parse_degenerate_codon_csv,
-)
+    create_dc_features, create_path_features, df_to_gate_path, parse_degenerate_codon_csv)
 
 
-def create_embl(deg_table_file: str, embl_file: str, path_file: str, out_embl_file: str):
+def create_embl(
+    deg_table_file: str, embl_file: str, path_file: str, out_embl_file: str
+):
     # deg_table_file = (
     #     "/home/labs/fleishman/jonathaw/for_others/200124_lihee/271/deg_table.csv"
     # )
@@ -39,4 +36,3 @@ def create_embl(deg_table_file: str, embl_file: str, path_file: str, out_embl_fi
     seq_record.features.extend(features)
     with open(out_embl_file, "w+") as fout:
         SeqIO.write(seq_record, fout, "gb")
-

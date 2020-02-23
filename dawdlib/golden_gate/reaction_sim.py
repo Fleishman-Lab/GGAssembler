@@ -1,5 +1,6 @@
+import json
 from itertools import chain, combinations, product
-from typing import Generator, Iterable, Iterator, List, NamedTuple, Tuple, Union
+from typing import Dict, Generator, Iterable, Iterator, List, NamedTuple, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -7,8 +8,9 @@ import pandas as pd
 from Bio.Restriction import Restriction
 from Bio.Restriction.Restriction import Ov3, Ov5
 from Bio.Seq import Seq
+from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
-from dawdlib.golden_gate.utils import OligoTableEntry, Requirements
+from dawdlib.golden_gate.utils import OligoTableEntry, Requirements, ambiguous_dna_unambiguous
 
 
 class OverHang(NamedTuple):
@@ -46,8 +48,9 @@ class DDNASection(NamedTuple):
     A NamedTuple representing a double strand of DNA
     """
 
-    fprime: SDNASection = SDNASection()
-    tprime: SDNASection = SDNASection()
+    # 5' to 3'
+    fwd: SDNASection = SDNASection()
+    rev: SDNASection = SDNASection()
     is_wt: bool = False
 
     def get_hang_dna(self) -> Iterator[str]:
@@ -56,7 +59,30 @@ class DDNASection(NamedTuple):
         Returns:
             Iterator[str]: Iterator over the hanging DNA.
         """
-        return chain(self.fprime.hang_dna, self.tprime.hang_dna)
+        return iter(
+            (
+                self.fwd.hang_dna.fprime,
+                self.fwd.hang_dna.tprime,
+                self.rev.hang_dna.tprime,
+                self.rev.hang_dna.fprime,
+            )
+        )
+
+    def get_hang_dna_rev(self) -> Iterator[str]:
+        """
+
+        Returns:
+            Iterator[str]: Iterator over the hanging DNA.
+            The reverse strand is reversed to match supplied tables.
+        """
+        return iter(
+            (
+                self.fwd.hang_dna.fprime,
+                self.fwd.hang_dna.tprime,
+                self.rev.hang_dna.tprime[::-1],
+                self.rev.hang_dna.fprime[::-1],
+            )
+        )
 
 
 class ReactionGraph(nx.Graph):
@@ -66,7 +92,7 @@ class ReactionGraph(nx.Graph):
 
     source: DDNASection = DDNASection(is_wt=True)
     target: DDNASection = DDNASection(
-        fprime=SDNASection(start=np.iinfo(np.int).max, end=np.iinfo(np.int).max),
+        fwd=SDNASection(start=np.iinfo(np.int).max, end=np.iinfo(np.int).max),
         is_wt=True,
     )
 
@@ -95,7 +121,15 @@ class ReactionSim:
             Iterator[DDNASection]: An iterator over corresponding ~DDNASection objects
 
         """
-        oligo_table = pd.read_csv(table_path)
+        oligo_table = pd.read_csv(
+            table_path,
+            header=0,
+            names=OligoTableEntry._fields,
+            converters={
+                "gate1": lambda x: Gate(*json.loads(x)),
+                "gate2": lambda x: Gate(*json.loads(x)),
+            },
+        )
         ddna_nodes: List[Generator[DDNASection, None, None]] = []
         for enzyme in self.enzymes:
             for row in oligo_table.itertuples(index=False):
@@ -143,9 +177,11 @@ class ReactionSim:
         for pth in nx.all_simple_paths(
             sub_reaction_g, self.reaction_graph.source, self.reaction_graph.target
         ):
-            yield "".join((node.fprime.dna for node in pth))
+            yield "".join((node.fwd.dna for node in pth))
 
-    def verify_reaction(self, product_len: int = 0) -> bool:
+    def verify_reaction(
+        self, expected_prod_len: int = 0, expected_no_segments: int = 0
+    ) -> Tuple[bool, Union[int, List[DDNASection]]]:
         """
         Checks if all DNA sequences in the reaction are connected correctly
         by verifying the numbering of the DNA product is in ascending order.
@@ -154,27 +190,35 @@ class ReactionSim:
         has length exactly equal to product_len.
 
         Args:
-            product_len (int): Allows to verify all products have len of exactly product_len base pairs.
+            expected_prod_len (int): Allows to verify all products have len of exactly expected_prod_len base pairs.
+            expected_no_segments (int): Allows to verify the product is composed of exactly
+                expected_no_segments segments.
 
         Returns:
             bool: True
 
         """
         pth: List[DDNASection]
-        for pth in nx.all_simple_paths(
-            self.reaction_graph, self.reaction_graph.source, self.reaction_graph.target
+        for cnt, pth in enumerate(
+            nx.all_simple_paths(
+                self.reaction_graph,
+                self.reaction_graph.source,
+                self.reaction_graph.target,
+            )
         ):
             if not all(
                 (
-                    pth[i].fprime.start < pth[i + 1].fprime.start
-                    and pth[i].fprime.end < pth[i].fprime.end
+                    pth[i].fwd.start < pth[i + 1].fwd.start
+                    and pth[i].fwd.end < pth[i + 1].fwd.end
                     for i in range(len(pth) - 1)
                 )
             ):
-                return False
-            if 0 < product_len != len("".join(node.fprime.dna for node in pth)):
-                return False
-        return True
+                return False, pth
+            if 0 < expected_prod_len != len("".join(node.fwd.dna for node in pth)):
+                return False, pth
+            if 0 < expected_no_segments != len(pth):
+                return False, pth
+        return True, cnt + 1
 
 
 def gen_src_trgt_edges(
@@ -195,7 +239,7 @@ def gen_src_trgt_edges(
         Iterator[Tuple[DDNASection, DDNASection]]: An iterator over tuples of pairs for the new source and target
 
     """
-    return chain(product([[source], sources]), product([[target]], targets))
+    return chain(product([source], sources), product([target], targets))
 
 
 def find_sources_targets(
@@ -217,15 +261,15 @@ def find_sources_targets(
     sources: List[DDNASection] = []
     targets: List[DDNASection] = []
     for ddna in ddnas:
-        if ddna.fprime.start < min_source_start:
-            min_source_start = ddna.fprime.start
+        if ddna.fwd.start < min_source_start:
+            min_source_start = ddna.fwd.start
             sources = [ddna]
-        elif ddna.fprime.start == min_source_start:
+        elif ddna.fwd.start == min_source_start:
             sources.append(ddna)
-        if ddna.fprime.end > max_target_end:
-            max_target_end = ddna.fprime.end
+        if ddna.fwd.end > max_target_end:
+            max_target_end = ddna.fwd.end
             targets = [ddna]
-        elif ddna.fprime.end == max_target_end:
+        elif ddna.fwd.end == max_target_end:
             targets.append(ddna)
     return sources, targets
 
@@ -246,8 +290,10 @@ def get_compatible_oligos(
     dtup: Tuple[DDNASection, ...]
     for dtup in combinations(ddnas, 2):
         d1, d2 = dtup
-        for h1, h2 in product(d1.get_hang_dna(), d2.get_hang_dna()):
-            if gg_data.gates_all_scores(h1, h2) >= gate_crosstalk_max:
+        for h1, h2 in product(
+            filter(len, d1.get_hang_dna_rev()), filter(len, d2.get_hang_dna_rev()),
+        ):
+            if gg_data.gates_scores(h1, h2) >= gate_crosstalk_max:
                 yield d1, d2
                 continue
 
@@ -270,104 +316,136 @@ def get_ddna_sections(
     Yields:
         DDNASection: The double stranded DNA segment.
     """
-    prev_ddna = DDNASection(fprime=SDNASection(end=start))
-    for fe, te in dna_segs:
+    prev_ddna = DDNASection(fwd=SDNASection(end=start))
+    for fwd, rev in dna_segs:
         f_overhang, t_overhang = find_overhang(
-            len(fe), len(te), prev_ddna.fprime.hang.tprime, prev_ddna.tprime.hang.fprime
+            len(fwd), len(rev), prev_ddna.fwd.hang, prev_ddna.rev.hang
         )
         f_dna_overhang, t_dna_overhang = find_overhand_dna(
-            fe, te, f_overhang, t_overhang
+            fwd, rev, f_overhang, t_overhang
         )
         prev_ddna = DDNASection(
-            fprime=SDNASection(
-                fe,
-                prev_ddna.fprime.end,
-                prev_ddna.fprime.end + len(fe),
+            fwd=SDNASection(
+                fwd,
+                prev_ddna.fwd.end,
+                prev_ddna.fwd.end + len(fwd),
                 f_overhang,
                 f_dna_overhang,
             ),
-            tprime=SDNASection(dna=te, hang=t_overhang, hang_dna=t_dna_overhang),
+            rev=SDNASection(dna=rev, hang=t_overhang, hang_dna=t_dna_overhang),
             is_wt=is_wt,
         )
         # Skip yielding sections which have the enzyme recognition site
-        if enzyme.search(fe) or enzyme.search(te):
+        if enzyme.compsite.search(fwd) is not None:
+            prev_ddna = prev_ddna._replace(fwd=prev_ddna.fwd._replace(end=start))
             continue
         yield prev_ddna
 
 
-def enzyme_dna_segments(enzyme: Union[Ov5, Ov3], dna: str) -> Iterator[Tuple[str, str]]:
+def enzyme_dna_segments(
+    enzyme: Union[Ov5, Ov3], udna: str
+) -> Iterator[Tuple[str, str]]:
     """
 
     Args:
         enzyme (Ov5): Restriction enzyme used to cut the dna
-        dna (str): 5' DNA string
+        udna (str): 5' DNA string
 
     Returns:
         Iterator[Tuple[str, str]]: An iterator over the double stranded DNA segments
     """
-    seq = Seq(dna)
-    f2t = map(str, enzyme.catalyse(seq))
-    t2f = reversed(
-        list(
-            map(
-                lambda x: "".join(reversed(x)),
-                enzyme.catalyse(seq.reverse_complement()),
-            )
+    dnas: List[Iterator] = []
+    for dna in ambiguous_dna_unambiguous(udna):
+        seq = Seq(dna)
+        fwd = map(str, enzyme.catalyse(seq))
+        rev = map(
+            lambda x: "".join(reversed(x)),
+            reversed(enzyme.catalyse(seq.reverse_complement())),
         )
-    )
-    return iter(zip(f2t, t2f))
+
+        dnas.append(iter(zip(fwd, rev)))
+    return chain.from_iterable(dnas)
 
 
 def find_overhang(
-    flen: int, tlen: int, pft: int, ptf: int
+    fwd_len: int, rev_len: int, prev_fwd_hang: OverHang, prev_rev_hang: OverHang
 ) -> Tuple[OverHang, OverHang]:
     """
     Find DNA hanging ends.
 
-    Takes care of six different cases:
-        1. ----------
-           ---------------
-           flen: 0, tlen: 0 -> flen: 0, tlen: 5
-        2. ---------------
-                ----------
-           flen: 0, tlen: 5 -> flen: 0, tlen: 0
-        3. ---------------
-                ---------------
-           flen: 0, tlen: 5 -> flen: 0, tlen: 5
+    Takes care of four different cases:
+        1. fwd_len == rev_len:
+            a. ----------
+               ----------
+            b. ----------
+                   ----------
+        2. fwd_len != rev_len:
+            a. ----------
+               ------
+            b. ----------
+                   --
         And the reverse of these cases
     Args:
-        flen (int): Length of DNA string of 5' to 3'
-        tlen (int): Length of DNA string of 3' to 5'
-        pft (int): previous 5' segment 3' side hanging length
-        ptf (int): previous 3' segment 5' side hanging length
+        fwd_len (int): Length of DNA string of 5' to 3'
+        rev_len (int): Length of DNA string of 3' to 5'
+        prev_fwd_hang (OverHang): previous 5' segment hanging lengths
+        prev_rev_hang (OverHang): previous 3' segment hanging lengths
 
     Returns:
         Tuple[OverHang, OverHang]: A tuple with the lengths of the hanging DNA of both stands (5' and 3').
     """
-
-    cft = flen + pft - tlen
-    cft = cft if cft >= 0 else 0
-    ctf = tlen + ptf - flen
-    ctf = ctf if ctf >= 0 else 0
-    return OverHang(ptf, cft), OverHang(pft, ctf)
+    f_overhang = OverHang()
+    t_overhang = OverHang()
+    diff = fwd_len - rev_len
+    if diff == 0:
+        # In the case where both dna strands have the same length and the the hangs are equal
+        # the new strands have no hangs so we can just use the default values of 0.
+        if prev_fwd_hang.tprime != prev_rev_hang.fprime:
+            if prev_fwd_hang.tprime > 0:
+                f_overhang = f_overhang._replace(tprime=prev_fwd_hang.tprime)
+            if prev_rev_hang.fprime > 0:
+                f_overhang = f_overhang._replace(fprime=prev_rev_hang.fprime)
+            t_overhang = t_overhang._replace(**f_overhang._asdict())
+    else:
+        if prev_fwd_hang.tprime == prev_rev_hang.fprime:
+            if diff > 0:
+                f_overhang = f_overhang._replace(tprime=diff)
+            else:
+                t_overhang = t_overhang._replace(fprime=-diff)
+        else:
+            f_overhang = f_overhang._replace(fprime=prev_rev_hang.fprime)
+            t_overhang = t_overhang._replace(tprime=prev_fwd_hang.tprime)
+            if diff > 0:
+                if fwd_len - (rev_len + diff) > 0:
+                    f_overhang = f_overhang._replace(tprime=fwd_len - (rev_len + diff))
+            else:
+                if rev_len - (fwd_len - diff) > 0:
+                    t_overhang = t_overhang._replace(fprime=rev_len - (fwd_len - diff))
+    return f_overhang, t_overhang
 
 
 def find_overhand_dna(
-    fdna: str, tdna: str, f_overhang: OverHang, t_overhang: OverHang
+    fwd_dna: str, rev_dna: str, fwd_overhang: OverHang, rev_overhang: OverHang
 ) -> Tuple[OverHangDNA, OverHangDNA]:
     """
     See ~find_overhang for cases and logic.
 
     Args:
-        fdna (str): The 5' DNA string
-        tdna (str): The 3' DNA string:
-        f_overhang (OverHang): The 5' strand overhangs
-        t_overhang (OverHang): The 5' strand overhangs
+        fwd_dna (str): The 5' DNA string
+        rev_dna (str): The 3' DNA string:
+        fwd_overhang (OverHang): The 5' strand overhangs
+        rev_overhang (OverHang): The 5' strand overhangs
 
     Returns:
         Tuple[OverHangDNA, OverHangDNA]
     """
     return (
-        OverHangDNA(fdna[: t_overhang.tprime], fdna[: -f_overhang.tprime]),
-        OverHangDNA(tdna[: f_overhang.fprime], tdna[: -t_overhang.fprime]),
+        OverHangDNA(
+            fprime=fwd_dna[: fwd_overhang.fprime],
+            tprime=fwd_dna[-fwd_overhang.tprime :] if fwd_overhang.tprime > 0 else "",
+        ),
+        OverHangDNA(
+            tprime=rev_dna[: rev_overhang.tprime],
+            fprime=rev_dna[-rev_overhang.fprime :] if rev_overhang.fprime > 0 else "",
+        ),
     )
