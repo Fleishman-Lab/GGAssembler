@@ -1,6 +1,21 @@
 import fire
 
 
+def degenerate_table(
+    res_file: str, output_csv: str, organism_id: str = "37762"
+) -> None:
+    """
+    Generate the degenerate codons required in order to create the diversity specified in the res file.
+    Args:
+        res_file (str): Input res file to find degenerate AA codons.
+        output_csv (str): Output file location.
+        organism_id (str): Organism ID, default: Escherichia Coli. Used to find the best codon for each AA.
+    """
+    from dawdlib.degenerate_dna.deg_table import generate_deg_csv
+
+    generate_deg_csv(res_file, output_csv, organism_id)
+
+
 def create_goldengates(
     dna_file: str,
     deg_table_file: str,
@@ -13,7 +28,25 @@ def create_goldengates(
     max_oligos: int = None,
     gate_self_binding_min: int = 2000,
     gate_crosstalk_max: int = 1000,
-):
+) -> None:
+    """
+
+    Args:
+        dna_file (str):
+        deg_table_file (str):
+        out_dir (str):
+        min_var_oligo_length (int):
+        max_var_oligo_length (int):
+        min_const_oligo_length (int):
+        no_solutions (int):
+        min_oligos (int):
+        max_oligos (int):
+        gate_self_binding_min (int):
+        gate_crosstalk_max (int):
+
+    Returns:
+        object:
+    """
     from dawdlib.golden_gate.find_gg import create_goldengates as cg_main
 
     cg_main(
@@ -83,7 +116,13 @@ def combine(
 
 def main(args=None):
     fire.Fire(
-        {"create_goldengates": create_goldengates, "embl": embl, "combine": combine}
+        {
+            "degenerate": degenerate_table,
+            "create_goldengates": create_goldengates,
+            "embl": embl,
+            "combine": combine,
+        },
+        name="dawdlib",
     )
 
 
