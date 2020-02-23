@@ -10,7 +10,11 @@ from Bio.Restriction.Restriction import Ov3, Ov5
 from Bio.Seq import Seq
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
-from dawdlib.golden_gate.utils import OligoTableEntry, Requirements, ambiguous_dna_unambiguous
+from dawdlib.golden_gate.utils import (
+    OligoTableEntry,
+    Requirements,
+    ambiguous_dna_unambiguous,
+)
 
 
 class OverHang(NamedTuple):
@@ -162,7 +166,7 @@ class ReactionSim:
         )
         self.reaction_graph = rgraph
 
-    def get_wt_dna(self) -> Generator[str, None, None]:
+    def get_wt_dna(self) -> Generator[Tuple[str, int, int], None, None]:
         """
         Finds all WT dna segments that can be connected in the reaction.
 
@@ -177,7 +181,17 @@ class ReactionSim:
         for pth in nx.all_simple_paths(
             sub_reaction_g, self.reaction_graph.source, self.reaction_graph.target
         ):
-            yield "".join((node.fwd.dna for node in pth))
+            dna = "".join((node.fwd.dna for node in pth))
+            start = 0
+            end = 0
+            try:
+                start = pth[pth.index(self.reaction_graph.source) + 1].fwd.start
+                end = pth[pth.index(self.reaction_graph.target) - 1].fwd.end
+            except ValueError:
+                pass
+            except IndexError:
+                pass
+            yield dna, start, end
 
     def verify_reaction(
         self, expected_prod_len: int = 0, expected_no_segments: int = 0
