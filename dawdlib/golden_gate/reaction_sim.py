@@ -10,11 +10,7 @@ from Bio.Restriction.Restriction import Ov3, Ov5
 from Bio.Seq import Seq
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
-from dawdlib.golden_gate.utils import (
-    OligoTableEntry,
-    Requirements,
-    ambiguous_dna_unambiguous,
-)
+from dawdlib.golden_gate.utils import OligoTableEntry, Requirements, ambiguous_dna_unambiguous
 
 
 class OverHang(NamedTuple):
@@ -166,7 +162,7 @@ class ReactionSim:
         )
         self.reaction_graph = rgraph
 
-    def get_wt_dna(self) -> Generator[Tuple[str, int, int], None, None]:
+    def get_wt_dna(self) -> Generator[Tuple[str, int, int, int], None, None]:
         """
         Finds all WT dna segments that can be connected in the reaction.
 
@@ -191,7 +187,7 @@ class ReactionSim:
                 pass
             except IndexError:
                 pass
-            yield dna, start, end
+            yield dna, len(pth), start, end
 
     def verify_reaction(
         self, expected_prod_len: int = 0, expected_no_segments: int = 0
@@ -209,7 +205,8 @@ class ReactionSim:
                 expected_no_segments segments.
 
         Returns:
-            bool: True
+            Tuple: 1. in case all products are correctly assembled (True, number of products)
+                   2. Otherwise: (False, the product which is not correct
 
         """
         pth: List[DDNASection]
@@ -233,6 +230,89 @@ class ReactionSim:
             if 0 < expected_no_segments != len(pth):
                 return False, pth
         return True, cnt + 1
+
+
+class ReactionCLI:
+    """
+    Golden gate reaction simulator.
+    Provides two methods to verify golden gate products:
+        1. retrieve_wt: Which tries to retrieve the WT sequence.
+        2. verify: Which tries to verify the entire reaction.
+    """
+
+    sim: ReactionSim
+
+    def _setup(
+        self,
+        table_path: str,
+        enzymes: List[str],
+        gate_crosstalk_max: int = 1000,
+        neb_table_temp: int = 25,
+        neb_table_time: int = 18,
+    ):
+
+        self.sim = ReactionSim(
+            GGData(neb_table_temp=neb_table_temp, neb_table_time=neb_table_time),
+            Requirements(0, 0, 0, gate_crosstalk_max=gate_crosstalk_max),
+            enzymes,
+        )
+        self.sim.create_reaction_graph(table_path)
+        return self
+
+    def retrieve_wt(
+        self,
+        table_path: str,
+        enzymes: List[str],
+        gate_crosstalk_max: int = 1000,
+        neb_table_temp: int = 25,
+        neb_table_time: int = 18,
+    ) -> List[Tuple[str, int, int, int]]:
+        """
+        Tries to retrieve the WT sequence created using the oligo table provided
+            by "simulating" the golden gate reaction.
+        Returns:
+            tuple: A tuple of DNA, no. of segments in WT product, start position and end position.
+                Start and end positions are relative to the DNA given used to create the oligo pool to order.
+        """
+        self._setup(
+            table_path, enzymes, gate_crosstalk_max, neb_table_time, neb_table_temp
+        )
+
+        return list(self.sim.get_wt_dna())
+
+    def verify(
+        self,
+        table_path: str,
+        enzymes: List[str],
+        gate_crosstalk_max: int = 1000,
+        neb_table_temp: int = 25,
+        neb_table_time: int = 18,
+        expected_dna_len: int = 0,
+        expected_no_segments: int = 0,
+    ) -> Tuple[bool, Union[int, List[DDNASection]]]:
+        """
+        Verifies the "correctness" of the products in golden gate simulation by:
+            1. Check that oligo number is in ascending order.
+                For example: that oligo of BPs 12-60 is before oligo of BPs 61-75.
+            2. If expected_dna_len is given,
+                verifies all reaction products are of the required length.
+            3. If  expected_no_segments is given,
+                verifies all reaction products are composed of required number of oligos.
+        Args:
+            expected_dna_len (int): The number of BPs each product is expected to contain
+            expected_no_segments (int): The number of segments each product is expected to contain
+
+        Returns:
+            tuple: In case all
+
+        """
+        self._setup(
+            table_path, enzymes, gate_crosstalk_max, neb_table_time, neb_table_temp
+        )
+        return self.sim.verify_reaction(
+            expected_prod_len=expected_dna_len,
+            expected_no_segments=expected_no_segments,
+        )
 
 
 def gen_src_trgt_edges(
