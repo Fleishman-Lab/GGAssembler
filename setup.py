@@ -57,6 +57,7 @@ setup(
         "synbiochem-py",
         "pandas",
         "fire",
+        "tabulate",
     ],
     entry_points={"console_scripts": ["dawdlib=dawdlib.__main__:main"]},
 )

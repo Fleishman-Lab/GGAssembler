@@ -11,6 +11,7 @@ from Bio.Seq import Seq
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.utils import OligoTableEntry, Requirements, ambiguous_dna_unambiguous
+from tabulate import tabulate
 
 
 class OverHang(NamedTuple):
@@ -210,6 +211,7 @@ class ReactionSim:
 
         """
         pth: List[DDNASection]
+        cnt = -1
         for cnt, pth in enumerate(
             nx.all_simple_paths(
                 self.reaction_graph,
@@ -275,10 +277,15 @@ class ReactionCLI:
                 Start and end positions are relative to the DNA given used to create the oligo pool to order.
         """
         self._setup(
-            table_path, enzymes, gate_crosstalk_max, neb_table_time, neb_table_temp
+            table_path, enzymes, gate_crosstalk_max, neb_table_temp, neb_table_time
         )
-
-        return list(self.sim.get_wt_dna())
+        print("Found WT DNA sequences:")
+        for dna, no_segs, dna_start_pos, dna_end_pos in self.sim.get_wt_dna():
+            message = (
+                f"DNA sequence: \t {dna}\n"
+                f"Is composed of {no_segs} segments and spans dna positions {dna_start_pos} to {dna_end_pos}"
+            )
+            print(message)
 
     def verify(
         self,
@@ -307,12 +314,43 @@ class ReactionCLI:
 
         """
         self._setup(
-            table_path, enzymes, gate_crosstalk_max, neb_table_time, neb_table_temp
+            table_path, enzymes, gate_crosstalk_max, neb_table_temp, neb_table_time
         )
-        return self.sim.verify_reaction(
+        success, extra = self.sim.verify_reaction(
             expected_prod_len=expected_dna_len,
             expected_no_segments=expected_no_segments,
         )
+        if success:
+            print(
+                f"Reaction simulation is successful, {extra} unique sequences were found."
+            )
+        else:
+            print(
+                "The reaction simulation failed the following illegal DNA sequence was found:\n"
+            )
+            table = [
+                list(
+                    chain(
+                        [dd_seg.fwd.dna, dd_seg.fwd.start, dd_seg.fwd.end],
+                        dd_seg.get_hang_dna(),
+                    )
+                )
+                for dd_seg in extra
+            ]
+            print(
+                tabulate(
+                    table,
+                    headers=[
+                        "DNA",
+                        "start",
+                        "end",
+                        "fwd 5' overhang dna",
+                        "fwd 3' overhang dna",
+                        "rev 3' overhang dna",
+                        "rev 5' overhang dna",
+                    ],
+                )
+            )
 
 
 def gen_src_trgt_edges(

@@ -5,3 +5,4 @@ cvxpy
 biopython
 pandas
 fire
+tabulate
