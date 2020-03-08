@@ -233,12 +233,26 @@ class ReactionSim:
                 return False, pth
         return True, cnt + 1
 
+    def get_all_products(self) -> Generator[Tuple[str, int, int, int], None, None]:
+        """
+        Use wisely! this method yields all possible products of the golden gate reaction.
+        Yields:
+            Tuple: [dna, number of segments, start position, end position] 
+        """
+        pth: List[DDNASection]
+        for pth in nx.all_simple_paths(
+            self.reaction_graph, self.reaction_graph.source, self.reaction_graph.target
+        ):
+            yield "".join(node.fwd.dna for node in pth), len(pth), pth[
+                0
+            ].fwd.start, pth[-1].fwd.end
+
 
 class ReactionCLI:
     """
     Golden gate reaction simulator.
     Provides two methods to verify golden gate products:
-        1. retrieve_wt: Which tries to retrieve the WT sequence.
+        1. get_wt: Which tries to retrieve the WT sequence.
         2. verify: Which tries to verify the entire reaction.
     """
 
@@ -261,21 +275,26 @@ class ReactionCLI:
         self.sim.create_reaction_graph(table_path)
         return self
 
-    def retrieve_wt(
+    def get_wt(
         self,
         table_path: str,
-        enzymes: List[str],
+        enzymes: Union[List[str], str],
         gate_crosstalk_max: int = 1000,
         neb_table_temp: int = 25,
         neb_table_time: int = 18,
-    ) -> List[Tuple[str, int, int, int]]:
+    ):
         """
-        Tries to retrieve the WT sequence created using the oligo table provided
-            by "simulating" the golden gate reaction.
-        Returns:
-            tuple: A tuple of DNA, no. of segments in WT product, start position and end position.
-                Start and end positions are relative to the DNA given used to create the oligo pool to order.
+        Prints the WT sequence(s) created by "simulating" the golden gate reaction.
+
+        Args:
+            table_path (str): Path to segments table
+            enzymes (str|list[str]): which enzyme(s) to use in the reaction given. Enzymes should be given in a list format, i.e. [BsaI]. You must respect the usual naming convention with the upper case letters and Latin numbering (in upper case as well).
+            gate_crosstalk_max (int): above which threshold two gates are considered as able to connect (default=1000)
+            neb_table_temp (int): Specifies which NEB data to use (default=25)
+            neb_table_time (int): Specifies which NEB data to use (default=18)
         """
+        if isinstance(enzymes, str):
+            enzymes = [enzymes]
         self._setup(
             table_path, enzymes, gate_crosstalk_max, neb_table_temp, neb_table_time
         )
@@ -290,13 +309,13 @@ class ReactionCLI:
     def verify(
         self,
         table_path: str,
-        enzymes: List[str],
+        enzymes: Union[List[str], str],
+        expected_dna_len: int = 0,
+        expected_no_segments: int = 0,
         gate_crosstalk_max: int = 1000,
         neb_table_temp: int = 25,
         neb_table_time: int = 18,
-        expected_dna_len: int = 0,
-        expected_no_segments: int = 0,
-    ) -> Tuple[bool, Union[int, List[DDNASection]]]:
+    ):
         """
         Verifies the "correctness" of the products in golden gate simulation by:
             1. Check that oligo number is in ascending order.
@@ -306,13 +325,17 @@ class ReactionCLI:
             3. If  expected_no_segments is given,
                 verifies all reaction products are composed of required number of oligos.
         Args:
+            table_path (str): Path to segments table
+            enzymes (str|list[str]): which enzyme(s) to use in the reaction given. Enzymes should be given in a list format, i.e. [BsaI]. You must respect the usual naming convention with the upper case letters and Latin numbering (in upper case as well).
             expected_dna_len (int): The number of BPs each product is expected to contain
             expected_no_segments (int): The number of segments each product is expected to contain
-
-        Returns:
-            tuple: In case all
+            gate_crosstalk_max (int): above which threshold two gates are considered as able to connect (default=1000)
+            neb_table_temp (int): Specifies which NEB data to use (default=25)
+            neb_table_time (int): Specifies which NEB data to use (default=18)
 
         """
+        if isinstance(enzymes, str):
+            enzymes = [enzymes]
         self._setup(
             table_path, enzymes, gate_crosstalk_max, neb_table_temp, neb_table_time
         )
@@ -351,6 +374,32 @@ class ReactionCLI:
                     ],
                 )
             )
+
+    def get_all_products(
+        self,
+        table_path: str,
+        enzymes: Union[List[str], str],
+        gate_crosstalk_max: int = 1000,
+        neb_table_temp: int = 25,
+        neb_table_time: int = 18,
+    ):
+        """
+        Use with caution!!!
+        This method prints all golden gate reaction products in a table format.
+        Args:
+            table_path (str): Path to segments table
+            enzymes (str|list[str]): which enzyme(s) to use in the reaction given. Enzymes should be given in a list format, i.e. [BsaI]. You must respect the usual naming convention with the upper case letters and Latin numbering (in upper case as well).
+            gate_crosstalk_max (int): above which threshold two gates are considered as able to connect (default=1000)
+            neb_table_temp (int): Specifies which NEB data to use (default=25)
+            neb_table_time (int): Specifies which NEB data to use (default=18)
+        """
+        if isinstance(enzymes, str):
+            enzymes = [enzymes]
+        self._setup(
+            table_path, enzymes, gate_crosstalk_max, neb_table_temp, neb_table_time
+        )
+        products = self.sim.get_all_products()
+        print(tabulate(products, headers=["DNA", "No. segments", "Start", "End"]))
 
 
 def gen_src_trgt_edges(
