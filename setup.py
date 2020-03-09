@@ -33,6 +33,9 @@ ext_modules = [
         "dawdlib.dijkstra.colorful",
         ["dawdlib/dijkstra/colorful" + ext],
         include_dirs=[numpy.get_include()],
+        language="c++",
+        extra_compile_args=["-fopenmp", "-Ofast", "-std=c++11"],
+        extra_link_args=["-fopenmp"]
         # define_macros=[('CYTHON_TRACE', '1'), ('CYTHON_TRACE_NOGIL', '1')]
     )
 ]
@@ -59,5 +62,6 @@ setup(
         "fire",
         "tabulate",
     ],
+    include_package_data=True,
     entry_points={"console_scripts": ["dawdlib=dawdlib.__main__:main"]},
 )
