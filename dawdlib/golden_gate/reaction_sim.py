@@ -10,7 +10,11 @@ from Bio.Restriction.Restriction import Ov3, Ov5
 from Bio.Seq import Seq
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
-from dawdlib.golden_gate.utils import OligoTableEntry, Requirements, ambiguous_dna_unambiguous
+from dawdlib.golden_gate.utils import (
+    OligoTableEntry,
+    Requirements,
+    ambiguous_dna_unambiguous,
+)
 from tabulate import tabulate
 
 
@@ -472,7 +476,7 @@ def get_compatible_oligos(
     for dtup in combinations(ddnas, 2):
         d1, d2 = dtup
         for h1, h2 in product(
-            filter(len, d1.get_hang_dna_rev()), filter(len, d2.get_hang_dna_rev()),
+            filter(len, d1.get_hang_dna_rev()), filter(len, d2.get_hang_dna_rev())
         ):
             if gg_data.gates_scores(h1, h2) >= gate_crosstalk_max:
                 yield d1, d2

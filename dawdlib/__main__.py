@@ -1,4 +1,5 @@
 import fire
+
 from dawdlib.golden_gate.reaction_sim import ReactionCLI
 
 
@@ -73,7 +74,7 @@ class CLI:
     def embl(embl_in: str, embl_out: str, deg_table: str = "", gate_path: str = ""):
         """
 
-        Args:
+        ArgsReactionCLI:
             embl_in (str): file in embl format to write features to
             embl_out (str): file where to write embl file with all features
             deg_table (str): (optional) degenerate codon table file in csv format
@@ -121,9 +122,7 @@ class CLI:
 
 
 def main(args=None):
-    fire.Fire(
-        CLI, name="dawdlib",
-    )
+    fire.Fire(CLI, name="dawdlib")
 
 
 if __name__ == "__main__":

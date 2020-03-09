@@ -2,9 +2,8 @@
 
 # from distutils.extension import Extension
 
-from setuptools import Extension, find_packages, setup
-
 import numpy
+from setuptools import Extension, find_packages, setup
 
 #
 # directive_defaults = Options.get_directive_defaults()
