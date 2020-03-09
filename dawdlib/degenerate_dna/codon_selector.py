@@ -63,7 +63,7 @@ class CodonSelector:
     ) -> tp.Generator[tp.Any, None, None]:
         for codon in self.cod_sel.optimise_codons(amino_acids, self.organism_id):
             codon_aas = {
-                [amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]]
+                amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
             }
             if set(list(amino_acids)).issuperset(set(codon_aas)):
                 yield codon
@@ -74,7 +74,7 @@ class CodonSelector:
         for bps in product(DEG_NUCL_CODES, repeat=3):
             for codon in self.cod_sel.analyse_codon("".join(bps), self.organism_id):
                 codon_aas = {
-                    [amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]]
+                    amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
                 }
                 if set(list(amino_acids)).issuperset(set(codon_aas)):
                     for amino_acid in codon["amino_acids"]:
