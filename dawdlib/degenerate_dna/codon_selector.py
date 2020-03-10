@@ -4,6 +4,7 @@ from itertools import chain, combinations, product
 import cvxpy as cp
 import networkx as nx
 import numpy as np
+
 from dawdlib.degenerate_dna.codon_utils import CodonSelector as UtilsCodonSelector
 from dawdlib.degenerate_dna.codon_utils import _get_score
 

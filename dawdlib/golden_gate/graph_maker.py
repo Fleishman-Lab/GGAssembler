@@ -3,6 +3,7 @@ from typing import Callable, Dict, List, Tuple, Union
 
 import networkx as nx
 import numpy as np
+
 from dawdlib.golden_gate.constants import (
     CONST_COST,
     SINK_NODE,
@@ -11,7 +12,7 @@ from dawdlib.golden_gate.constants import (
 )
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
-from dawdlib.golden_gate.utils import syn_muts, Requirements
+from dawdlib.golden_gate.utils import Requirements, syn_muts
 
 
 class GraphMaker:

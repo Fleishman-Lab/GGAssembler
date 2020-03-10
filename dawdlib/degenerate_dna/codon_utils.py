@@ -7,8 +7,8 @@ To view a copy of this license, visit <http://opensource.org/licenses/MIT/>.
 
 @author:  neilswainston
 """
-from collections import defaultdict
 import itertools
+from collections import defaultdict
 
 import Bio.Data.CodonTable as CodonTable
 from synbiochem.utils import seq_utils

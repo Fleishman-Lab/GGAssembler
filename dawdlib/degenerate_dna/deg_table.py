@@ -4,6 +4,7 @@ from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
+
 from dawdlib.degenerate_dna.codon_selector import CodonSelector
 from dawdlib.golden_gate.utils import find_dna_var_poss, parse_resfile
 

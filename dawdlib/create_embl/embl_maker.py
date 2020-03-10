@@ -2,6 +2,7 @@ from typing import List
 
 import pandas as pd
 from Bio import SeqFeature
+
 from dawdlib.golden_gate.gate import Gate
 
 

@@ -4,6 +4,7 @@ from typing import Dict, Generator, Iterator, List, NamedTuple, Set, Tuple
 
 from Bio import SeqIO
 from Bio.Data.IUPACData import ambiguous_dna_values as adv
+
 from dawdlib.golden_gate.constants import CONST_COST, OLIGO_PREFIX, OLIGO_SUFFIX
 from dawdlib.golden_gate.gate import Gate, SynMut
 

@@ -2,8 +2,9 @@ from itertools import combinations
 from typing import Callable, List
 
 import networkx as nx
-from dawdlib.golden_gate.gate_data import GGData
+
 from dawdlib.golden_gate.gate import Gate
+from dawdlib.golden_gate.gate_data import GGData
 
 
 def gen_gate_restriction_graph(

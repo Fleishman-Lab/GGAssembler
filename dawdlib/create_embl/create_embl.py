@@ -3,10 +3,12 @@ from typing import List
 import pandas as pd
 from Bio import SeqFeature, SeqIO
 
-from dawdlib.create_embl.embl_maker import (create_dc_features,
-                                            create_path_features,
-                                            df_to_gate_path,
-                                            parse_degenerate_codon_csv)
+from dawdlib.create_embl.embl_maker import (
+    create_dc_features,
+    create_path_features,
+    df_to_gate_path,
+    parse_degenerate_codon_csv,
+)
 
 
 def create_embl(

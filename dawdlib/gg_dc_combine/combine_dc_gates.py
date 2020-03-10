@@ -3,8 +3,10 @@ import json
 import pandas as pd
 
 from dawdlib.create_embl.embl_maker import df_to_gate_path
-from dawdlib.gg_dc_combine.gg_dc_combine import (create_to_order_df,
-                                                 parse_degenerate_codon_csv)
+from dawdlib.gg_dc_combine.gg_dc_combine import (
+    create_to_order_df,
+    parse_degenerate_codon_csv,
+)
 from dawdlib.golden_gate.utils import parse_dna
 
 

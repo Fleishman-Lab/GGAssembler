@@ -4,10 +4,11 @@ from functools import reduce
 
 import networkx as nx
 import numpy as np
+from networkx.algorithms.shortest_paths.weighted import _weight_function
+
 from dawdlib.dijkstra import colorful
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.gate_restriction import gen_gate_restriction_graph
-from networkx.algorithms.shortest_paths.weighted import _weight_function
 
 
 def _MCSCliqueTree(

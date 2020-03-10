@@ -8,6 +8,8 @@ import pandas as pd
 from Bio.Restriction import Restriction
 from Bio.Restriction.Restriction import Ov3, Ov5
 from Bio.Seq import Seq
+from tabulate import tabulate
+
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.utils import (
@@ -15,7 +17,6 @@ from dawdlib.golden_gate.utils import (
     Requirements,
     ambiguous_dna_unambiguous,
 )
-from tabulate import tabulate
 
 
 class OverHang(NamedTuple):

@@ -5,6 +5,7 @@ from typing import Callable, Dict, Generator, Iterable, List
 
 import networkx as nx
 import pandas as pd
+
 from dawdlib.degenerate_dna.deg_table import TableColNames
 from dawdlib.dijkstra.len_limit import all_shortest_paths
 from dawdlib.golden_gate.gate import Gate, GateSet
