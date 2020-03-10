@@ -243,7 +243,9 @@ def _optimise_codons_graph(
         g = graph
 
     for path in nx.all_shortest_paths(g, frozenset(), aa_set):
-        codons_list = [g[v1][v2]["codon"] for v1, v2 in zip(path[:-1], path[1:])]
+        codons_list = [
+            PosCodon(**g[v1][v2]["codon"]) for v1, v2 in zip(path[:-1], path[1:])
+        ]
         codon_comb = _combine_condons(codons_list)
         if codon_comb.score > best_codon_score:
             best_codon = codon_comb
@@ -269,7 +271,7 @@ def _generate_codons_set_graph(codons: tp.List[PosCodon]) -> nx.Graph:
 
     stack: tp.List[frozenset] = [frozenset()]
 
-    nodes: tp.List[tp.Tuple[frozenset, PosCodon]] = [(frozenset(), PosCodon())]
+    nodes: tp.List[tp.Tuple[frozenset, tp.Dict]] = [(frozenset(), PosCodon()._asdict())]
     edges: tp.List[tp.Tuple[frozenset, frozenset, tp.Dict]] = []
 
     visited = set()
@@ -281,9 +283,9 @@ def _generate_codons_set_graph(codons: tp.List[PosCodon]) -> nx.Graph:
             encoded_acids = codon.encoded_acids
             if u.isdisjoint(encoded_acids):
                 v = u.union(encoded_acids)
-                edges.append((u, v, {"codon": codon}))
+                edges.append((u, v, {"codon": codon._asdict()}))
                 if v not in visited:
-                    nodes.append((v, codon))
+                    nodes.append((v, codon._asdict()))
                     stack.append(v)
 
     g = nx.Graph()

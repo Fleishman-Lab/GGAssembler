@@ -11,8 +11,10 @@ from setuptools import Extension, find_packages, setup
 class build(build_orig):
     def finalize_options(self):
         super().finalize_options()
-
-        __builtins__.__NUMPY_SETUP__ = False
+        try:
+            __builtins__.__NUMPY_SETUP__ = False
+        except AttributeError:
+            pass
         ext = next(m for m in self.distribution.ext_modules if m == ext_modules[0])
         ext.include_dirs.append(
             pkg_resources.resource_filename("numpy", "core/include")
@@ -68,7 +70,6 @@ setup(
     install_requires=[
         "networkx",
         "numpy",
-        # "cvxpy",
         "biopython",
         "synbiochem-py",
         "pandas",
