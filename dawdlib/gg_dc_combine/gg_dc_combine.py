@@ -71,7 +71,7 @@ def find_codons_for_oligo(
     for _, row in sub_df.iterrows():
         pos_codon.append([])
         for col in sub_df.columns[1:]:
-            if row[col] is np.nan:
+            if row[col] or row[col] is np.nan:
                 continue
             pos_codon[-1].append((row["DNA_POS"], row[col]))
 
