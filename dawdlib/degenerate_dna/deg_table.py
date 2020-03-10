@@ -5,7 +5,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 import pandas as pd
 
-from dawdlib.degenerate_dna.codon_selector import CodonSelector
+from dawdlib.degenerate_dna.codon_selector import CodonSelector, PosCodon
 from dawdlib.golden_gate.utils import find_dna_var_poss, parse_resfile
 
 
@@ -17,8 +17,7 @@ class TableColNames(Enum):
     ENCODED_COUNT = "ENCODED_COUNT"
 
 
-def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> Dict:
-    # return codon_selector.optimise_codons(aas, mode='lp')
+def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> PosCodon:
     length = len(aas)
     if length > 15:
         return codon_selector.optimise_codons(aas, mode="greedy")
@@ -29,7 +28,7 @@ def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> Dict:
 
 def resfile_aa_codons(
     codon_selector: CodonSelector, resfile: Dict[int, str]
-) -> Dict[int, Dict]:
+) -> Dict[int, PosCodon]:
     return OrderedDict(
         [
             (pos, aas_deg_codons(codon_selector, list(aas)))
@@ -38,18 +37,18 @@ def resfile_aa_codons(
     )
 
 
-def aa_pos_aa_freq(aa_pos_codons: Dict[int, Dict]) -> Dict[int, Tuple[List, List]]:
+def aa_pos_aa_freq(aa_pos_codons: Dict[int, PosCodon]) -> Dict[int, Tuple[List, List]]:
     aa_pos_count = {}
     for pos, codons in aa_pos_codons.items():
-        encoded_aas = [amino_acid["amino_acid"] for amino_acid in codons["amino_acids"]]
+        encoded_aas = [amino_acid["amino_acid"] for amino_acid in codons.amino_acids]
         uniq, counts = np.unique(encoded_aas, return_counts=True)
         aa_pos_count[pos] = (uniq.tolist(), counts.tolist())
     return aa_pos_count
 
 
-def aa_pos_ambiguous_codons(aa_pos_codons: Dict[int, Dict]) -> Dict[int, List[str]]:
+def aa_pos_ambiguous_codons(aa_pos_codons: Dict[int, PosCodon]) -> Dict[int, List[str]]:
     return OrderedDict(
-        [(pos, codons["ambiguous_codons"]) for pos, codons in aa_pos_codons.items()]
+        [(pos, codons.ambiguous_codons) for pos, codons in aa_pos_codons.items()]
     )
 
 

@@ -68,7 +68,7 @@ setup(
     install_requires=[
         "networkx",
         "numpy",
-        "cvxpy",
+        # "cvxpy",
         "biopython",
         "synbiochem-py",
         "pandas",

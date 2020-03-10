@@ -11,7 +11,7 @@ def generate_codon_dict(organism_id: str, amino_acids: tp.List[str]) -> tp.Dict:
     cdn_sel = CodonSelector(organism_id)
     codons = cdn_sel._gen_degenerate_codons(amino_acids)
     codons = _remove_duplicate_codons(codons)
-    return dict(("".join(sorted(codon["encoded_acids"])), codon) for codon in codons)
+    return dict(("".join(sorted(codon.encoded_acids)), codon) for codon in codons)
 
 
 def write_codon_dict(
