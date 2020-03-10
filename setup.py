@@ -2,8 +2,22 @@
 
 # from distutils.extension import Extension
 
-import numpy
+from distutils.command.build import build as build_orig
+
+import pkg_resources
 from setuptools import Extension, find_packages, setup
+
+
+class build(build_orig):
+    def finalize_options(self):
+        super().finalize_options()
+
+        __builtins__.__NUMPY_SETUP__ = False
+        ext = next(m for m in self.distribution.ext_modules if m == ext_modules[0])
+        ext.include_dirs.append(
+            pkg_resources.resource_filename("numpy", "core/include")
+        )
+
 
 #
 # directive_defaults = Options.get_directive_defaults()
@@ -31,10 +45,9 @@ ext_modules = [
     Extension(
         "dawdlib.dijkstra.colorful",
         ["dawdlib/dijkstra/colorful" + ext],
-        include_dirs=[numpy.get_include()],
+        include_dirs=[],
         language="c++",
-        extra_compile_args=["-fopenmp", "-Ofast", "-std=c++11"],
-        extra_link_args=["-fopenmp"]
+        extra_compile_args=["-Ofast", "-std=c++11"]
         # define_macros=[('CYTHON_TRACE', '1'), ('CYTHON_TRACE_NOGIL', '1')]
     )
 ]
@@ -51,6 +64,7 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     ext_modules=ext_modules,
+    cmdclass={"build": build},
     install_requires=[
         "networkx",
         "numpy",
@@ -61,6 +75,7 @@ setup(
         "fire",
         "tabulate",
     ],
+    setup_requires=["numpy"],
     include_package_data=True,
     entry_points={"console_scripts": ["dawdlib=dawdlib.__main__:main"]},
 )

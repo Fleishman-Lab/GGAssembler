@@ -1,5 +1,5 @@
 # distutils: language = c++
-# distutils: extra_compile_args=-fopenmp -Ofast -std=c++11
+# distutils: extra_compile_args=-Ofast -std=c++11
 # distutils: extra_link_args=-fopenmp
 # cython: language_level=3, boundscheck=False, wraparound=False, initializedcheck=False, cdivision=False, overflowcheck.fold=False
 
@@ -115,8 +115,6 @@ def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, 
     """
     if method != 'dijkstra':
         raise ValueError("method not supported: {}".format(method))
-    if no_colors > 18:
-        raise ValueError("No. of colors {} exceeds maximum allowed".format(no_colors))
 
     gate_colors = color_gates(G, GGData(), r_graph=res_graph)
     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = nxtonumpy(G, [source], target, gate_colors.get, no_colors)
