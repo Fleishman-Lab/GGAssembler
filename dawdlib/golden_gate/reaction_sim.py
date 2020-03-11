@@ -1,6 +1,19 @@
+import collections
 import json
 from itertools import chain, combinations, product
-from typing import Dict, Generator, Iterable, Iterator, List, NamedTuple, Tuple, Union
+from typing import (
+    Any,
+    Dict,
+    Generator,
+    Iterable,
+    Iterator,
+    List,
+    NamedTuple,
+    Optional,
+    Set,
+    Tuple,
+    Union,
+)
 
 import networkx as nx
 import numpy as np
@@ -58,6 +71,7 @@ class DDNASection(NamedTuple):
     fwd: SDNASection = SDNASection()
     rev: SDNASection = SDNASection()
     is_wt: bool = False
+    is_const: bool = False
 
     def get_hang_dna(self) -> Iterator[str]:
         """
@@ -91,15 +105,25 @@ class DDNASection(NamedTuple):
         )
 
 
+class ReactionGraphEdgeAttr(NamedTuple):
+    """
+    A structure for the edge attributes in reaction graph
+    """
+
+    id: str
+    score: int
+
+
 class ReactionGraph(nx.Graph):
     """
     A wrapper class around ~networkx.Graph which has a source and target fields.
     """
 
-    source: DDNASection = DDNASection(is_wt=True)
+    source: DDNASection = DDNASection(is_wt=True, is_const=True)
     target: DDNASection = DDNASection(
         fwd=SDNASection(start=np.iinfo(np.int).max, end=np.iinfo(np.int).max),
         is_wt=True,
+        is_const=True,
     )
 
 
@@ -143,7 +167,11 @@ class ReactionSim:
                 dna_segs_it = enzyme_dna_segments(enzyme, oligo_entry.full_oligo_dna)
                 ddna_nodes.append(
                     get_ddna_sections(
-                        enzyme, dna_segs_it, oligo_entry.gate1.idx, oligo_entry.wt
+                        enzyme,
+                        dna_segs_it,
+                        oligo_entry.gate1.idx,
+                        oligo_entry.wt,
+                        oligo_entry.const,
                     )
                 )
         return chain.from_iterable(ddna_nodes)
@@ -180,7 +208,7 @@ class ReactionSim:
             filter(lambda x: x.is_wt, self.reaction_graph.nodes)
         ).copy()
         pth: List[DDNASection]
-        for pth in nx.all_simple_paths(
+        for pth in all_simple_paths(
             sub_reaction_g, self.reaction_graph.source, self.reaction_graph.target
         ):
             dna = "".join((node.fwd.dna for node in pth))
@@ -215,13 +243,14 @@ class ReactionSim:
                    2. Otherwise: (False, the product which is not correct
 
         """
+        sub_reaction_g = self.reaction_graph.subgraph(
+            filter(lambda x: x.is_wt == x.is_const, self.reaction_graph.nodes)
+        ).copy()
         pth: List[DDNASection]
         cnt = -1
         for cnt, pth in enumerate(
-            nx.all_simple_paths(
-                self.reaction_graph,
-                self.reaction_graph.source,
-                self.reaction_graph.target,
+            all_simple_paths(
+                sub_reaction_g, self.reaction_graph.source, self.reaction_graph.target,
             )
         ):
             if not all(
@@ -245,7 +274,7 @@ class ReactionSim:
             Tuple: [dna, number of segments, start position, end position] 
         """
         pth: List[DDNASection]
-        for pth in nx.all_simple_paths(
+        for pth in all_simple_paths(
             self.reaction_graph, self.reaction_graph.source, self.reaction_graph.target
         ):
             yield "".join(node.fwd.dna for node in pth), len(pth), pth[
@@ -412,7 +441,7 @@ def gen_src_trgt_edges(
     target: DDNASection,
     sources: Iterable[DDNASection],
     targets: Iterable[DDNASection],
-) -> Iterator[Tuple[DDNASection, DDNASection]]:
+) -> Iterator[Tuple[DDNASection, DDNASection, Dict[str, Any]]]:
     """
     Generates the required edges so the graph structure will have a single source and target
     Args:
@@ -425,7 +454,12 @@ def gen_src_trgt_edges(
         Iterator[Tuple[DDNASection, DDNASection]]: An iterator over tuples of pairs for the new source and target
 
     """
-    return chain(product([source], sources), product([target], targets))
+    src_atrr = ReactionGraphEdgeAttr(id="SRC", score=0)
+    target_atrr = ReactionGraphEdgeAttr(id="TARGET", score=0)
+    return chain(
+        map(lambda x: x + (src_atrr._asdict(),), product([source], sources)),
+        map(lambda x: x + (target_atrr._asdict(),), product([target], targets)),
+    )
 
 
 def find_sources_targets(
@@ -462,7 +496,7 @@ def find_sources_targets(
 
 def get_compatible_oligos(
     gg_data: GGData, ddnas: Iterator[DDNASection], gate_crosstalk_max: int = 1000
-) -> Generator[Tuple[DDNASection, DDNASection], None, None]:
+) -> Generator[Tuple[DDNASection, DDNASection, Dict], None, None]:
     """
 
     Args:
@@ -479,8 +513,10 @@ def get_compatible_oligos(
         for h1, h2 in product(
             filter(len, d1.get_hang_dna_rev()), filter(len, d2.get_hang_dna_rev())
         ):
-            if gg_data.gates_scores(h1, h2) >= gate_crosstalk_max:
-                yield d1, d2
+            score = gg_data.gates_scores(h1, h2)
+            if score >= gate_crosstalk_max:
+                rgea = ReactionGraphEdgeAttr(id="-".join(sorted([h1, h2])), score=score)
+                yield d1, d2, rgea._asdict()
                 continue
 
 
@@ -489,6 +525,7 @@ def get_ddna_sections(
     dna_segs: Iterator[Tuple[str, str]],
     start: int,
     is_wt: bool = False,
+    is_const: bool = False,
 ) -> Generator[DDNASection, None, None]:
     """
 
@@ -498,6 +535,7 @@ def get_ddna_sections(
                                               (after digestion by restrction enzyme).
         start (int): An index pointing to the start of the DNA segment or the location of the gate.
         is_wt (bool): Whether the current oligo is WT or not.
+        is_const (bool): Whether the current oligo is constant or not.
 
     Yields:
         DDNASection: The double stranded DNA segment.
@@ -520,6 +558,7 @@ def get_ddna_sections(
             ),
             rev=SDNASection(dna=rev, hang=t_overhang, hang_dna=t_dna_overhang),
             is_wt=is_wt,
+            is_const=is_const,
         )
         # Skip yielding sections which have the enzyme recognition site
         if enzyme.compsite.search(fwd) is not None:
@@ -635,3 +674,196 @@ def find_overhand_dna(
             fprime=rev_dna[-rev_overhang.fprime :] if rev_overhang.fprime > 0 else "",
         ),
     )
+
+
+def all_simple_paths(
+    G: nx.Graph, source: DDNASection, target: DDNASection, cutoff: Optional[int] = None
+) -> Generator[List[DDNASection], None, None]:
+    """Generate all simple paths in the graph G from source to target.
+
+    A simple path is a path with no repeated nodes.
+
+    Parameters
+    ----------
+    G : NetworkX graph
+
+    source : node
+       Starting node for path
+
+    target : nodes
+       Single node or iterable of nodes at which to end path
+
+    cutoff : integer, optional
+        Depth to stop the search. Only paths of length <= cutoff are returned.
+
+    Returns
+    -------
+    path_generator: generator
+       A generator that produces lists of simple paths.  If there are no paths
+       between the source and target within the given cutoff the generator
+       produces no output.
+
+    Examples
+    --------
+    This iterator generates lists of nodes::
+
+        >>> G = nx.complete_graph(4)
+        >>> for path in nx.all_simple_paths(G, source=0, target=3):
+        ...     print(path)
+        ...
+        [0, 1, 2, 3]
+        [0, 1, 3]
+        [0, 2, 1, 3]
+        [0, 2, 3]
+        [0, 3]
+
+    You can generate only those paths that are shorter than a certain
+    length by using the `cutoff` keyword argument::
+
+        >>> paths = nx.all_simple_paths(G, source=0, target=3, cutoff=2)
+        >>> print(list(paths))
+        [[0, 1, 3], [0, 2, 3], [0, 3]]
+
+    To get each path as the corresponding list of edges, you can use the
+    :func:`networkx.utils.pairwise` helper function::
+
+        >>> paths = nx.all_simple_paths(G, source=0, target=3)
+        >>> for path in map(nx.utils.pairwise, paths):
+        ...     print(list(path))
+        [(0, 1), (1, 2), (2, 3)]
+        [(0, 1), (1, 3)]
+        [(0, 2), (2, 1), (1, 3)]
+        [(0, 2), (2, 3)]
+        [(0, 3)]
+
+    Pass an iterable of nodes as target to generate all paths ending in any of several nodes::
+
+        >>> G = nx.complete_graph(4)
+        >>> for path in nx.all_simple_paths(G, source=0, target=[3, 2]):
+        ...     print(path)
+        ...
+        [0, 1, 2]
+        [0, 1, 2, 3]
+        [0, 1, 3]
+        [0, 1, 3, 2]
+        [0, 2]
+        [0, 2, 1, 3]
+        [0, 2, 3]
+        [0, 3]
+        [0, 3, 1, 2]
+        [0, 3, 2]
+
+    Iterate over each path from the root nodes to the leaf nodes in a
+    directed acyclic graph using a functional programming approach::
+
+        >>> from itertools import chain
+        >>> from itertools import product
+        >>> from itertools import starmap
+        >>> from functools import partial
+        >>>
+        >>> chaini = chain.from_iterable
+        >>>
+        >>> G = nx.DiGraph([(0, 1), (1, 2), (0, 3), (3, 2)])
+        >>> roots = (v for v, d in G.in_degree() if d == 0)
+        >>> leaves = (v for v, d in G.out_degree() if d == 0)
+        >>> all_paths = partial(nx.all_simple_paths, G)
+        >>> list(chaini(starmap(all_paths, product(roots, leaves))))
+        [[0, 1, 2], [0, 3, 2]]
+
+    The same list computed using an iterative approach::
+
+        >>> G = nx.DiGraph([(0, 1), (1, 2), (0, 3), (3, 2)])
+        >>> roots = (v for v, d in G.in_degree() if d == 0)
+        >>> leaves = (v for v, d in G.out_degree() if d == 0)
+        >>> all_paths = []
+        >>> for root in roots:
+        ...     for leaf in leaves:
+        ...         paths = nx.all_simple_paths(G, root, leaf)
+        ...         all_paths.extend(paths)
+        >>> all_paths
+        [[0, 1, 2], [0, 3, 2]]
+
+    Iterate over each path from the root nodes to the leaf nodes in a
+    directed acyclic graph passing all leaves together to avoid unnecessary
+    compute::
+
+        >>> G = nx.DiGraph([(0, 1), (2, 1), (1, 3), (1, 4)])
+        >>> roots = (v for v, d in G.in_degree() if d == 0)
+        >>> leaves = [v for v, d in G.out_degree() if d == 0]
+        >>> all_paths = []
+        >>> for root in roots:
+        ...     paths = nx.all_simple_paths(G, root, leaves)
+        ...     all_paths.extend(paths)
+        >>> all_paths
+        [[0, 1, 3], [0, 1, 4], [2, 1, 3], [2, 1, 4]]
+
+    Notes
+    -----
+    This algorithm uses a modified depth-first search to generate the
+    paths [1]_.  A single path can be found in $O(V+E)$ time but the
+    number of simple paths in a graph can be very large, e.g. $O(n!)$ in
+    the complete graph of order $n$.
+
+    References
+    ----------
+    .. [1] R. Sedgewick, "Algorithms in C, Part 5: Graph Algorithms",
+       Addison Wesley Professional, 3rd ed., 2001.
+
+    """
+    if source not in G:
+        raise nx.NodeNotFound("source node %s not in graph" % source)
+    if target not in G:
+        raise nx.NodeNotFound("target node %s not in graph" % target)
+    targets = {target}
+    if source in targets:
+        return []
+    if cutoff is None:
+        cutoff = len(G) - 1
+    if cutoff < 1:
+        return []
+    if G.is_multigraph():
+        raise ValueError("Not implemented for multi-graphs")
+    else:
+        return _all_simple_paths_graph(G, source, targets, cutoff)
+
+
+def _all_simple_paths_graph(
+    G: nx.Graph, source: DDNASection, targets: Set[DDNASection], cutoff: int
+) -> Generator[List[DDNASection], None, None]:
+    class Child(NamedTuple):
+        incoming_id: str
+        child: DDNASection
+
+    visited: Dict[DDNASection, Any] = collections.OrderedDict.fromkeys([source])
+    stack: List[Iterator[Child]] = [
+        map(lambda x: Child(incoming_id=x[1]["id"], child=x[0]), G[source].items())
+    ]
+    while stack:
+        children = stack[-1]
+        incoming_id, child = next(children, (None, None))
+        if child is None:
+            stack.pop()
+            visited.popitem()
+        elif len(visited) < cutoff:
+            if child in visited:
+                continue
+            if child in targets:
+                yield list(visited) + [child]
+            visited[child] = None
+            if targets - set(visited.keys()):  # expand stack until find all targets
+                stack.append(
+                    filter(
+                        lambda x: x.incoming_id != incoming_id,
+                        map(
+                            lambda x: Child(incoming_id=x[1]["id"], child=x[0]),
+                            G[child].items(),
+                        ),
+                    )
+                )
+            else:
+                visited.popitem()  # maybe other ways to child
+        else:  # len(visited) == cutoff:
+            for target in (targets & (set(children) | {child})) - set(visited.keys()):
+                yield list(visited) + [target]
+            stack.pop()
+            visited.popitem()
