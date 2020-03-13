@@ -1,0 +1,34 @@
+LOCUS       271_2p48                 369 bp    DNA     linear   UNK 01-JAN-1980
+DEFINITION  .
+ACCESSION   271_2p48
+VERSION     271_2p48.1
+KEYWORDS    .
+SOURCE      .
+  ORGANISM  .
+            .
+FEATURES             Location/Qualifiers
+     EP=2            88..90
+     IV=1            91..93
+     ITV=2           94..96
+     ADEFHIKMNQSTY=4 100..102
+     FMVY=2          103..105
+     AKMQS=3         163..165
+     ST=1            166..168
+     ILV=1           307..309
+     LM=1            322..324
+     AG=1            331..333
+     G.83.GTAT       84..87
+     G.105.ATGG      106..109
+     G.147.GTGG      148..151
+     G.168.GGAG      169..172
+     G.302.TGGT      303..306
+     G.333.ACAT      334..337
+ORIGIN
+        1 ggttctcaag tacaaatggt ggaatctggt ggaggcttag ttcaagctgg gggttctctt
+       61 agattaagct gcgctgcccc agggtatgaa ataacgtaca tgtacatggc atggtttaga
+      121 caggcaccag gtaaagagag ggaaggcgtg gctgctatgg acatgactgg agggaacgtt
+      181 tattatcacg attccgtaaa gggcagattc acaatttcta gagataaaga caagaataca
+      241 gtgtatctac aaatggatga cctaaagcca gaggacactg caatctatta ctgtgcagtt
+      301 ggtggtataa acttgataca gatgacttac ggtacatggg gccaaggaac acaagtaact
+      361 gtctcttct
+//

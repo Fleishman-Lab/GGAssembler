@@ -1,0 +1,11 @@
+AA_POS,DNA_POS,ENCODED_AAS,ENCODED_COUNT,AMBIGUOUS_CODONS1,AMBIGUOUS_CODONS2,AMBIGUOUS_CODONS3,AMBIGUOUS_CODONS4
+30,88,"['E', 'P']","[1, 1]",GAA,CCG,,
+31,91,"['I', 'V']","[1, 1]",RTT,,,
+32,94,"['I', 'T', 'V']","[1, 1, 1]",RTT,ACC,,
+34,100,"['A', 'D', 'E', 'F', 'H', 'I', 'K', 'M', 'N', 'Q', 'S', 'T', 'Y']","[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]",VAW,RCC,THT,ATK
+35,103,"['F', 'M', 'V', 'Y']","[1, 1, 1, 1]",TWT,RTG,,
+55,163,"['A', 'K', 'M', 'Q', 'S']","[1, 1, 1, 1, 1]",MAA,ATG,KCA,
+56,166,"['S', 'T']","[1, 1]",ASC,,,
+103,307,"['I', 'L', 'V']","[1, 1, 1]",VTT,,,
+108,322,"['L', 'M']","[1, 1]",MTG,,,
+111,331,"['A', 'G']","[1, 1]",GST,,,

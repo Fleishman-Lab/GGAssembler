@@ -99,6 +99,7 @@ class GGDCCombneTest(unittest.TestCase):
         self.assertEqual(
             ref_df["oligo_dna"].tolist(), to_order_df["oligo_dna"].tolist()
         )
+        print("AAAAAAAAaaa")
 
 
 if __name__ == "__main__":
