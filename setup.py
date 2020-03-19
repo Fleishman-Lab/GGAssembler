@@ -76,6 +76,7 @@ setup(
         "fire",
         "tabulate",
     ],
+    python_requires=">=3.6",
     setup_requires=["numpy"],
     include_package_data=True,
     entry_points={"console_scripts": ["dawdlib=dawdlib.__main__:main"]},
