@@ -1,5 +1,5 @@
 import typing as tp
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 from functools import reduce
 
 import networkx as nx
@@ -106,14 +106,29 @@ def color_gates(
     gate_self_binding_min: int = 2000,
     gate_crosstalk_max: int = 1000,
     r_graph: nx.Graph = None,
-) -> tp.Dict[tp.Any, tp.FrozenSet[int]]:
+) -> tp.Tuple[tp.Dict[tp.Any, tp.FrozenSet[int]], tp.List[int]]:
     if r_graph is None:
         r_graph = gen_gate_restriction_graph(
             ggdata, gate_self_binding_min, gate_crosstalk_max
         )
     clique_colors = _enumerate_cliques(r_graph)
     vertex_colors = _color_vertices(clique_colors)
-    return _color_gates(graph, vertex_colors)
+    return _color_gates(graph, vertex_colors), num_of_colors(r_graph, vertex_colors)
+
+
+def num_of_colors(
+    r_graph: nx.Graph, vertex_colors: tp.Dict[tp.Any, tp.FrozenSet[int]]
+) -> tp.List[int]:
+    num_colors: tp.List[int] = []
+    vertices: tp.List[tp.Any] = []
+    vertex_colors = OrderedDict(
+        sorted(vertex_colors.items(), key=lambda x: len(x[1]), reverse=True)
+    )
+    for key, val in vertex_colors.items():
+        if not r_graph.subgraph(vertices + [key]).number_of_edges():
+            vertices.append(key)
+            num_colors.append(len(val))
+    return num_colors
 
 
 def _nxweighttonp(

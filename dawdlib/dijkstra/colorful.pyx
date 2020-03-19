@@ -57,7 +57,7 @@ cdef extern from "cpp_priority_queue.hpp" nogil:
 
 
 @cython.embedsignature(True)
-def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
+def all_shortest_paths(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
     """Compute all shortest paths in the graph.
 
     Parameters
@@ -102,7 +102,7 @@ def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, 
     ------
     ValueError
         If `method` is not among the supported options.
-        If `no_colors` is greater than 18.
+        If both `no_colors` and `len_cutoff` are not provided.
 
     NetworkXNoPath
         If `target` cannot be reached from `source`.
@@ -115,8 +115,14 @@ def all_shortest_paths(G, source, target, no_colors, len_cutoff=0, weight=None, 
     """
     if method != 'dijkstra':
         raise ValueError("method not supported: {}".format(method))
+    if not no_colors and not len_cutoff:
+        raise ValueError("Either no_colors or len_cutoff are required.")
 
-    gate_colors = color_gates(G, GGData(), r_graph=res_graph)
+    gate_colors, num_of_colors = color_gates(G, GGData(), r_graph=res_graph)
+    if not no_colors:
+        no_colors = sum(num_of_colors[:len_cutoff])
+    if no_colors > 18:
+        print(f"Warning! number of colors required {no_colors} is larger than recommended.")
     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = nxtonumpy(G, [source], target, gate_colors.get, no_colors)
     try:
         return all_colorful_shortest_paths(

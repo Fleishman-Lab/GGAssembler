@@ -20,6 +20,8 @@ def gen_gate_restriction_graph(
     incomp_graph = nx.Graph()
     incomp_graph.add_nodes_from(nodes)
     incomp_graph.add_edges_from(edges)
+    if not nx.is_chordal(incomp_graph):
+        incomp_graph, _ = nx.complete_to_chordal_graph(incomp_graph)
     return incomp_graph
 
 
