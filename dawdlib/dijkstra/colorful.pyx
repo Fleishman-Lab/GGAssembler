@@ -346,14 +346,20 @@ def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred):
 
 def colorful_shortest_path(nodes, src, trgt, node_colors, dist):
     current = trgt
-    pred = np.argmin(np.multiply(dist[trgt] > -1, dist[trgt]))
+    dist_cp = dist.copy()
+    max_val = np.iinfo(dist_cp.dtype).max
+
+    dist_cp[trgt, dist_cp[trgt] < 0] = max_val
+    pred = np.argmin(dist_cp[trgt])
     path = [trgt]
     while pred < current:
         current = pred
         if current == src:
             return [nodes[p] for p in reversed(path)]
         path.append(current)
-        pred = np.argmin(np.multiply(dist[current] > -1, dist[current]))
+        dist_cp[current, dist_cp[current] < 0] = max_val
+        pred = np.argmin(dist_cp[current])
+    raise nx.NetworkXNoPath()
 
 
 cdef int random_colorful_shortest_paths(
