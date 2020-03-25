@@ -51,6 +51,11 @@ def parse_dna(dna_file: str, frmt="fasta") -> str:
     return str(record.seq)
 
 
+def convert_to_embl(dna_file: str, embl_file: str, frmt="fasta") -> None:
+    record = SeqIO.read(dna_file, frmt)
+    SeqIO.write(record, embl_file, "embl")
+
+
 def ambiguous_dna_unambiguous(dna: str) -> Iterator[str]:
     """
 
