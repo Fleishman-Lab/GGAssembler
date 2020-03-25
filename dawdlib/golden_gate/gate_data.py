@@ -157,6 +157,12 @@ class GGData:
                 return True
         return False
 
+    def gateset_crosstalk(self, gates: List[str], threshold: int = 1000) -> int:
+        return sum(
+            self.gates_all_scores(gate1, gate2)
+            for gate1, gate2 in combinations(gates, 2)
+        )
+
 
 @lru_cache(maxsize=256)
 def reverse_complement(seq) -> str:
