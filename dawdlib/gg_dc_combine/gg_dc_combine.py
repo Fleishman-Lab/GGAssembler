@@ -12,29 +12,6 @@ def parse_gg_segments_csv(csv_file: str) -> pd.DataFrame:
     return pd.read_csv(csv_file, index_col=False)
 
 
-def parse_degenerate_codon_csv(csv_file: str) -> pd.DataFrame:
-    """
-    parse the degenerate codons table
-    Args:
-        csv_file (str): the csv file for the degenerate codons
-
-    Returns:
-        (pd.DataFrame) describing the required degenerate codons
-
-    """
-    return pd.read_csv(
-        csv_file,
-        index_col=False,
-        na_values="NaN",
-        converters={
-            "ENCODED_AAS": lambda x: x.strip("[]").replace("'", "").split(", "),
-            "ENCODED_COUNT": lambda x: [
-                int(a) for a in x.strip("[]").replace("'", "").split(", ")
-            ],
-        },
-    )
-
-
 def find_oligos(gg_df: pd.DataFrame) -> List[Tuple[int, int]]:
     """
 

@@ -6,20 +6,6 @@ from Bio import SeqFeature
 from dawdlib.golden_gate.gate import Gate
 
 
-def parse_degenerate_codon_csv(csv_file: str) -> pd.DataFrame:
-    return pd.read_csv(
-        csv_file,
-        index_col=False,
-        na_values="NaN",
-        converters={
-            "ENCODED_AAS": lambda x: x.strip("[]").replace("'", "").split(", "),
-            "ENCODED_COUNT": lambda x: [
-                int(a) for a in x.strip("[]").replace("'", "").split(", ")
-            ],
-        },
-    )
-
-
 def create_dc_features(deg_parsed_df):
     features: List[SeqFeature] = []
     for i, row in deg_parsed_df.iterrows():
