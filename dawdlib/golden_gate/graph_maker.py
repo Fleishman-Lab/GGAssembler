@@ -88,9 +88,9 @@ def _add_source_sink(
     d_graph.add_node(src)
     d_graph.add_node(snk)
     for nd1 in d_graph.nodes:
-        if nd1.idx < var_poss[0]:
+        if src.idx < nd1.idx < var_poss[0]:
             d_graph.add_edge(src, nd1, weight=0)
-        elif nd1.idx > var_poss[-1]:
+        elif snk.idx > nd1.idx > var_poss[-1]:
             d_graph.add_edge(nd1, snk, weight=0)
     return src, snk
 
