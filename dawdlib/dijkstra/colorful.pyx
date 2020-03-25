@@ -241,7 +241,7 @@ def all_colorful_shortest_paths(
     """
     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
     if found:
-        return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred) for src in sources))
+        return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred, dist) for src in sources))
     else:
         raise nx.NetworkXNoPath()
 
@@ -314,10 +314,12 @@ def find_shortest_paths(
     return False, res
 
 
-def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred):
+def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):
     pred_dict = defaultdict(list)
     for key, val in np.argwhere(pred).tolist():
-        pred_dict[key].append(val)
+        pred_dict[key].append((val, dist[key, val]))
+    for key, val in pred_dict.items():
+        pred_dict[key] = [tup[0] for tup in sorted(val, key=lambda x: x[1])]
     stack = [[trgt, 0, node_colors[trgt]]]
     top = 0
     while top >= 0:
