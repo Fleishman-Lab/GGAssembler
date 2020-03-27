@@ -5,6 +5,7 @@ from typing import List
 
 import pandas as pd
 
+from dawdlib.degenerate_dna.utils import parse_degenerate_codon_csv
 from dawdlib.gg_dc_combine.gg_dc_combine import (
     create_dc_oligo,
     create_to_order_df,
@@ -12,7 +13,6 @@ from dawdlib.gg_dc_combine.gg_dc_combine import (
     find_oligos,
     parse_gg_segments_csv,
 )
-from dawdlib.degenerate_dna.utils import parse_degenerate_codon_csv
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.utils import find_dna_var_poss, parse_dna, parse_resfile
 
