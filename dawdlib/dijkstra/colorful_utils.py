@@ -176,15 +176,32 @@ def nxtonumpy(
 ):
     nodes = sorted(graph.nodes)
 
+    l_nodes = np.log2(len(nodes))
+    l_nodes = l_nodes if l_nodes > no_colors else no_colors
+
     weight_arr = _nxweighttonp(graph, nodes, weight)
     color_arr = _nxcolortonp(color, nodes)
     cgraph = _nxgraphtomap(weight_arr)
     sources = np.array([nodes.index(source) for source in sources], dtype=np.int32)
     target = nodes.index(target)
-    new_color = np.zeros((color_arr.shape[0],), dtype=np.uint16)
     pred = np.zeros_like(weight_arr, dtype=np.ubyte)
-    dist = np.empty((weight_arr.shape[0], 2 ** no_colors), np.uint16)
+
+    dtype = np.uint8
+    if l_nodes < 9:
+        dtype = np.uint8
+    elif 8 < l_nodes < 17:
+        dtype = np.uint16
+    elif 16 < l_nodes < 33:
+        dtype = np.uint32
+    elif 33 < l_nodes < 65:
+        dtype = np.uint64
+    else:
+        raise ValueError("The required number of colors exceeds 64. Please adjust!")
+
+    new_color = np.zeros((color_arr.shape[0],), dtype=dtype)
+    dist = np.empty((weight_arr.shape[0], 2 ** no_colors), dtype=dtype)
     seen = np.empty_like(dist)
+    s_pred = np.empty_like(dist)
 
     return (
         nodes,
@@ -196,36 +213,59 @@ def nxtonumpy(
         new_color,
         no_colors,
         pred,
+        s_pred,
         dist,
         seen,
     )
 
 
-def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred):
-    pred_dict = defaultdict(list)
-    for key, val in np.argwhere(pred).tolist():
-        pred_dict[key].append(val)
-    stack = [[trgt, 0, node_colors[trgt]]]
+# def yield_colorful_shortest_paths(nodes, src, trgt, n_clrs, pred, limit=0):
+#     pred_dict = defaultdict(list)
+#     for key, val in np.argwhere(pred).tolist():
+#         pred_dict[key].append(val)
+#     stack = [[trgt, 0, n_clrs[trgt], 0]]
+#     top = 0
+#     while top >= 0:
+#         node, i, p_clr, p_len = stack[top]
+#         if node == src:
+#             yield [nodes[p] for p, n, c, l in reversed(stack[: top + 1])]
+#         if len(pred_dict[node]) > i:
+#             p_node = pred_dict[node][i][0]
+#             if not (p_clr & n_clrs[p_node]) and not 0 < limit < p_len:
+#                 top += 1
+#                 p_tup = [
+#                     p_node,
+#                     0,
+#                     p_clr | n_clrs[p_node],
+#                     p_len + 1,
+#                 ]
+#                 if top == len(stack):
+#                     stack.append(p_tup)
+#                 else:
+#                     stack[top] = p_tup
+#             else:
+#                 stack[top][1] += 1
+#         else:
+#             stack[top - 1][1] += 1
+#             top -= 1
+
+
+def yield_colorful_shortest_paths(nodes, src, trgt, s_pred, seen, limit=0):
+    max_val = np.iinfo(seen.dtype).max
+    stack = [[trgt, 0, 0]]
     top = 0
     while top >= 0:
-        node, i, color = stack[top]
-        if node == src:
-            yield [nodes[p] for p, n, c in reversed(stack[: top + 1])]
-        if len(pred_dict[node]) > i:
-            if not (color & node_colors[pred_dict[node][i]]):
-                top += 1
-                if top == len(stack):
-                    stack.append(
-                        [pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]]
-                    )
-                else:
-                    stack[top] = [
-                        pred_dict[node][i],
-                        0,
-                        color | node_colors[pred_dict[node][i]],
-                    ]
+        v, i, p_len = stack[top]
+        if v == src:
+            yield [nodes[p] for p, _, _ in reversed(stack[: top + 1])]
+        if np.count_nonzero(seen[v] < max_val) > i and not 0 < limit < p_len:
+            u = s_pred[v, np.argsort(seen[v])[i]]
+            top += 1
+            u_tup = [u, 0, p_len + 1]
+            if top == len(stack):
+                stack.append(u_tup)
             else:
-                stack[top][1] += 1
+                stack[top] = u_tup
         else:
             stack[top - 1][1] += 1
             top -= 1

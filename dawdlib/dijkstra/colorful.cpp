@@ -1184,8 +1184,6 @@ static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(do
 /*--- Type declarations ---*/
 struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths;
 struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr;
-struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path;
-struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths;
 struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
@@ -1255,12 +1253,12 @@ typedef struct __pyx_defaults6 __pyx_defaults6;
 struct __pyx_defaults7;
 typedef struct __pyx_defaults7 __pyx_defaults7;
 
-/* "dawdlib/dijkstra/colorful.pyx":361
+/* "dawdlib/dijkstra/colorful.pyx":360
  * 
  * 
  * cdef int random_colorful_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths {
   int __pyx_n;
@@ -1284,7 +1282,7 @@ struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_s
  * # @cython.embedsignature(True)
  * cdef int _multisource(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource {
   int __pyx_n;
@@ -1303,12 +1301,12 @@ struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource {
   int limit;
 };
 
-/* "dawdlib/dijkstra/colorful.pyx":579
+/* "dawdlib/dijkstra/colorful.pyx":580
  * 
  * # @cython.embedsignature(True)
  * cdef int predecessor_and_distance(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance {
   int __pyx_n;
@@ -1359,7 +1357,7 @@ struct __pyx_defaults7 {
   int __pyx_arg_repetitions;
 };
 
-/* "dawdlib/dijkstra/colorful.pyx":210
+/* "dawdlib/dijkstra/colorful.pyx":214
  * 
  * @cython.embedsignature(True)
  * def all_colorful_shortest_paths(             # <<<<<<<<<<<<<<
@@ -1368,19 +1366,19 @@ struct __pyx_defaults7 {
  */
 struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths {
   PyObject_HEAD
-  PyArrayObject *__pyx_v_color_map;
-  PyArrayObject *__pyx_v_dist;
+  PyObject *__pyx_v_limit;
   PyObject *__pyx_v_nodes;
-  PyArrayObject *__pyx_v_pred;
+  PyArrayObject *__pyx_v_s_pred;
+  PyArrayObject *__pyx_v_seen;
   PyArrayObject *__pyx_v_sources;
   PyObject *__pyx_v_target;
 };
 
 
-/* "dawdlib/dijkstra/colorful.pyx":244
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
+/* "dawdlib/dijkstra/colorful.pyx":249
+ *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)
  *     if found:
- *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred, dist) for src in sources))             # <<<<<<<<<<<<<<
+ *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, s_pred, seen, limit) for src in sources))             # <<<<<<<<<<<<<<
  *     else:
  *         raise nx.NetworkXNoPath()
  */
@@ -1391,67 +1389,6 @@ struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr {
   PyObject *__pyx_t_0;
   Py_ssize_t __pyx_t_1;
   PyObject *(*__pyx_t_2)(PyObject *);
-};
-
-
-/* "dawdlib/dijkstra/colorful.pyx":250
- * 
- * @cython.embedsignature(True)
- * def colorful_shortest_path(             # <<<<<<<<<<<<<<
- *     nodes: tp.List[int, tp.Any],
- *     G: tp.Dict[int, tp.FrozenSet[int]],
- */
-struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path {
-  PyObject_HEAD
-  PyObject *__pyx_v_G;
-  PyArrayObject *__pyx_v_color_map;
-  PyArrayObject *__pyx_v_colors;
-  PyArrayObject *__pyx_v_dist;
-  PyObject *__pyx_v_found;
-  PyObject *__pyx_v_limit;
-  PyObject *__pyx_v_no_colors;
-  PyObject *__pyx_v_nodes;
-  PyArrayObject *__pyx_v_pred;
-  PyObject *__pyx_v_repetitions;
-  PyObject *__pyx_v_res;
-  PyArrayObject *__pyx_v_seen;
-  PyArrayObject *__pyx_v_sources;
-  PyObject *__pyx_v_src;
-  PyObject *__pyx_v_target;
-  PyArrayObject *__pyx_v_weight;
-  PyObject *__pyx_t_0;
-  Py_ssize_t __pyx_t_1;
-  PyObject *(*__pyx_t_2)(PyObject *);
-};
-
-
-/* "dawdlib/dijkstra/colorful.pyx":317
- * 
- * 
- * def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):             # <<<<<<<<<<<<<<
- *     pred_dict = defaultdict(list)
- *     for key, val in np.argwhere(pred).tolist():
- */
-struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths {
-  PyObject_HEAD
-  PyObject *__pyx_8genexpr2__pyx_v_c;
-  PyObject *__pyx_v_color;
-  PyObject *__pyx_v_dist;
-  PyObject *__pyx_v_i;
-  PyObject *__pyx_v_key;
-  PyObject *__pyx_8genexpr2__pyx_v_n;
-  PyObject *__pyx_v_node;
-  PyObject *__pyx_v_node_colors;
-  PyObject *__pyx_v_nodes;
-  PyObject *__pyx_8genexpr2__pyx_v_p;
-  PyObject *__pyx_v_pred;
-  PyObject *__pyx_v_pred_dict;
-  PyObject *__pyx_v_src;
-  PyObject *__pyx_v_stack;
-  PyObject *__pyx_v_top;
-  PyObject *__pyx_v_trgt;
-  PyObject *__pyx_8genexpr1__pyx_v_tup;
-  PyObject *__pyx_v_val;
 };
 
 
@@ -2040,17 +1977,162 @@ static CYTHON_INLINE int __pyx_sub_acquisition_count_locked(
 static CYTHON_INLINE void __Pyx_INC_MEMVIEW(__Pyx_memviewslice *, int, int);
 static CYTHON_INLINE void __Pyx_XDEC_MEMVIEW(__Pyx_memviewslice *, int, int);
 
-/* PyObjectCallMethod1.proto */
-static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg);
+/* WriteUnraisableException.proto */
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
 
-/* append.proto */
-static CYTHON_INLINE int __Pyx_PyObject_Append(PyObject* L, PyObject* x);
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
+
+/* PyErrExceptionMatches.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyErr_ExceptionMatches(err) __Pyx_PyErr_ExceptionMatchesInState(__pyx_tstate, err)
+static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err);
+#else
+#define __Pyx_PyErr_ExceptionMatches(err)  PyErr_ExceptionMatches(err)
+#endif
+
+/* ListCompAppend.proto */
+#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
+static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
+    PyListObject* L = (PyListObject*) list;
+    Py_ssize_t len = Py_SIZE(list);
+    if (likely(L->allocated > len)) {
+        Py_INCREF(x);
+        PyList_SET_ITEM(list, len, x);
+        Py_SIZE(list) = len+1;
+        return 0;
+    }
+    return PyList_Append(list, x);
+}
+#else
+#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
+#endif
+
+/* StrEquals.proto */
+#if PY_MAJOR_VERSION >= 3
+#define __Pyx_PyString_Equals __Pyx_PyUnicode_Equals
+#else
+#define __Pyx_PyString_Equals __Pyx_PyBytes_Equals
+#endif
+
+/* None.proto */
+static CYTHON_INLINE Py_ssize_t __Pyx_div_Py_ssize_t(Py_ssize_t, Py_ssize_t);
+
+/* UnaryNegOverflows.proto */
+#define UNARY_NEG_WOULD_OVERFLOW(x)\
+        (((x) < 0) & ((unsigned long)(x) == 0-(unsigned long)(x)))
+
+static CYTHON_UNUSED int __pyx_array_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /*proto*/
+static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *); /*proto*/
+/* GetAttr.proto */
+static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
 
 /* ObjectGetItem.proto */
 #if CYTHON_USE_TYPE_SLOTS
 static CYTHON_INLINE PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key);
 #else
 #define __Pyx_PyObject_GetItem(obj, key)  PyObject_GetItem(obj, key)
+#endif
+
+/* decode_c_string_utf16.proto */
+static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16(const char *s, Py_ssize_t size, const char *errors) {
+    int byteorder = 0;
+    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
+}
+static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16LE(const char *s, Py_ssize_t size, const char *errors) {
+    int byteorder = -1;
+    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
+}
+static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16BE(const char *s, Py_ssize_t size, const char *errors) {
+    int byteorder = 1;
+    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
+}
+
+/* decode_c_string.proto */
+static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
+         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
+         const char* encoding, const char* errors,
+         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors));
+
+/* GetAttr3.proto */
+static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *, PyObject *, PyObject *);
+
+/* SwapException.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_ExceptionSwap(type, value, tb)  __Pyx__ExceptionSwap(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#else
+static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb);
+#endif
+
+/* Import.proto */
+static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
+
+static CYTHON_UNUSED int __pyx_memoryview_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /*proto*/
+/* PyIntBinop.proto */
+#if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
+#else
+#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
+    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
+#endif
+
+/* ListExtend.proto */
+static CYTHON_INLINE int __Pyx_PyList_Extend(PyObject* L, PyObject* v) {
+#if CYTHON_COMPILING_IN_CPYTHON
+    PyObject* none = _PyList_Extend((PyListObject*)L, v);
+    if (unlikely(!none))
+        return -1;
+    Py_DECREF(none);
+    return 0;
+#else
+    return PyList_SetSlice(L, PY_SSIZE_T_MAX, PY_SSIZE_T_MAX, v);
+#endif
+}
+
+/* None.proto */
+static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname);
+
+/* None.proto */
+static CYTHON_INLINE long __Pyx_div_long(long, long);
+
+/* ImportFrom.proto */
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
+
+/* HasAttr.proto */
+static CYTHON_INLINE int __Pyx_HasAttr(PyObject *, PyObject *);
+
+/* PyObject_GenericGetAttrNoDict.proto */
+#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GenericGetAttrNoDict(PyObject* obj, PyObject* attr_name);
+#else
+#define __Pyx_PyObject_GenericGetAttrNoDict PyObject_GenericGetAttr
+#endif
+
+/* PyObject_GenericGetAttr.proto */
+#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
+static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_name);
+#else
+#define __Pyx_PyObject_GenericGetAttr PyObject_GenericGetAttr
+#endif
+
+/* SetVTable.proto */
+static int __Pyx_SetVtable(PyObject *dict, void *vtable);
+
+/* SetupReduce.proto */
+static int __Pyx_setup_reduce(PyObject* type_obj);
+
+/* TypeImport.proto */
+#ifndef __PYX_HAVE_RT_ImportType_proto
+#define __PYX_HAVE_RT_ImportType_proto
+enum __Pyx_ImportType_CheckSize {
+   __Pyx_ImportType_CheckSize_Error = 0,
+   __Pyx_ImportType_CheckSize_Warn = 1,
+   __Pyx_ImportType_CheckSize_Ignore = 2
+};
+static PyTypeObject *__Pyx_ImportType(PyObject* module, const char *module_name, const char *class_name, size_t size, enum __Pyx_ImportType_CheckSize check_size);
 #endif
 
 /* FetchCommonType.proto */
@@ -2109,174 +2191,6 @@ static CYTHON_INLINE void __Pyx_CyFunction_SetDefaultsKwDict(PyObject *m,
 static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *m,
                                                               PyObject *dict);
 static int __pyx_CyFunction_init(void);
-
-/* ListCompAppend.proto */
-#if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
-static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
-    PyListObject* L = (PyListObject*) list;
-    Py_ssize_t len = Py_SIZE(list);
-    if (likely(L->allocated > len)) {
-        Py_INCREF(x);
-        PyList_SET_ITEM(list, len, x);
-        Py_SIZE(list) = len+1;
-        return 0;
-    }
-    return PyList_Append(list, x);
-}
-#else
-#define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
-#endif
-
-/* PyIntBinop.proto */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
-#else
-#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
-    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
-#endif
-
-/* SliceTupleAndList.proto */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_PyList_GetSlice(PyObject* src, Py_ssize_t start, Py_ssize_t stop);
-static CYTHON_INLINE PyObject* __Pyx_PyTuple_GetSlice(PyObject* src, Py_ssize_t start, Py_ssize_t stop);
-#else
-#define __Pyx_PyList_GetSlice(seq, start, stop)   PySequence_GetSlice(seq, start, stop)
-#define __Pyx_PyTuple_GetSlice(seq, start, stop)  PySequence_GetSlice(seq, start, stop)
-#endif
-
-/* PyIntBinop.proto */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_SubtractObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
-#else
-#define __Pyx_PyInt_SubtractObjC(op1, op2, intval, inplace, zerodivision_check)\
-    (inplace ? PyNumber_InPlaceSubtract(op1, op2) : PyNumber_Subtract(op1, op2))
-#endif
-
-/* WriteUnraisableException.proto */
-static void __Pyx_WriteUnraisable(const char *name, int clineno,
-                                  int lineno, const char *filename,
-                                  int full_traceback, int nogil);
-
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
-
-/* PyErrExceptionMatches.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyErr_ExceptionMatches(err) __Pyx_PyErr_ExceptionMatchesInState(__pyx_tstate, err)
-static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err);
-#else
-#define __Pyx_PyErr_ExceptionMatches(err)  PyErr_ExceptionMatches(err)
-#endif
-
-/* StrEquals.proto */
-#if PY_MAJOR_VERSION >= 3
-#define __Pyx_PyString_Equals __Pyx_PyUnicode_Equals
-#else
-#define __Pyx_PyString_Equals __Pyx_PyBytes_Equals
-#endif
-
-/* None.proto */
-static CYTHON_INLINE Py_ssize_t __Pyx_div_Py_ssize_t(Py_ssize_t, Py_ssize_t);
-
-/* UnaryNegOverflows.proto */
-#define UNARY_NEG_WOULD_OVERFLOW(x)\
-        (((x) < 0) & ((unsigned long)(x) == 0-(unsigned long)(x)))
-
-static CYTHON_UNUSED int __pyx_array_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /*proto*/
-static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *); /*proto*/
-/* GetAttr.proto */
-static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
-
-/* decode_c_string_utf16.proto */
-static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16(const char *s, Py_ssize_t size, const char *errors) {
-    int byteorder = 0;
-    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
-}
-static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16LE(const char *s, Py_ssize_t size, const char *errors) {
-    int byteorder = -1;
-    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
-}
-static CYTHON_INLINE PyObject *__Pyx_PyUnicode_DecodeUTF16BE(const char *s, Py_ssize_t size, const char *errors) {
-    int byteorder = 1;
-    return PyUnicode_DecodeUTF16(s, size, errors, &byteorder);
-}
-
-/* decode_c_string.proto */
-static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
-         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
-         const char* encoding, const char* errors,
-         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors));
-
-/* GetAttr3.proto */
-static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *, PyObject *, PyObject *);
-
-/* SwapException.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_ExceptionSwap(type, value, tb)  __Pyx__ExceptionSwap(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#else
-static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb);
-#endif
-
-/* Import.proto */
-static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
-
-static CYTHON_UNUSED int __pyx_memoryview_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /*proto*/
-/* ListExtend.proto */
-static CYTHON_INLINE int __Pyx_PyList_Extend(PyObject* L, PyObject* v) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    PyObject* none = _PyList_Extend((PyListObject*)L, v);
-    if (unlikely(!none))
-        return -1;
-    Py_DECREF(none);
-    return 0;
-#else
-    return PyList_SetSlice(L, PY_SSIZE_T_MAX, PY_SSIZE_T_MAX, v);
-#endif
-}
-
-/* None.proto */
-static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname);
-
-/* None.proto */
-static CYTHON_INLINE long __Pyx_div_long(long, long);
-
-/* ImportFrom.proto */
-static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
-
-/* HasAttr.proto */
-static CYTHON_INLINE int __Pyx_HasAttr(PyObject *, PyObject *);
-
-/* PyObject_GenericGetAttrNoDict.proto */
-#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GenericGetAttrNoDict(PyObject* obj, PyObject* attr_name);
-#else
-#define __Pyx_PyObject_GenericGetAttrNoDict PyObject_GenericGetAttr
-#endif
-
-/* PyObject_GenericGetAttr.proto */
-#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
-static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_name);
-#else
-#define __Pyx_PyObject_GenericGetAttr PyObject_GenericGetAttr
-#endif
-
-/* SetVTable.proto */
-static int __Pyx_SetVtable(PyObject *dict, void *vtable);
-
-/* SetupReduce.proto */
-static int __Pyx_setup_reduce(PyObject* type_obj);
-
-/* TypeImport.proto */
-#ifndef __PYX_HAVE_RT_ImportType_proto
-#define __PYX_HAVE_RT_ImportType_proto
-enum __Pyx_ImportType_CheckSize {
-   __Pyx_ImportType_CheckSize_Error = 0,
-   __Pyx_ImportType_CheckSize_Warn = 1,
-   __Pyx_ImportType_CheckSize_Ignore = 2
-};
-static PyTypeObject *__Pyx_ImportType(PyObject* module, const char *module_name, const char *class_name, size_t size, enum __Pyx_ImportType_CheckSize check_size);
-#endif
 
 /* FusedFunction.proto */
 typedef struct {
@@ -2381,18 +2295,6 @@ static int __Pyx_ValidateAndInit_memviewslice(
                 PyObject *original_obj);
 
 /* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(PyObject *, int writable_flag);
-
-/* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(PyObject *, int writable_flag);
-
-/* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(PyObject *, int writable_flag);
-
-/* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(PyObject *, int writable_flag);
-
-/* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint8_t(PyObject *, int writable_flag);
 
 /* ObjectToMemviewSlice.proto */
@@ -2408,13 +2310,22 @@ static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dc_nn_
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(PyObject *, int writable_flag);
+
+/* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dc_int(PyObject *, int writable_flag);
+
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(PyObject *, int writable_flag);
+
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(PyObject *, int writable_flag);
+
+/* ObjectToMemviewSlice.proto */
+static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(PyObject *, int writable_flag);
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
-
-/* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn_uint8_t(PyObject *, int writable_flag);
 
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int32_t(int32_t value);
@@ -2600,6 +2511,9 @@ static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
 /* CIntFromPy.proto */
 static CYTHON_INLINE char __Pyx_PyInt_As_char(PyObject *);
 
+/* PyObjectCallMethod1.proto */
+static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg);
+
 /* CoroutineBase.proto */
 typedef PyObject *(*__pyx_coroutine_body_t)(PyObject *, PyThreadState *, PyObject *);
 #if CYTHON_USE_EXC_INFO_STACK
@@ -2740,8 +2654,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, cha
 /* Module declarations from 'dawdlib.dijkstra.colorful' */
 static PyTypeObject *__pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths = 0;
 static PyTypeObject *__pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr = 0;
-static PyTypeObject *__pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path = 0;
-static PyTypeObject *__pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths = 0;
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
@@ -2754,18 +2666,14 @@ static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
 static void __pyx_f_7dawdlib_8dijkstra_8colorful_recolor_c(__Pyx_memviewslice, uint8_t *, int32_t); /*proto*/
-static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, int, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args); /*proto*/
 static void __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_recolor(__Pyx_memviewslice, __Pyx_memviewslice, int32_t); /*proto*/
 static void __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_recolor(__Pyx_memviewslice, __Pyx_memviewslice, int32_t); /*proto*/
 static void __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_recolor(__Pyx_memviewslice, __Pyx_memviewslice, int32_t); /*proto*/
 static void __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_recolor(__Pyx_memviewslice, __Pyx_memviewslice, int32_t); /*proto*/
-static uint8_t __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__Pyx_memviewslice, uint8_t *); /*proto*/
-static uint16_t __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__Pyx_memviewslice, uint16_t *); /*proto*/
-static uint32_t __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__Pyx_memviewslice, uint32_t *); /*proto*/
-static uint64_t __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__Pyx_memviewslice, uint64_t *); /*proto*/
 static uint8_t __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int_c(uint8_t *, uint8_t, int32_t); /*proto*/
 static uint16_t __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int_c(uint8_t *, uint16_t, int32_t); /*proto*/
 static uint32_t __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int_c(uint8_t *, uint32_t, int32_t); /*proto*/
@@ -2778,19 +2686,18 @@ static std::vector<uint8_t>  __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_ve
 static std::vector<uint16_t>  __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(uint16_t, uint16_t, uint16_t, uint16_t); /*proto*/
 static std::vector<uint32_t>  __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(uint32_t, uint32_t, uint32_t, uint32_t); /*proto*/
 static std::vector<uint64_t>  __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(uint64_t, uint64_t, uint64_t, uint64_t); /*proto*/
-static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args); /*proto*/
-static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args); /*proto*/
+static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> > , __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, __Pyx_memviewslice, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args); /*proto*/
 static std::vector<int>  __pyx_convert_vector_from_py_int(PyObject *); /*proto*/
 static std::map<int,std::vector<int> >  __pyx_convert_map_from_py_int__and_std_3a__3a_vector_3c_int_3e___(PyObject *); /*proto*/
 static PyObject *__pyx_convert_vector_to_py_int(const std::vector<int>  &); /*proto*/
 static PyObject *__pyx_convert_map_to_py_int____std_3a__3a_vector_3c_int_3e___(std::map<int,std::vector<int> >  const &); /*proto*/
-static PyObject *__pyx_convert_map_to_py_int____int(std::map<int,int>  const &); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -2839,8 +2746,6 @@ static PyObject *__pyx_builtin_sum;
 static PyObject *__pyx_builtin_print;
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_range;
-static PyObject *__pyx_builtin_sorted;
-static PyObject *__pyx_builtin_reversed;
 static PyObject *__pyx_builtin_MemoryError;
 static PyObject *__pyx_builtin_RuntimeError;
 static PyObject *__pyx_builtin_ImportError;
@@ -2853,34 +2758,24 @@ static const char __pyx_k_O[] = "O";
 static const char __pyx_k_c[] = "c";
 static const char __pyx_k_i[] = "i";
 static const char __pyx_k_j[] = "j";
-static const char __pyx_k_n[] = "n";
-static const char __pyx_k_p[] = "p";
 static const char __pyx_k_s[] = "s";
 static const char __pyx_k_u[] = "u";
 static const char __pyx_k_v[] = "v";
-static const char __pyx_k_x[] = "x";
-static const char __pyx_k__3[] = "()";
-static const char __pyx_k__4[] = "|";
+static const char __pyx_k__2[] = "()";
+static const char __pyx_k__3[] = "|";
 static const char __pyx_k_id[] = "id";
 static const char __pyx_k_np[] = "np";
 static const char __pyx_k_nx[] = "nx";
 static const char __pyx_k_tp[] = "tp";
-static const char __pyx_k_arr[] = "arr";
 static const char __pyx_k_get[] = "get";
-static const char __pyx_k_key[] = "key";
-static const char __pyx_k_max[] = "max";
 static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
 static const char __pyx_k_res[] = "res";
-static const char __pyx_k_src[] = "src";
 static const char __pyx_k_sum[] = "sum";
-static const char __pyx_k_top[] = "top";
-static const char __pyx_k_tup[] = "tup";
 static const char __pyx_k_val[] = "val";
 static const char __pyx_k_vec[] = "vec";
 static const char __pyx_k_args[] = "args";
 static const char __pyx_k_base[] = "base";
-static const char __pyx_k_copy[] = "copy";
 static const char __pyx_k_dict[] = "__dict__";
 static const char __pyx_k_dist[] = "dist";
 static const char __pyx_k_kind[] = "kind";
@@ -2888,9 +2783,7 @@ static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_mode[] = "mode";
 static const char __pyx_k_name[] = "name";
 static const char __pyx_k_ndim[] = "ndim";
-static const char __pyx_k_node[] = "node";
 static const char __pyx_k_pack[] = "pack";
-static const char __pyx_k_path[] = "path";
 static const char __pyx_k_pred[] = "pred";
 static const char __pyx_k_seen[] = "seen";
 static const char __pyx_k_send[] = "send";
@@ -2903,13 +2796,11 @@ static const char __pyx_k_ASCII[] = "ASCII";
 static const char __pyx_k_chain[] = "chain";
 static const char __pyx_k_class[] = "__class__";
 static const char __pyx_k_close[] = "close";
-static const char __pyx_k_color[] = "color";
 static const char __pyx_k_dtype[] = "dtype";
 static const char __pyx_k_error[] = "error";
 static const char __pyx_k_flags[] = "flags";
 static const char __pyx_k_found[] = "found";
 static const char __pyx_k_graph[] = "graph";
-static const char __pyx_k_iinfo[] = "iinfo";
 static const char __pyx_k_items[] = "items";
 static const char __pyx_k_limit[] = "limit";
 static const char __pyx_k_nodes[] = "nodes";
@@ -2918,62 +2809,43 @@ static const char __pyx_k_print[] = "print";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_shape[] = "shape";
 static const char __pyx_k_split[] = "split";
-static const char __pyx_k_stack[] = "stack";
 static const char __pyx_k_start[] = "start";
 static const char __pyx_k_strip[] = "strip";
 static const char __pyx_k_throw[] = "throw";
-static const char __pyx_k_ubyte[] = "ubyte";
-static const char __pyx_k_x_max[] = "x_max";
-static const char __pyx_k_zeros[] = "zeros";
 static const char __pyx_k_GGData[] = "GGData";
-static const char __pyx_k_append[] = "append";
-static const char __pyx_k_arange[] = "arange";
-static const char __pyx_k_argmin[] = "argmin";
 static const char __pyx_k_cgraph[] = "cgraph";
 static const char __pyx_k_colors[] = "colors";
-static const char __pyx_k_cshape[] = "cshape";
 static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_kwargs[] = "kwargs";
-static const char __pyx_k_matmul[] = "matmul";
 static const char __pyx_k_method[] = "method";
 static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_pickle[] = "pickle";
-static const char __pyx_k_random[] = "random";
 static const char __pyx_k_reduce[] = "__reduce__";
-static const char __pyx_k_result[] = "result";
-static const char __pyx_k_sorted[] = "sorted";
+static const char __pyx_k_s_pred[] = "s_pred";
 static const char __pyx_k_source[] = "source";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_target[] = "target";
-static const char __pyx_k_tolist[] = "tolist";
 static const char __pyx_k_typing[] = "typing";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
 static const char __pyx_k_weight[] = "weight";
-static const char __pyx_k_current[] = "current";
-static const char __pyx_k_dist_cp[] = "dist_cp";
 static const char __pyx_k_fortran[] = "fortran";
 static const char __pyx_k_genexpr[] = "genexpr";
-static const char __pyx_k_max_val[] = "max_val";
 static const char __pyx_k_memview[] = "memview";
 static const char __pyx_k_r_graph[] = "r_graph";
-static const char __pyx_k_randint[] = "randint";
-static const char __pyx_k_recolor[] = "recolor";
 static const char __pyx_k_retries[] = "retries";
 static const char __pyx_k_sources[] = "sources";
 static const char __pyx_k_uint8_t[] = "uint8_t";
 static const char __pyx_k_vec_ref[] = "vec_ref";
 static const char __pyx_k_Ellipsis[] = "Ellipsis";
-static const char __pyx_k_argwhere[] = "argwhere";
 static const char __pyx_k_defaults[] = "defaults";
 static const char __pyx_k_dijkstra[] = "dijkstra";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_itemsize[] = "itemsize";
 static const char __pyx_k_networkx[] = "networkx";
 static const char __pyx_k_pyx_type[] = "__pyx_type";
-static const char __pyx_k_reversed[] = "reversed";
 static const char __pyx_k_setstate[] = "__setstate__";
 static const char __pyx_k_uint16_t[] = "uint16_t";
 static const char __pyx_k_uint32_t[] = "uint32_t";
@@ -2982,14 +2854,12 @@ static const char __pyx_k_vec_size[] = "vec_size";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_color_arr[] = "color_arr";
 static const char __pyx_k_color_map[] = "color_map";
-static const char __pyx_k_color_ref[] = "color_ref";
 static const char __pyx_k_enumerate[] = "enumerate";
 static const char __pyx_k_iteritems[] = "iteritems";
 static const char __pyx_k_itertools[] = "itertools";
 static const char __pyx_k_new_color[] = "new_color";
 static const char __pyx_k_no_colors[] = "no_colors";
 static const char __pyx_k_nxtonumpy[] = "nxtonumpy";
-static const char __pyx_k_pred_dict[] = "pred_dict";
 static const char __pyx_k_prep_data[] = "_prep_data";
 static const char __pyx_k_pyx_state[] = "__pyx_state";
 static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
@@ -2997,7 +2867,6 @@ static const char __pyx_k_res_graph[] = "res_graph";
 static const char __pyx_k_IndexError[] = "IndexError";
 static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_cgraph_ref[] = "cgraph_ref";
-static const char __pyx_k_color_dict[] = "color_dict";
 static const char __pyx_k_len_cutoff[] = "len_cutoff";
 static const char __pyx_k_pyx_result[] = "__pyx_result";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
@@ -3006,14 +2875,8 @@ static const char __pyx_k_weight_arr[] = "weight_arr";
 static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
-static const char __pyx_k_boolmat2int[] = "boolmat2int";
-static const char __pyx_k_collections[] = "collections";
 static const char __pyx_k_color_gates[] = "color_gates";
-static const char __pyx_k_defaultdict[] = "defaultdict";
 static const char __pyx_k_gate_colors[] = "gate_colors";
-static const char __pyx_k_node_colors[] = "node_colors";
-static const char __pyx_k_rand_colors[] = "rand_colors";
-static const char __pyx_k_recolor_arr[] = "recolor_arr";
 static const char __pyx_k_repetitions[] = "repetitions";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
@@ -3023,10 +2886,7 @@ static const char __pyx_k_graphdict2map[] = "graphdict2map";
 static const char __pyx_k_num_of_colors[] = "num_of_colors";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
-static const char __pyx_k_shortest_path[] = "shortest_path";
 static const char __pyx_k_NetworkXNoPath[] = "NetworkXNoPath";
-static const char __pyx_k_colorful_utils[] = "colorful_utils";
-static const char __pyx_k_colorsdict2map[] = "colorsdict2map";
 static const char __pyx_k_View_MemoryView[] = "View.MemoryView";
 static const char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
@@ -3041,7 +2901,6 @@ static const char __pyx_k_method_not_supported[] = "method not supported: {}";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
-static const char __pyx_k_colorful_shortest_path[] = "colorful_shortest_path";
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
 static const char __pyx_k_cython_infer_types_True[] = "\n# cython: infer_types=True\n";
@@ -3058,6 +2917,7 @@ static const char __pyx_k_dawdlib_golden_gate_gate_data[] = "dawdlib.golden_gate
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_yield_colorful_shortest_paths[] = "yield_colorful_shortest_paths";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
+static const char __pyx_k_dawdlib_dijkstra_colorful_utils[] = "dawdlib.dijkstra.colorful_utils";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
 static const char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype code in numpy.pxd (%d)";
 static const char __pyx_k_Buffer_view_does_not_expose_stri[] = "Buffer view does not expose strides";
@@ -3083,7 +2943,6 @@ static const char __pyx_k_ndarray_is_not_Fortran_contiguou[] = "ndarray is not F
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static const char __pyx_k_numpy_core_umath_failed_to_impor[] = "numpy.core.umath failed to import";
 static const char __pyx_k_unable_to_allocate_shape_and_str[] = "unable to allocate shape and strides.";
-static const char __pyx_k_yield_colorful_shortest_paths_lo[] = "yield_colorful_shortest_paths.<locals>.<lambda>";
 static const char __pyx_k_Format_string_allocated_too_shor_2[] = "Format string allocated too short.";
 static PyObject *__pyx_n_s_ASCII;
 static PyObject *__pyx_kp_s_Buffer_view_does_not_expose_stri;
@@ -3122,20 +2981,14 @@ static PyObject *__pyx_kp_s_Unable_to_convert_item_to_object;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_View_MemoryView;
 static PyObject *__pyx_kp_u_Warning_number_of_colors_require;
+static PyObject *__pyx_kp_s__2;
 static PyObject *__pyx_kp_s__3;
-static PyObject *__pyx_kp_s__4;
 static PyObject *__pyx_n_s_all_colorful_shortest_paths;
 static PyObject *__pyx_n_s_all_colorful_shortest_paths_loca;
 static PyObject *__pyx_n_s_all_shortest_paths;
 static PyObject *__pyx_n_s_allocate_buffer;
-static PyObject *__pyx_n_s_append;
-static PyObject *__pyx_n_s_arange;
-static PyObject *__pyx_n_s_argmin;
 static PyObject *__pyx_n_s_args;
-static PyObject *__pyx_n_s_argwhere;
-static PyObject *__pyx_n_s_arr;
 static PyObject *__pyx_n_s_base;
-static PyObject *__pyx_n_s_boolmat2int;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_u_c;
 static PyObject *__pyx_n_s_cgraph;
@@ -3144,31 +2997,20 @@ static PyObject *__pyx_n_s_chain;
 static PyObject *__pyx_n_s_class;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_close;
-static PyObject *__pyx_n_s_collections;
-static PyObject *__pyx_n_s_color;
 static PyObject *__pyx_n_s_color_arr;
-static PyObject *__pyx_n_s_color_dict;
 static PyObject *__pyx_n_s_color_gates;
 static PyObject *__pyx_n_s_color_map;
-static PyObject *__pyx_n_s_color_ref;
-static PyObject *__pyx_n_s_colorful_shortest_path;
-static PyObject *__pyx_n_s_colorful_utils;
 static PyObject *__pyx_n_s_colors;
-static PyObject *__pyx_n_s_colorsdict2map;
 static PyObject *__pyx_kp_s_contiguous_and_direct;
 static PyObject *__pyx_kp_s_contiguous_and_indirect;
-static PyObject *__pyx_n_s_copy;
-static PyObject *__pyx_n_s_cshape;
-static PyObject *__pyx_n_s_current;
 static PyObject *__pyx_n_s_dawdlib_dijkstra_colorful;
 static PyObject *__pyx_kp_s_dawdlib_dijkstra_colorful_pyx;
+static PyObject *__pyx_n_s_dawdlib_dijkstra_colorful_utils;
 static PyObject *__pyx_n_s_dawdlib_golden_gate_gate_data;
-static PyObject *__pyx_n_s_defaultdict;
 static PyObject *__pyx_n_s_defaults;
 static PyObject *__pyx_n_s_dict;
 static PyObject *__pyx_n_u_dijkstra;
 static PyObject *__pyx_n_s_dist;
-static PyObject *__pyx_n_s_dist_cp;
 static PyObject *__pyx_n_s_dtype;
 static PyObject *__pyx_n_s_dtype_is_object;
 static PyObject *__pyx_n_s_encode;
@@ -3190,7 +3032,6 @@ static PyObject *__pyx_n_s_graph;
 static PyObject *__pyx_n_s_graphdict2map;
 static PyObject *__pyx_n_s_i;
 static PyObject *__pyx_n_s_id;
-static PyObject *__pyx_n_s_iinfo;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_kp_u_is_larger_than_recommended;
 static PyObject *__pyx_n_s_items;
@@ -3199,20 +3040,15 @@ static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
 static PyObject *__pyx_n_s_iteritems;
 static PyObject *__pyx_n_s_itertools;
 static PyObject *__pyx_n_s_j;
-static PyObject *__pyx_n_s_key;
 static PyObject *__pyx_n_s_kind;
 static PyObject *__pyx_n_s_kwargs;
 static PyObject *__pyx_n_s_len_cutoff;
 static PyObject *__pyx_n_s_limit;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_s_matmul;
-static PyObject *__pyx_n_s_max;
-static PyObject *__pyx_n_s_max_val;
 static PyObject *__pyx_n_s_memview;
 static PyObject *__pyx_n_s_method;
 static PyObject *__pyx_kp_u_method_not_supported;
 static PyObject *__pyx_n_s_mode;
-static PyObject *__pyx_n_s_n;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_name_2;
 static PyObject *__pyx_kp_u_ndarray_is_not_C_contiguous;
@@ -3223,8 +3059,6 @@ static PyObject *__pyx_n_s_new;
 static PyObject *__pyx_n_s_new_color;
 static PyObject *__pyx_n_s_no_colors;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
-static PyObject *__pyx_n_s_node;
-static PyObject *__pyx_n_s_node_colors;
 static PyObject *__pyx_n_s_nodes;
 static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_num_of_colors;
@@ -3234,12 +3068,9 @@ static PyObject *__pyx_kp_u_numpy_core_umath_failed_to_impor;
 static PyObject *__pyx_n_s_nx;
 static PyObject *__pyx_n_s_nxtonumpy;
 static PyObject *__pyx_n_s_obj;
-static PyObject *__pyx_n_s_p;
 static PyObject *__pyx_n_s_pack;
-static PyObject *__pyx_n_s_path;
 static PyObject *__pyx_n_s_pickle;
 static PyObject *__pyx_n_s_pred;
-static PyObject *__pyx_n_s_pred_dict;
 static PyObject *__pyx_n_s_prep_data;
 static PyObject *__pyx_n_s_print;
 static PyObject *__pyx_n_s_pyx_PickleError;
@@ -3251,36 +3082,26 @@ static PyObject *__pyx_n_s_pyx_type;
 static PyObject *__pyx_n_s_pyx_unpickle_Enum;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_r_graph;
-static PyObject *__pyx_n_s_rand_colors;
-static PyObject *__pyx_n_s_randint;
-static PyObject *__pyx_n_s_random;
 static PyObject *__pyx_n_s_range;
-static PyObject *__pyx_n_s_recolor;
-static PyObject *__pyx_n_s_recolor_arr;
 static PyObject *__pyx_n_s_reduce;
 static PyObject *__pyx_n_s_reduce_cython;
 static PyObject *__pyx_n_s_reduce_ex;
 static PyObject *__pyx_n_s_repetitions;
 static PyObject *__pyx_n_s_res;
 static PyObject *__pyx_n_s_res_graph;
-static PyObject *__pyx_n_s_result;
 static PyObject *__pyx_n_s_retries;
-static PyObject *__pyx_n_s_reversed;
 static PyObject *__pyx_n_s_s;
+static PyObject *__pyx_n_s_s_pred;
 static PyObject *__pyx_n_s_seen;
 static PyObject *__pyx_n_s_send;
 static PyObject *__pyx_n_s_setstate;
 static PyObject *__pyx_n_s_setstate_cython;
 static PyObject *__pyx_n_s_shape;
-static PyObject *__pyx_n_s_shortest_path;
 static PyObject *__pyx_n_s_signatures;
 static PyObject *__pyx_n_s_size;
-static PyObject *__pyx_n_s_sorted;
 static PyObject *__pyx_n_s_source;
 static PyObject *__pyx_n_s_sources;
 static PyObject *__pyx_n_s_split;
-static PyObject *__pyx_n_s_src;
-static PyObject *__pyx_n_s_stack;
 static PyObject *__pyx_n_s_start;
 static PyObject *__pyx_n_s_step;
 static PyObject *__pyx_n_s_stop;
@@ -3294,14 +3115,10 @@ static PyObject *__pyx_n_s_sum;
 static PyObject *__pyx_n_s_target;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_throw;
-static PyObject *__pyx_n_s_tolist;
-static PyObject *__pyx_n_s_top;
 static PyObject *__pyx_n_s_tp;
 static PyObject *__pyx_n_s_trgt;
-static PyObject *__pyx_n_s_tup;
 static PyObject *__pyx_n_s_typing;
 static PyObject *__pyx_n_s_u;
-static PyObject *__pyx_n_s_ubyte;
 static PyObject *__pyx_n_s_uint16_t;
 static PyObject *__pyx_n_s_uint32_t;
 static PyObject *__pyx_n_s_uint64_t;
@@ -3318,37 +3135,21 @@ static PyObject *__pyx_n_s_vec_ref;
 static PyObject *__pyx_n_s_vec_size;
 static PyObject *__pyx_n_s_weight;
 static PyObject *__pyx_n_s_weight_arr;
-static PyObject *__pyx_n_s_x;
-static PyObject *__pyx_n_s_x_max;
 static PyObject *__pyx_n_s_yield_colorful_shortest_paths;
-static PyObject *__pyx_n_s_yield_colorful_shortest_paths_lo;
-static PyObject *__pyx_n_s_zeros;
 static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_source, PyObject *__pyx_v_target, PyObject *__pyx_v_no_colors, PyObject *__pyx_v_len_cutoff, PyObject *__pyx_v_weight, PyObject *__pyx_v_method, PyObject *__pyx_v_retries, PyObject *__pyx_v_res_graph); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_2shortest_path(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_source, PyObject *__pyx_v_target, PyObject *__pyx_v_no_colors, PyObject *__pyx_v_len_cutoff, PyObject *__pyx_v_weight, PyObject *__pyx_v_method, PyObject *__pyx_v_retries, PyObject *__pyx_v_res_graph); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_source, PyObject *__pyx_v_target, PyObject *__pyx_v_no_colors, PyObject *__pyx_v_len_cutoff, CYTHON_UNUSED PyObject *__pyx_v_weight, PyObject *__pyx_v_method, CYTHON_UNUSED PyObject *__pyx_v_retries, PyObject *__pyx_v_res_graph); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_2_prep_data(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_source, PyObject *__pyx_v_target, PyObject *__pyx_v_no_colors, PyObject *__pyx_v_len_cutoff, CYTHON_UNUSED PyObject *__pyx_v_weight, PyObject *__pyx_v_method, CYTHON_UNUSED PyObject *__pyx_v_retries, PyObject *__pyx_v_res_graph); /* proto */
 static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_paths_genexpr(PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_G, PyArrayObject *__pyx_v_weight, PyArrayObject *__pyx_v_sources, PyObject *__pyx_v_target, PyArrayObject *__pyx_v_colors, PyArrayObject *__pyx_v_color_map, PyObject *__pyx_v_no_colors, PyArrayObject *__pyx_v_pred, PyArrayObject *__pyx_v_dist, PyArrayObject *__pyx_v_seen, PyObject *__pyx_v_limit, PyObject *__pyx_v_repetitions); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_8colorful_shortest_path(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_G, PyArrayObject *__pyx_v_weight, PyArrayObject *__pyx_v_sources, PyObject *__pyx_v_target, PyArrayObject *__pyx_v_colors, PyArrayObject *__pyx_v_color_map, PyObject *__pyx_v_no_colors, PyArrayObject *__pyx_v_pred, PyArrayObject *__pyx_v_dist, PyArrayObject *__pyx_v_seen, PyObject *__pyx_v_limit, PyObject *__pyx_v_repetitions); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_54__defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_56__defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_58__defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_60__defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions); /* proto */
-static PyObject *__pyx_lambda_funcdef_lambda1(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_13yield_colorful_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_src, PyObject *__pyx_v_trgt, PyObject *__pyx_v_node_colors, PyObject *__pyx_v_pred, PyObject *__pyx_v_dist); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_16colorful_shortest_path(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_src, PyObject *__pyx_v_trgt, CYTHON_UNUSED PyObject *__pyx_v_node_colors, PyObject *__pyx_v_dist); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_18recolor(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_color_arr, PyObject *__pyx_v_no_colors); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_20boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_36boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_arr, __Pyx_memviewslice __pyx_v_result); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_38boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_arr, __Pyx_memviewslice __pyx_v_result); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_40boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_arr, __Pyx_memviewslice __pyx_v_result); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_42boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_arr, __Pyx_memviewslice __pyx_v_result); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_22graphdict2map(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_graph); /* proto */
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_24colorsdict2map(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_color_dict); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4all_colorful_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_G, PyArrayObject *__pyx_v_weight, PyArrayObject *__pyx_v_sources, PyObject *__pyx_v_target, PyArrayObject *__pyx_v_colors, PyArrayObject *__pyx_v_color_map, PyObject *__pyx_v_no_colors, PyArrayObject *__pyx_v_pred, PyArrayObject *__pyx_v_s_pred, PyArrayObject *__pyx_v_dist, PyArrayObject *__pyx_v_seen, PyObject *__pyx_v_limit, PyObject *__pyx_v_repetitions); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28__defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_10find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30__defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_12find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32__defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_14find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_34__defaults__(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_16find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions); /* proto */
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_8graphdict2map(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_graph); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
@@ -3395,19 +3196,18 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
 static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v___pyx_type, long __pyx_v___pyx_checksum, PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_array(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_Enum(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new__memoryviewslice(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
-static PyObject *__pyx_int_2;
-static PyObject *__pyx_int_9;
+static PyObject *__pyx_int_10;
 static PyObject *__pyx_int_18;
 static PyObject *__pyx_int_184977713;
 static PyObject *__pyx_int_neg_1;
+static int __pyx_k__6;
+static int __pyx_k__7;
 static int __pyx_k__8;
 static int __pyx_k__9;
 static int __pyx_k__10;
@@ -3418,12 +3218,12 @@ static int __pyx_k__14;
 static int __pyx_k__15;
 static int __pyx_k__16;
 static int __pyx_k__17;
-static int __pyx_k__18;
-static int __pyx_k__19;
 static PyObject *__pyx_tuple_;
+static PyObject *__pyx_tuple__4;
 static PyObject *__pyx_tuple__5;
-static PyObject *__pyx_tuple__6;
-static PyObject *__pyx_slice__41;
+static PyObject *__pyx_slice__39;
+static PyObject *__pyx_tuple__18;
+static PyObject *__pyx_tuple__19;
 static PyObject *__pyx_tuple__20;
 static PyObject *__pyx_tuple__21;
 static PyObject *__pyx_tuple__22;
@@ -3443,45 +3243,29 @@ static PyObject *__pyx_tuple__35;
 static PyObject *__pyx_tuple__36;
 static PyObject *__pyx_tuple__37;
 static PyObject *__pyx_tuple__38;
-static PyObject *__pyx_tuple__39;
 static PyObject *__pyx_tuple__40;
+static PyObject *__pyx_tuple__41;
 static PyObject *__pyx_tuple__42;
 static PyObject *__pyx_tuple__43;
-static PyObject *__pyx_tuple__44;
 static PyObject *__pyx_tuple__45;
 static PyObject *__pyx_tuple__47;
 static PyObject *__pyx_tuple__49;
 static PyObject *__pyx_tuple__51;
 static PyObject *__pyx_tuple__53;
 static PyObject *__pyx_tuple__54;
+static PyObject *__pyx_tuple__55;
 static PyObject *__pyx_tuple__56;
 static PyObject *__pyx_tuple__57;
-static PyObject *__pyx_tuple__59;
-static PyObject *__pyx_tuple__61;
-static PyObject *__pyx_tuple__63;
-static PyObject *__pyx_tuple__65;
-static PyObject *__pyx_tuple__67;
-static PyObject *__pyx_tuple__68;
-static PyObject *__pyx_tuple__69;
-static PyObject *__pyx_tuple__70;
-static PyObject *__pyx_tuple__71;
-static PyObject *__pyx_tuple__72;
-static PyObject *__pyx_codeobj__2;
-static PyObject *__pyx_codeobj__7;
+static PyObject *__pyx_tuple__58;
+static PyObject *__pyx_codeobj__44;
 static PyObject *__pyx_codeobj__46;
 static PyObject *__pyx_codeobj__48;
 static PyObject *__pyx_codeobj__50;
 static PyObject *__pyx_codeobj__52;
-static PyObject *__pyx_codeobj__55;
-static PyObject *__pyx_codeobj__58;
-static PyObject *__pyx_codeobj__60;
-static PyObject *__pyx_codeobj__62;
-static PyObject *__pyx_codeobj__64;
-static PyObject *__pyx_codeobj__66;
-static PyObject *__pyx_codeobj__73;
+static PyObject *__pyx_codeobj__59;
 /* Late includes */
 
-/* "dawdlib/dijkstra/colorful.pyx":60
+/* "dawdlib/dijkstra/colorful.pyx":64
  * 
  * @cython.embedsignature(True)
  * def all_shortest_paths(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
@@ -3491,7 +3275,7 @@ static PyObject *__pyx_codeobj__73;
 
 /* Python wrapper */
 static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_1all_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7dawdlib_8dijkstra_8colorful_all_shortest_paths[] = "all_shortest_paths(G, source, target, no_colors=0, len_cutoff=0, weight=None, method=u'dijkstra', retries=1, res_graph: nx.Graph = None)\nCompute all shortest paths in the graph.\n\n    Parameters\n    ----------\n    G : NetworkX graph\n\n    source : node\n       Starting node for path.\n\n    target : node\n       Ending node for path.\n\n    no_colors: int\n        The number of colors to use in the random recoloring.\n        The currently supported maximum is set to 18.\n\n    len_cutoff: int, optional (default = 0)\n        The maximum path length\n\n    weight : None or string, optional (default = None)\n       If None, every edge has weight/distance/cost 1.\n       If a string, use this edge attribute as the edge weight.\n       Any edge attribute not present defaults to 1.\n\n    method : string, optional (default = 'dijkstra')\n       The algorithm to use to compute the path lengths.\n       Supported options: 'dijkstra'.\n       Other inputs produce a ValueError.\n\n    retries: int, optional (default = 1)\n        The number of random coloring retries to check before raising NetworkXNoPath exception\n\n    res_graph: nx.Graph, optional (default = None)\n        Allows the user to provide a custom restriction graph used to color nodes\n\n    Returns\n    -------\n    paths : generator of lists\n        A generator of all paths between source and target.\n\n    Raises\n    ------\n    ValueError\n        If `method` is not among the supported options.\n        If both `no_colors` and `len_cutoff` are not provided.\n\n    NetworkXNoPath\n        If `target` cannot be reached from `source`.\n\n\n    Notes\n    -----\n    There may be many shortest paths between the source and target.\n\n    ";
+static char __pyx_doc_7dawdlib_8dijkstra_8colorful_all_shortest_paths[] = "all_shortest_paths(G, source, target, no_colors=0, len_cutoff=0, weight=None, method=u'dijkstra', retries=1, res_graph: nx.Graph = None)\nCompute all shortest paths in the graph.\n\n    Parameters\n    ----------\n    G : NetworkX graph\n\n    source : node\n       Starting node for path.\n\n    target : node\n       Ending node for path.\n\n    no_colors: int\n        The number of colors to use in the random recoloring.\n        The currently supported maximum is set to 18.\n\n    len_cutoff: int, optional (default = 0)\n        The maximum path length (numbe of gates in the solution)\n\n    weight : None or string, optional (default = None)\n       If None, every edge has weight/distance/cost 1.\n       If a string, use this edge attribute as the edge weight.\n       Any edge attribute not present defaults to 1.\n\n    method : string, optional (default = 'dijkstra')\n       The algorithm to use to compute the path lengths.\n       Supported options: 'dijkstra'.\n       Other inputs produce a ValueError.\n\n    retries: int, optional (default = 1)\n        The number of random coloring retries to check before raising NetworkXNoPath exception\n\n    res_graph: nx.Graph, optional (default = None)\n        Allows the user to provide a custom restriction graph used to color nodes\n\n    Returns\n    -------\n    paths : generator of lists\n        A generator of all paths between source and target.\n\n    Raises\n    ------\n    ValueError\n        If `method` is not among the supported options.\n        If both `no_colors` and `len_cutoff` are not provided.\n\n    NetworkXNoPath\n        If `target` cannot be reached from `source`.\n\n\n    Notes\n    -----\n    There may be many shortest paths between the source and target.\n\n    ";
 static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_1all_shortest_paths = {"all_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_1all_shortest_paths, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_all_shortest_paths};
 static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_1all_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_G = 0;
@@ -3549,13 +3333,13 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_1all_shortest_paths(PyObj
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_source)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_shortest_paths", 0, 3, 9, 1); __PYX_ERR(0, 60, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_shortest_paths", 0, 3, 9, 1); __PYX_ERR(0, 64, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_target)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_shortest_paths", 0, 3, 9, 2); __PYX_ERR(0, 60, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_shortest_paths", 0, 3, 9, 2); __PYX_ERR(0, 64, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -3595,7 +3379,7 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_1all_shortest_paths(PyObj
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "all_shortest_paths") < 0)) __PYX_ERR(0, 60, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "all_shortest_paths") < 0)) __PYX_ERR(0, 64, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3630,7 +3414,7 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_1all_shortest_paths(PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("all_shortest_paths", 0, 3, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 60, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("all_shortest_paths", 0, 3, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 64, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("dawdlib.dijkstra.colorful.all_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3652,6 +3436,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
   PyObject *__pyx_v_color_arr = NULL;
   PyObject *__pyx_v_new_color = NULL;
   PyObject *__pyx_v_pred = NULL;
+  PyObject *__pyx_v_s_pred = NULL;
   PyObject *__pyx_v_dist = NULL;
   PyObject *__pyx_v_seen = NULL;
   PyObject *__pyx_r = NULL;
@@ -3669,24 +3454,25 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
   PyObject *__pyx_t_11 = NULL;
   PyObject *__pyx_t_12 = NULL;
   PyObject *__pyx_t_13 = NULL;
-  PyObject *(*__pyx_t_14)(PyObject *);
-  PyObject *__pyx_t_15 = NULL;
+  PyObject *__pyx_t_14 = NULL;
+  PyObject *(*__pyx_t_15)(PyObject *);
   PyObject *__pyx_t_16 = NULL;
   PyObject *__pyx_t_17 = NULL;
-  int __pyx_t_18;
+  PyObject *__pyx_t_18 = NULL;
+  int __pyx_t_19;
   __Pyx_RefNannySetupContext("all_shortest_paths", 0);
   __Pyx_INCREF(__pyx_v_no_colors);
 
-  /* "dawdlib/dijkstra/colorful.pyx":116
+  /* "dawdlib/dijkstra/colorful.pyx":120
  * 
  *     """
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)             # <<<<<<<<<<<<<<
+ *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)             # <<<<<<<<<<<<<<
  *     try:
  *         return all_colorful_shortest_paths(
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_prep_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_prep_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_G);
   __Pyx_GIVEREF(__pyx_v_G);
@@ -3697,15 +3483,15 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
   __Pyx_INCREF(__pyx_v_target);
   __Pyx_GIVEREF(__pyx_v_target);
   PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_v_target);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_no_colors, __pyx_v_no_colors) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_len_cutoff, __pyx_v_len_cutoff) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_weight, __pyx_v_weight) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_method, __pyx_v_method) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_retries, __pyx_v_retries) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_res_graph, __pyx_v_res_graph) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_no_colors, __pyx_v_no_colors) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_len_cutoff, __pyx_v_len_cutoff) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_weight, __pyx_v_weight) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_method, __pyx_v_method) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_retries, __pyx_v_retries) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_res_graph, __pyx_v_res_graph) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -3713,10 +3499,10 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
   if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
     PyObject* sequence = __pyx_t_4;
     Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
-    if (unlikely(size != 11)) {
-      if (size > 11) __Pyx_RaiseTooManyValuesError(11);
+    if (unlikely(size != 12)) {
+      if (size > 12) __Pyx_RaiseTooManyValuesError(12);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 116, __pyx_L1_error)
+      __PYX_ERR(0, 120, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -3731,6 +3517,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
       __pyx_t_10 = PyTuple_GET_ITEM(sequence, 8); 
       __pyx_t_11 = PyTuple_GET_ITEM(sequence, 9); 
       __pyx_t_12 = PyTuple_GET_ITEM(sequence, 10); 
+      __pyx_t_13 = PyTuple_GET_ITEM(sequence, 11); 
     } else {
       __pyx_t_3 = PyList_GET_ITEM(sequence, 0); 
       __pyx_t_2 = PyList_GET_ITEM(sequence, 1); 
@@ -3743,6 +3530,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
       __pyx_t_10 = PyList_GET_ITEM(sequence, 8); 
       __pyx_t_11 = PyList_GET_ITEM(sequence, 9); 
       __pyx_t_12 = PyList_GET_ITEM(sequence, 10); 
+      __pyx_t_13 = PyList_GET_ITEM(sequence, 11); 
     }
     __Pyx_INCREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_t_2);
@@ -3755,12 +3543,13 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
     __Pyx_INCREF(__pyx_t_10);
     __Pyx_INCREF(__pyx_t_11);
     __Pyx_INCREF(__pyx_t_12);
+    __Pyx_INCREF(__pyx_t_13);
     #else
     {
       Py_ssize_t i;
-      PyObject** temps[11] = {&__pyx_t_3,&__pyx_t_2,&__pyx_t_1,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7,&__pyx_t_8,&__pyx_t_9,&__pyx_t_10,&__pyx_t_11,&__pyx_t_12};
-      for (i=0; i < 11; i++) {
-        PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 116, __pyx_L1_error)
+      PyObject** temps[12] = {&__pyx_t_3,&__pyx_t_2,&__pyx_t_1,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7,&__pyx_t_8,&__pyx_t_9,&__pyx_t_10,&__pyx_t_11,&__pyx_t_12,&__pyx_t_13};
+      for (i=0; i < 12; i++) {
+        PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 120, __pyx_L1_error)
         __Pyx_GOTREF(item);
         *(temps[i]) = item;
       }
@@ -3769,25 +3558,25 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else {
     Py_ssize_t index = -1;
-    PyObject** temps[11] = {&__pyx_t_3,&__pyx_t_2,&__pyx_t_1,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7,&__pyx_t_8,&__pyx_t_9,&__pyx_t_10,&__pyx_t_11,&__pyx_t_12};
-    __pyx_t_13 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 116, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
+    PyObject** temps[12] = {&__pyx_t_3,&__pyx_t_2,&__pyx_t_1,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7,&__pyx_t_8,&__pyx_t_9,&__pyx_t_10,&__pyx_t_11,&__pyx_t_12,&__pyx_t_13};
+    __pyx_t_14 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 120, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_14 = Py_TYPE(__pyx_t_13)->tp_iternext;
-    for (index=0; index < 11; index++) {
-      PyObject* item = __pyx_t_14(__pyx_t_13); if (unlikely(!item)) goto __pyx_L3_unpacking_failed;
+    __pyx_t_15 = Py_TYPE(__pyx_t_14)->tp_iternext;
+    for (index=0; index < 12; index++) {
+      PyObject* item = __pyx_t_15(__pyx_t_14); if (unlikely(!item)) goto __pyx_L3_unpacking_failed;
       __Pyx_GOTREF(item);
       *(temps[index]) = item;
     }
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_14(__pyx_t_13), 11) < 0) __PYX_ERR(0, 116, __pyx_L1_error)
-    __pyx_t_14 = NULL;
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_15(__pyx_t_14), 12) < 0) __PYX_ERR(0, 120, __pyx_L1_error)
+    __pyx_t_15 = NULL;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     goto __pyx_L4_unpacking_done;
     __pyx_L3_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_14 = NULL;
+    __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+    __pyx_t_15 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 116, __pyx_L1_error)
+    __PYX_ERR(0, 120, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_nodes = __pyx_t_3;
@@ -3808,106 +3597,111 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
   __pyx_t_9 = 0;
   __pyx_v_pred = __pyx_t_10;
   __pyx_t_10 = 0;
-  __pyx_v_dist = __pyx_t_11;
+  __pyx_v_s_pred = __pyx_t_11;
   __pyx_t_11 = 0;
-  __pyx_v_seen = __pyx_t_12;
+  __pyx_v_dist = __pyx_t_12;
   __pyx_t_12 = 0;
+  __pyx_v_seen = __pyx_t_13;
+  __pyx_t_13 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":117
+  /* "dawdlib/dijkstra/colorful.pyx":121
  *     """
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
+ *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
  *     try:             # <<<<<<<<<<<<<<
  *         return all_colorful_shortest_paths(
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
+ *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
  */
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
-    __Pyx_ExceptionSave(&__pyx_t_15, &__pyx_t_16, &__pyx_t_17);
-    __Pyx_XGOTREF(__pyx_t_15);
+    __Pyx_ExceptionSave(&__pyx_t_16, &__pyx_t_17, &__pyx_t_18);
     __Pyx_XGOTREF(__pyx_t_16);
     __Pyx_XGOTREF(__pyx_t_17);
+    __Pyx_XGOTREF(__pyx_t_18);
     /*try:*/ {
 
-      /* "dawdlib/dijkstra/colorful.pyx":118
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
+      /* "dawdlib/dijkstra/colorful.pyx":122
+ *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
  *     try:
  *         return all_colorful_shortest_paths(             # <<<<<<<<<<<<<<
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
+ *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
  *         )
  */
       __Pyx_XDECREF(__pyx_r);
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_all_colorful_shortest_paths); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 118, __pyx_L5_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_all_colorful_shortest_paths); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 122, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_4);
 
-      /* "dawdlib/dijkstra/colorful.pyx":119
+      /* "dawdlib/dijkstra/colorful.pyx":123
  *     try:
  *         return all_colorful_shortest_paths(
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff             # <<<<<<<<<<<<<<
+ *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff             # <<<<<<<<<<<<<<
  *         )
  *     except nx.NetworkXNoPath:
  */
-      __pyx_t_12 = PyTuple_New(11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 118, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_12);
+      __pyx_t_13 = PyTuple_New(12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 122, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_13);
       __Pyx_INCREF(__pyx_v_nodes);
       __Pyx_GIVEREF(__pyx_v_nodes);
-      PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_v_nodes);
+      PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_v_nodes);
       __Pyx_INCREF(__pyx_v_cgraph);
       __Pyx_GIVEREF(__pyx_v_cgraph);
-      PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_v_cgraph);
+      PyTuple_SET_ITEM(__pyx_t_13, 1, __pyx_v_cgraph);
       __Pyx_INCREF(__pyx_v_weight_arr);
       __Pyx_GIVEREF(__pyx_v_weight_arr);
-      PyTuple_SET_ITEM(__pyx_t_12, 2, __pyx_v_weight_arr);
+      PyTuple_SET_ITEM(__pyx_t_13, 2, __pyx_v_weight_arr);
       __Pyx_INCREF(__pyx_v_sources);
       __Pyx_GIVEREF(__pyx_v_sources);
-      PyTuple_SET_ITEM(__pyx_t_12, 3, __pyx_v_sources);
+      PyTuple_SET_ITEM(__pyx_t_13, 3, __pyx_v_sources);
       __Pyx_INCREF(__pyx_v_trgt);
       __Pyx_GIVEREF(__pyx_v_trgt);
-      PyTuple_SET_ITEM(__pyx_t_12, 4, __pyx_v_trgt);
+      PyTuple_SET_ITEM(__pyx_t_13, 4, __pyx_v_trgt);
       __Pyx_INCREF(__pyx_v_color_arr);
       __Pyx_GIVEREF(__pyx_v_color_arr);
-      PyTuple_SET_ITEM(__pyx_t_12, 5, __pyx_v_color_arr);
+      PyTuple_SET_ITEM(__pyx_t_13, 5, __pyx_v_color_arr);
       __Pyx_INCREF(__pyx_v_new_color);
       __Pyx_GIVEREF(__pyx_v_new_color);
-      PyTuple_SET_ITEM(__pyx_t_12, 6, __pyx_v_new_color);
+      PyTuple_SET_ITEM(__pyx_t_13, 6, __pyx_v_new_color);
       __Pyx_INCREF(__pyx_v_no_colors);
       __Pyx_GIVEREF(__pyx_v_no_colors);
-      PyTuple_SET_ITEM(__pyx_t_12, 7, __pyx_v_no_colors);
+      PyTuple_SET_ITEM(__pyx_t_13, 7, __pyx_v_no_colors);
       __Pyx_INCREF(__pyx_v_pred);
       __Pyx_GIVEREF(__pyx_v_pred);
-      PyTuple_SET_ITEM(__pyx_t_12, 8, __pyx_v_pred);
+      PyTuple_SET_ITEM(__pyx_t_13, 8, __pyx_v_pred);
+      __Pyx_INCREF(__pyx_v_s_pred);
+      __Pyx_GIVEREF(__pyx_v_s_pred);
+      PyTuple_SET_ITEM(__pyx_t_13, 9, __pyx_v_s_pred);
       __Pyx_INCREF(__pyx_v_dist);
       __Pyx_GIVEREF(__pyx_v_dist);
-      PyTuple_SET_ITEM(__pyx_t_12, 9, __pyx_v_dist);
+      PyTuple_SET_ITEM(__pyx_t_13, 10, __pyx_v_dist);
       __Pyx_INCREF(__pyx_v_seen);
       __Pyx_GIVEREF(__pyx_v_seen);
-      PyTuple_SET_ITEM(__pyx_t_12, 10, __pyx_v_seen);
-      __pyx_t_11 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 119, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_11);
-      if (PyDict_SetItem(__pyx_t_11, __pyx_n_s_limit, __pyx_v_len_cutoff) < 0) __PYX_ERR(0, 119, __pyx_L5_error)
+      PyTuple_SET_ITEM(__pyx_t_13, 11, __pyx_v_seen);
+      __pyx_t_12 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 123, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      if (PyDict_SetItem(__pyx_t_12, __pyx_n_s_limit, __pyx_v_len_cutoff) < 0) __PYX_ERR(0, 123, __pyx_L5_error)
 
-      /* "dawdlib/dijkstra/colorful.pyx":118
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
+      /* "dawdlib/dijkstra/colorful.pyx":122
+ *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
  *     try:
  *         return all_colorful_shortest_paths(             # <<<<<<<<<<<<<<
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
+ *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
  *         )
  */
-      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_12, __pyx_t_11); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 118, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_11 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_13, __pyx_t_12); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 122, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_11);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-      __pyx_r = __pyx_t_10;
-      __pyx_t_10 = 0;
+      __pyx_r = __pyx_t_11;
+      __pyx_t_11 = 0;
       goto __pyx_L9_try_return;
 
-      /* "dawdlib/dijkstra/colorful.pyx":117
+      /* "dawdlib/dijkstra/colorful.pyx":121
  *     """
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
+ *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
  *     try:             # <<<<<<<<<<<<<<
  *         return all_colorful_shortest_paths(
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
+ *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
  */
     }
     __pyx_L5_error:;
@@ -3916,6 +3710,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
     __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
     __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
+    __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -3925,141 +3720,141 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
     __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "dawdlib/dijkstra/colorful.pyx":121
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
+    /* "dawdlib/dijkstra/colorful.pyx":125
+ *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
  *         )
  *     except nx.NetworkXNoPath:             # <<<<<<<<<<<<<<
  *         raise nx.NetworkXNoPath(
  *             "Target {} cannot be reached" "from Source {}".format(target, source)
  */
-    __Pyx_ErrFetch(&__pyx_t_10, &__pyx_t_11, &__pyx_t_12);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_nx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 121, __pyx_L7_except_error)
+    __Pyx_ErrFetch(&__pyx_t_11, &__pyx_t_12, &__pyx_t_13);
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_nx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 125, __pyx_L7_except_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 121, __pyx_L7_except_error)
-    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 125, __pyx_L7_except_error)
+    __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_18 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_10, __pyx_t_9);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_ErrRestore(__pyx_t_10, __pyx_t_11, __pyx_t_12);
-    __pyx_t_10 = 0; __pyx_t_11 = 0; __pyx_t_12 = 0;
-    if (__pyx_t_18) {
+    __pyx_t_19 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_11, __pyx_t_10);
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __Pyx_ErrRestore(__pyx_t_11, __pyx_t_12, __pyx_t_13);
+    __pyx_t_11 = 0; __pyx_t_12 = 0; __pyx_t_13 = 0;
+    if (__pyx_t_19) {
       __Pyx_AddTraceback("dawdlib.dijkstra.colorful.all_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_12, &__pyx_t_11, &__pyx_t_10) < 0) __PYX_ERR(0, 121, __pyx_L7_except_error)
+      if (__Pyx_GetException(&__pyx_t_13, &__pyx_t_12, &__pyx_t_11) < 0) __PYX_ERR(0, 125, __pyx_L7_except_error)
+      __Pyx_GOTREF(__pyx_t_13);
       __Pyx_GOTREF(__pyx_t_12);
       __Pyx_GOTREF(__pyx_t_11);
-      __Pyx_GOTREF(__pyx_t_10);
 
-      /* "dawdlib/dijkstra/colorful.pyx":122
+      /* "dawdlib/dijkstra/colorful.pyx":126
  *         )
  *     except nx.NetworkXNoPath:
  *         raise nx.NetworkXNoPath(             # <<<<<<<<<<<<<<
  *             "Target {} cannot be reached" "from Source {}".format(target, source)
  *         )
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_nx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 122, __pyx_L7_except_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_nx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 126, __pyx_L7_except_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 122, __pyx_L7_except_error)
-      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 126, __pyx_L7_except_error)
+      __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "dawdlib/dijkstra/colorful.pyx":123
+      /* "dawdlib/dijkstra/colorful.pyx":127
  *     except nx.NetworkXNoPath:
  *         raise nx.NetworkXNoPath(
  *             "Target {} cannot be reached" "from Source {}".format(target, source)             # <<<<<<<<<<<<<<
  *         )
  * 
  */
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Target_cannot_be_reachedfrom_Sou, __pyx_n_s_format); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 123, __pyx_L7_except_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_6 = NULL;
-      __pyx_t_18 = 0;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
-        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_7);
-        if (likely(__pyx_t_6)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-          __Pyx_INCREF(__pyx_t_6);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_7, function);
-          __pyx_t_18 = 1;
-        }
-      }
-      #if CYTHON_FAST_PYCALL
-      if (PyFunction_Check(__pyx_t_7)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_target, __pyx_v_source};
-        __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_18, 2+__pyx_t_18); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L7_except_error)
-        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __Pyx_GOTREF(__pyx_t_4);
-      } else
-      #endif
-      #if CYTHON_FAST_PYCCALL
-      if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_target, __pyx_v_source};
-        __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_18, 2+__pyx_t_18); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L7_except_error)
-        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __Pyx_GOTREF(__pyx_t_4);
-      } else
-      #endif
-      {
-        __pyx_t_5 = PyTuple_New(2+__pyx_t_18); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 123, __pyx_L7_except_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        if (__pyx_t_6) {
-          __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6); __pyx_t_6 = NULL;
-        }
-        __Pyx_INCREF(__pyx_v_target);
-        __Pyx_GIVEREF(__pyx_v_target);
-        PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_18, __pyx_v_target);
-        __Pyx_INCREF(__pyx_v_source);
-        __Pyx_GIVEREF(__pyx_v_source);
-        PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_18, __pyx_v_source);
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L7_except_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      }
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Target_cannot_be_reachedfrom_Sou, __pyx_n_s_format); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 127, __pyx_L7_except_error)
+      __Pyx_GOTREF(__pyx_t_8);
       __pyx_t_7 = NULL;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
+      __pyx_t_19 = 0;
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_8))) {
         __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_8);
         if (likely(__pyx_t_7)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
           __Pyx_INCREF(__pyx_t_7);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_8, function);
+          __pyx_t_19 = 1;
         }
       }
-      __pyx_t_9 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_7, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_4);
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 122, __pyx_L7_except_error)
-      __Pyx_GOTREF(__pyx_t_9);
+      #if CYTHON_FAST_PYCALL
+      if (PyFunction_Check(__pyx_t_8)) {
+        PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_target, __pyx_v_source};
+        __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_19, 2+__pyx_t_19); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L7_except_error)
+        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_GOTREF(__pyx_t_4);
+      } else
+      #endif
+      #if CYTHON_FAST_PYCCALL
+      if (__Pyx_PyFastCFunction_Check(__pyx_t_8)) {
+        PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_target, __pyx_v_source};
+        __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_8, __pyx_temp+1-__pyx_t_19, 2+__pyx_t_19); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L7_except_error)
+        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+        __Pyx_GOTREF(__pyx_t_4);
+      } else
+      #endif
+      {
+        __pyx_t_6 = PyTuple_New(2+__pyx_t_19); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 127, __pyx_L7_except_error)
+        __Pyx_GOTREF(__pyx_t_6);
+        if (__pyx_t_7) {
+          __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_7); __pyx_t_7 = NULL;
+        }
+        __Pyx_INCREF(__pyx_v_target);
+        __Pyx_GIVEREF(__pyx_v_target);
+        PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_19, __pyx_v_target);
+        __Pyx_INCREF(__pyx_v_source);
+        __Pyx_GIVEREF(__pyx_v_source);
+        PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_19, __pyx_v_source);
+        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_6, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 127, __pyx_L7_except_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      }
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __Pyx_Raise(__pyx_t_9, 0, 0, 0);
+      __pyx_t_8 = NULL;
+      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_9))) {
+        __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_9);
+        if (likely(__pyx_t_8)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_9);
+          __Pyx_INCREF(__pyx_t_8);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_9, function);
+        }
+      }
+      __pyx_t_10 = (__pyx_t_8) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_8, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_t_4);
+      __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 126, __pyx_L7_except_error)
+      __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __PYX_ERR(0, 122, __pyx_L7_except_error)
+      __Pyx_Raise(__pyx_t_10, 0, 0, 0);
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __PYX_ERR(0, 126, __pyx_L7_except_error)
     }
     goto __pyx_L7_except_error;
     __pyx_L7_except_error:;
 
-    /* "dawdlib/dijkstra/colorful.pyx":117
+    /* "dawdlib/dijkstra/colorful.pyx":121
  *     """
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
+ *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
  *     try:             # <<<<<<<<<<<<<<
  *         return all_colorful_shortest_paths(
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
+ *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
  */
-    __Pyx_XGIVEREF(__pyx_t_15);
     __Pyx_XGIVEREF(__pyx_t_16);
     __Pyx_XGIVEREF(__pyx_t_17);
-    __Pyx_ExceptionReset(__pyx_t_15, __pyx_t_16, __pyx_t_17);
+    __Pyx_XGIVEREF(__pyx_t_18);
+    __Pyx_ExceptionReset(__pyx_t_16, __pyx_t_17, __pyx_t_18);
     goto __pyx_L1_error;
     __pyx_L9_try_return:;
-    __Pyx_XGIVEREF(__pyx_t_15);
     __Pyx_XGIVEREF(__pyx_t_16);
     __Pyx_XGIVEREF(__pyx_t_17);
-    __Pyx_ExceptionReset(__pyx_t_15, __pyx_t_16, __pyx_t_17);
+    __Pyx_XGIVEREF(__pyx_t_18);
+    __Pyx_ExceptionReset(__pyx_t_16, __pyx_t_17, __pyx_t_18);
     goto __pyx_L0;
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":60
+  /* "dawdlib/dijkstra/colorful.pyx":64
  * 
  * @cython.embedsignature(True)
  * def all_shortest_paths(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
@@ -4082,6 +3877,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_12);
   __Pyx_XDECREF(__pyx_t_13);
+  __Pyx_XDECREF(__pyx_t_14);
   __Pyx_AddTraceback("dawdlib.dijkstra.colorful.all_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -4093,6 +3889,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
   __Pyx_XDECREF(__pyx_v_color_arr);
   __Pyx_XDECREF(__pyx_v_new_color);
   __Pyx_XDECREF(__pyx_v_pred);
+  __Pyx_XDECREF(__pyx_v_s_pred);
   __Pyx_XDECREF(__pyx_v_dist);
   __Pyx_XDECREF(__pyx_v_seen);
   __Pyx_XDECREF(__pyx_v_no_colors);
@@ -4101,627 +3898,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_all_shortest_paths(CYTHON
   return __pyx_r;
 }
 
-/* "dawdlib/dijkstra/colorful.pyx":128
- * 
- * @cython.embedsignature(True)
- * def shortest_path(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
- *     """Compute all shortest paths in the graph.
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_3shortest_path(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7dawdlib_8dijkstra_8colorful_2shortest_path[] = "shortest_path(G, source, target, no_colors=0, len_cutoff=0, weight=None, method=u'dijkstra', retries=1, res_graph: nx.Graph = None)\nCompute all shortest paths in the graph.\n\n    Parameters\n    ----------\n    G : NetworkX graph\n\n    source : node\n       Starting node for path.\n\n    target : node\n       Ending node for path.\n\n    no_colors: int\n        The number of colors to use in the random recoloring.\n        The currently supported maximum is set to 18.\n\n    len_cutoff: int, optional (default = 0)\n        The maximum path length\n\n    weight : None or string, optional (default = None)\n       If None, every edge has weight/distance/cost 1.\n       If a string, use this edge attribute as the edge weight.\n       Any edge attribute not present defaults to 1.\n\n    method : string, optional (default = 'dijkstra')\n       The algorithm to use to compute the path lengths.\n       Supported options: 'dijkstra'.\n       Other inputs produce a ValueError.\n\n    retries: int, optional (default = 1)\n        The number of random coloring retries to check before raising NetworkXNoPath exception\n\n    res_graph: nx.Graph, optional (default = None)\n        Allows the user to provide a custom restriction graph used to color nodes\n\n    Returns\n    -------\n    paths : generator of lists\n        A generator of all paths between source and target.\n\n    Raises\n    ------\n    ValueError\n        If `method` is not among the supported options.\n        If both `no_colors` and `len_cutoff` are not provided.\n\n    NetworkXNoPath\n        If `target` cannot be reached from `source`.\n\n\n    Notes\n    -----\n    There may be many shortest paths between the source and target.\n\n    ";
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_3shortest_path = {"shortest_path", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_3shortest_path, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_2shortest_path};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_3shortest_path(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_G = 0;
-  PyObject *__pyx_v_source = 0;
-  PyObject *__pyx_v_target = 0;
-  PyObject *__pyx_v_no_colors = 0;
-  PyObject *__pyx_v_len_cutoff = 0;
-  PyObject *__pyx_v_weight = 0;
-  PyObject *__pyx_v_method = 0;
-  PyObject *__pyx_v_retries = 0;
-  PyObject *__pyx_v_res_graph = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("shortest_path (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_source,&__pyx_n_s_target,&__pyx_n_s_no_colors,&__pyx_n_s_len_cutoff,&__pyx_n_s_weight,&__pyx_n_s_method,&__pyx_n_s_retries,&__pyx_n_s_res_graph,0};
-    PyObject* values[9] = {0,0,0,0,0,0,0,0,0};
-    values[3] = ((PyObject *)__pyx_int_0);
-    values[4] = ((PyObject *)__pyx_int_0);
-    values[5] = ((PyObject *)Py_None);
-    values[6] = ((PyObject *)__pyx_n_u_dijkstra);
-    values[7] = ((PyObject *)__pyx_int_1);
-    values[8] = ((PyObject *)Py_None);
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
-        CYTHON_FALLTHROUGH;
-        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
-        CYTHON_FALLTHROUGH;
-        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
-        CYTHON_FALLTHROUGH;
-        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-        CYTHON_FALLTHROUGH;
-        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-        CYTHON_FALLTHROUGH;
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_G)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_source)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("shortest_path", 0, 3, 9, 1); __PYX_ERR(0, 128, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_target)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("shortest_path", 0, 3, 9, 2); __PYX_ERR(0, 128, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  3:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_no_colors);
-          if (value) { values[3] = value; kw_args--; }
-        }
-        CYTHON_FALLTHROUGH;
-        case  4:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_len_cutoff);
-          if (value) { values[4] = value; kw_args--; }
-        }
-        CYTHON_FALLTHROUGH;
-        case  5:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_weight);
-          if (value) { values[5] = value; kw_args--; }
-        }
-        CYTHON_FALLTHROUGH;
-        case  6:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_method);
-          if (value) { values[6] = value; kw_args--; }
-        }
-        CYTHON_FALLTHROUGH;
-        case  7:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_retries);
-          if (value) { values[7] = value; kw_args--; }
-        }
-        CYTHON_FALLTHROUGH;
-        case  8:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_res_graph);
-          if (value) { values[8] = value; kw_args--; }
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "shortest_path") < 0)) __PYX_ERR(0, 128, __pyx_L3_error)
-      }
-    } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
-        CYTHON_FALLTHROUGH;
-        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
-        CYTHON_FALLTHROUGH;
-        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
-        CYTHON_FALLTHROUGH;
-        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-        CYTHON_FALLTHROUGH;
-        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-        CYTHON_FALLTHROUGH;
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-    }
-    __pyx_v_G = values[0];
-    __pyx_v_source = values[1];
-    __pyx_v_target = values[2];
-    __pyx_v_no_colors = values[3];
-    __pyx_v_len_cutoff = values[4];
-    __pyx_v_weight = values[5];
-    __pyx_v_method = values[6];
-    __pyx_v_retries = values[7];
-    __pyx_v_res_graph = values[8];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("shortest_path", 0, 3, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 128, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.shortest_path", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_2shortest_path(__pyx_self, __pyx_v_G, __pyx_v_source, __pyx_v_target, __pyx_v_no_colors, __pyx_v_len_cutoff, __pyx_v_weight, __pyx_v_method, __pyx_v_retries, __pyx_v_res_graph);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_2shortest_path(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_source, PyObject *__pyx_v_target, PyObject *__pyx_v_no_colors, PyObject *__pyx_v_len_cutoff, PyObject *__pyx_v_weight, PyObject *__pyx_v_method, PyObject *__pyx_v_retries, PyObject *__pyx_v_res_graph) {
-  PyObject *__pyx_v_nodes = NULL;
-  PyObject *__pyx_v_cgraph = NULL;
-  PyObject *__pyx_v_weight_arr = NULL;
-  PyObject *__pyx_v_sources = NULL;
-  PyObject *__pyx_v_trgt = NULL;
-  PyObject *__pyx_v_color_arr = NULL;
-  PyObject *__pyx_v_new_color = NULL;
-  PyObject *__pyx_v_pred = NULL;
-  PyObject *__pyx_v_dist = NULL;
-  PyObject *__pyx_v_seen = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *__pyx_t_8 = NULL;
-  PyObject *__pyx_t_9 = NULL;
-  PyObject *__pyx_t_10 = NULL;
-  PyObject *__pyx_t_11 = NULL;
-  PyObject *__pyx_t_12 = NULL;
-  PyObject *__pyx_t_13 = NULL;
-  PyObject *(*__pyx_t_14)(PyObject *);
-  PyObject *__pyx_t_15 = NULL;
-  PyObject *__pyx_t_16 = NULL;
-  PyObject *__pyx_t_17 = NULL;
-  int __pyx_t_18;
-  __Pyx_RefNannySetupContext("shortest_path", 0);
-  __Pyx_INCREF(__pyx_v_no_colors);
-
-  /* "dawdlib/dijkstra/colorful.pyx":184
- * 
- *     """
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)             # <<<<<<<<<<<<<<
- *     try:
- *         return colorful_shortest_path(
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_prep_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 184, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 184, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_INCREF(__pyx_v_G);
-  __Pyx_GIVEREF(__pyx_v_G);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_G);
-  __Pyx_INCREF(__pyx_v_source);
-  __Pyx_GIVEREF(__pyx_v_source);
-  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_source);
-  __Pyx_INCREF(__pyx_v_target);
-  __Pyx_GIVEREF(__pyx_v_target);
-  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_v_target);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 184, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_no_colors, __pyx_v_no_colors) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_len_cutoff, __pyx_v_len_cutoff) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_weight, __pyx_v_weight) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_method, __pyx_v_method) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_retries, __pyx_v_retries) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_res_graph, __pyx_v_res_graph) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 184, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
-    PyObject* sequence = __pyx_t_4;
-    Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
-    if (unlikely(size != 11)) {
-      if (size > 11) __Pyx_RaiseTooManyValuesError(11);
-      else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 184, __pyx_L1_error)
-    }
-    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_3 = PyTuple_GET_ITEM(sequence, 0); 
-      __pyx_t_2 = PyTuple_GET_ITEM(sequence, 1); 
-      __pyx_t_1 = PyTuple_GET_ITEM(sequence, 2); 
-      __pyx_t_5 = PyTuple_GET_ITEM(sequence, 3); 
-      __pyx_t_6 = PyTuple_GET_ITEM(sequence, 4); 
-      __pyx_t_7 = PyTuple_GET_ITEM(sequence, 5); 
-      __pyx_t_8 = PyTuple_GET_ITEM(sequence, 6); 
-      __pyx_t_9 = PyTuple_GET_ITEM(sequence, 7); 
-      __pyx_t_10 = PyTuple_GET_ITEM(sequence, 8); 
-      __pyx_t_11 = PyTuple_GET_ITEM(sequence, 9); 
-      __pyx_t_12 = PyTuple_GET_ITEM(sequence, 10); 
-    } else {
-      __pyx_t_3 = PyList_GET_ITEM(sequence, 0); 
-      __pyx_t_2 = PyList_GET_ITEM(sequence, 1); 
-      __pyx_t_1 = PyList_GET_ITEM(sequence, 2); 
-      __pyx_t_5 = PyList_GET_ITEM(sequence, 3); 
-      __pyx_t_6 = PyList_GET_ITEM(sequence, 4); 
-      __pyx_t_7 = PyList_GET_ITEM(sequence, 5); 
-      __pyx_t_8 = PyList_GET_ITEM(sequence, 6); 
-      __pyx_t_9 = PyList_GET_ITEM(sequence, 7); 
-      __pyx_t_10 = PyList_GET_ITEM(sequence, 8); 
-      __pyx_t_11 = PyList_GET_ITEM(sequence, 9); 
-      __pyx_t_12 = PyList_GET_ITEM(sequence, 10); 
-    }
-    __Pyx_INCREF(__pyx_t_3);
-    __Pyx_INCREF(__pyx_t_2);
-    __Pyx_INCREF(__pyx_t_1);
-    __Pyx_INCREF(__pyx_t_5);
-    __Pyx_INCREF(__pyx_t_6);
-    __Pyx_INCREF(__pyx_t_7);
-    __Pyx_INCREF(__pyx_t_8);
-    __Pyx_INCREF(__pyx_t_9);
-    __Pyx_INCREF(__pyx_t_10);
-    __Pyx_INCREF(__pyx_t_11);
-    __Pyx_INCREF(__pyx_t_12);
-    #else
-    {
-      Py_ssize_t i;
-      PyObject** temps[11] = {&__pyx_t_3,&__pyx_t_2,&__pyx_t_1,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7,&__pyx_t_8,&__pyx_t_9,&__pyx_t_10,&__pyx_t_11,&__pyx_t_12};
-      for (i=0; i < 11; i++) {
-        PyObject* item = PySequence_ITEM(sequence, i); if (unlikely(!item)) __PYX_ERR(0, 184, __pyx_L1_error)
-        __Pyx_GOTREF(item);
-        *(temps[i]) = item;
-      }
-    }
-    #endif
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  } else {
-    Py_ssize_t index = -1;
-    PyObject** temps[11] = {&__pyx_t_3,&__pyx_t_2,&__pyx_t_1,&__pyx_t_5,&__pyx_t_6,&__pyx_t_7,&__pyx_t_8,&__pyx_t_9,&__pyx_t_10,&__pyx_t_11,&__pyx_t_12};
-    __pyx_t_13 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 184, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_14 = Py_TYPE(__pyx_t_13)->tp_iternext;
-    for (index=0; index < 11; index++) {
-      PyObject* item = __pyx_t_14(__pyx_t_13); if (unlikely(!item)) goto __pyx_L3_unpacking_failed;
-      __Pyx_GOTREF(item);
-      *(temps[index]) = item;
-    }
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_14(__pyx_t_13), 11) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
-    __pyx_t_14 = NULL;
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    goto __pyx_L4_unpacking_done;
-    __pyx_L3_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_14 = NULL;
-    if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 184, __pyx_L1_error)
-    __pyx_L4_unpacking_done:;
-  }
-  __pyx_v_nodes = __pyx_t_3;
-  __pyx_t_3 = 0;
-  __pyx_v_cgraph = __pyx_t_2;
-  __pyx_t_2 = 0;
-  __pyx_v_weight_arr = __pyx_t_1;
-  __pyx_t_1 = 0;
-  __pyx_v_sources = __pyx_t_5;
-  __pyx_t_5 = 0;
-  __pyx_v_trgt = __pyx_t_6;
-  __pyx_t_6 = 0;
-  __pyx_v_color_arr = __pyx_t_7;
-  __pyx_t_7 = 0;
-  __pyx_v_new_color = __pyx_t_8;
-  __pyx_t_8 = 0;
-  __Pyx_DECREF_SET(__pyx_v_no_colors, __pyx_t_9);
-  __pyx_t_9 = 0;
-  __pyx_v_pred = __pyx_t_10;
-  __pyx_t_10 = 0;
-  __pyx_v_dist = __pyx_t_11;
-  __pyx_t_11 = 0;
-  __pyx_v_seen = __pyx_t_12;
-  __pyx_t_12 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":185
- *     """
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
- *     try:             # <<<<<<<<<<<<<<
- *         return colorful_shortest_path(
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
- */
-  {
-    __Pyx_PyThreadState_declare
-    __Pyx_PyThreadState_assign
-    __Pyx_ExceptionSave(&__pyx_t_15, &__pyx_t_16, &__pyx_t_17);
-    __Pyx_XGOTREF(__pyx_t_15);
-    __Pyx_XGOTREF(__pyx_t_16);
-    __Pyx_XGOTREF(__pyx_t_17);
-    /*try:*/ {
-
-      /* "dawdlib/dijkstra/colorful.pyx":186
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
- *     try:
- *         return colorful_shortest_path(             # <<<<<<<<<<<<<<
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
- *         )
- */
-      __Pyx_XDECREF(__pyx_r);
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_colorful_shortest_path); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 186, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_4);
-
-      /* "dawdlib/dijkstra/colorful.pyx":187
- *     try:
- *         return colorful_shortest_path(
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff             # <<<<<<<<<<<<<<
- *         )
- *     except nx.NetworkXNoPath:
- */
-      __pyx_t_12 = PyTuple_New(11); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 186, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_12);
-      __Pyx_INCREF(__pyx_v_nodes);
-      __Pyx_GIVEREF(__pyx_v_nodes);
-      PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_v_nodes);
-      __Pyx_INCREF(__pyx_v_cgraph);
-      __Pyx_GIVEREF(__pyx_v_cgraph);
-      PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_v_cgraph);
-      __Pyx_INCREF(__pyx_v_weight_arr);
-      __Pyx_GIVEREF(__pyx_v_weight_arr);
-      PyTuple_SET_ITEM(__pyx_t_12, 2, __pyx_v_weight_arr);
-      __Pyx_INCREF(__pyx_v_sources);
-      __Pyx_GIVEREF(__pyx_v_sources);
-      PyTuple_SET_ITEM(__pyx_t_12, 3, __pyx_v_sources);
-      __Pyx_INCREF(__pyx_v_trgt);
-      __Pyx_GIVEREF(__pyx_v_trgt);
-      PyTuple_SET_ITEM(__pyx_t_12, 4, __pyx_v_trgt);
-      __Pyx_INCREF(__pyx_v_color_arr);
-      __Pyx_GIVEREF(__pyx_v_color_arr);
-      PyTuple_SET_ITEM(__pyx_t_12, 5, __pyx_v_color_arr);
-      __Pyx_INCREF(__pyx_v_new_color);
-      __Pyx_GIVEREF(__pyx_v_new_color);
-      PyTuple_SET_ITEM(__pyx_t_12, 6, __pyx_v_new_color);
-      __Pyx_INCREF(__pyx_v_no_colors);
-      __Pyx_GIVEREF(__pyx_v_no_colors);
-      PyTuple_SET_ITEM(__pyx_t_12, 7, __pyx_v_no_colors);
-      __Pyx_INCREF(__pyx_v_pred);
-      __Pyx_GIVEREF(__pyx_v_pred);
-      PyTuple_SET_ITEM(__pyx_t_12, 8, __pyx_v_pred);
-      __Pyx_INCREF(__pyx_v_dist);
-      __Pyx_GIVEREF(__pyx_v_dist);
-      PyTuple_SET_ITEM(__pyx_t_12, 9, __pyx_v_dist);
-      __Pyx_INCREF(__pyx_v_seen);
-      __Pyx_GIVEREF(__pyx_v_seen);
-      PyTuple_SET_ITEM(__pyx_t_12, 10, __pyx_v_seen);
-      __pyx_t_11 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 187, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_11);
-      if (PyDict_SetItem(__pyx_t_11, __pyx_n_s_limit, __pyx_v_len_cutoff) < 0) __PYX_ERR(0, 187, __pyx_L5_error)
-
-      /* "dawdlib/dijkstra/colorful.pyx":186
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
- *     try:
- *         return colorful_shortest_path(             # <<<<<<<<<<<<<<
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
- *         )
- */
-      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_12, __pyx_t_11); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 186, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_10);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-      __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-      __pyx_r = __pyx_t_10;
-      __pyx_t_10 = 0;
-      goto __pyx_L9_try_return;
-
-      /* "dawdlib/dijkstra/colorful.pyx":185
- *     """
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
- *     try:             # <<<<<<<<<<<<<<
- *         return colorful_shortest_path(
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
- */
-    }
-    __pyx_L5_error:;
-    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-    __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __Pyx_XDECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-
-    /* "dawdlib/dijkstra/colorful.pyx":189
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
- *         )
- *     except nx.NetworkXNoPath:             # <<<<<<<<<<<<<<
- *         raise nx.NetworkXNoPath(
- *             "Target {} cannot be reached" "from Source {}".format(target, source)
- */
-    __Pyx_ErrFetch(&__pyx_t_10, &__pyx_t_11, &__pyx_t_12);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_nx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 189, __pyx_L7_except_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 189, __pyx_L7_except_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_18 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_10, __pyx_t_9);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_ErrRestore(__pyx_t_10, __pyx_t_11, __pyx_t_12);
-    __pyx_t_10 = 0; __pyx_t_11 = 0; __pyx_t_12 = 0;
-    if (__pyx_t_18) {
-      __Pyx_AddTraceback("dawdlib.dijkstra.colorful.shortest_path", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_12, &__pyx_t_11, &__pyx_t_10) < 0) __PYX_ERR(0, 189, __pyx_L7_except_error)
-      __Pyx_GOTREF(__pyx_t_12);
-      __Pyx_GOTREF(__pyx_t_11);
-      __Pyx_GOTREF(__pyx_t_10);
-
-      /* "dawdlib/dijkstra/colorful.pyx":190
- *         )
- *     except nx.NetworkXNoPath:
- *         raise nx.NetworkXNoPath(             # <<<<<<<<<<<<<<
- *             "Target {} cannot be reached" "from Source {}".format(target, source)
- *         )
- */
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_nx); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 190, __pyx_L7_except_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 190, __pyx_L7_except_error)
-      __Pyx_GOTREF(__pyx_t_8);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-      /* "dawdlib/dijkstra/colorful.pyx":191
- *     except nx.NetworkXNoPath:
- *         raise nx.NetworkXNoPath(
- *             "Target {} cannot be reached" "from Source {}".format(target, source)             # <<<<<<<<<<<<<<
- *         )
- * 
- */
-      __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Target_cannot_be_reachedfrom_Sou, __pyx_n_s_format); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 191, __pyx_L7_except_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __pyx_t_6 = NULL;
-      __pyx_t_18 = 0;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_7))) {
-        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_7);
-        if (likely(__pyx_t_6)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-          __Pyx_INCREF(__pyx_t_6);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_7, function);
-          __pyx_t_18 = 1;
-        }
-      }
-      #if CYTHON_FAST_PYCALL
-      if (PyFunction_Check(__pyx_t_7)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_target, __pyx_v_source};
-        __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_18, 2+__pyx_t_18); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L7_except_error)
-        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __Pyx_GOTREF(__pyx_t_4);
-      } else
-      #endif
-      #if CYTHON_FAST_PYCCALL
-      if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_v_target, __pyx_v_source};
-        __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_18, 2+__pyx_t_18); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L7_except_error)
-        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __Pyx_GOTREF(__pyx_t_4);
-      } else
-      #endif
-      {
-        __pyx_t_5 = PyTuple_New(2+__pyx_t_18); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 191, __pyx_L7_except_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        if (__pyx_t_6) {
-          __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6); __pyx_t_6 = NULL;
-        }
-        __Pyx_INCREF(__pyx_v_target);
-        __Pyx_GIVEREF(__pyx_v_target);
-        PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_18, __pyx_v_target);
-        __Pyx_INCREF(__pyx_v_source);
-        __Pyx_GIVEREF(__pyx_v_source);
-        PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_18, __pyx_v_source);
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 191, __pyx_L7_except_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      }
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = NULL;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_8))) {
-        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_8);
-        if (likely(__pyx_t_7)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_8);
-          __Pyx_INCREF(__pyx_t_7);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_8, function);
-        }
-      }
-      __pyx_t_9 = (__pyx_t_7) ? __Pyx_PyObject_Call2Args(__pyx_t_8, __pyx_t_7, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_8, __pyx_t_4);
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 190, __pyx_L7_except_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      __Pyx_Raise(__pyx_t_9, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __PYX_ERR(0, 190, __pyx_L7_except_error)
-    }
-    goto __pyx_L7_except_error;
-    __pyx_L7_except_error:;
-
-    /* "dawdlib/dijkstra/colorful.pyx":185
- *     """
- *     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
- *     try:             # <<<<<<<<<<<<<<
- *         return colorful_shortest_path(
- *             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, dist, seen, limit = len_cutoff
- */
-    __Pyx_XGIVEREF(__pyx_t_15);
-    __Pyx_XGIVEREF(__pyx_t_16);
-    __Pyx_XGIVEREF(__pyx_t_17);
-    __Pyx_ExceptionReset(__pyx_t_15, __pyx_t_16, __pyx_t_17);
-    goto __pyx_L1_error;
-    __pyx_L9_try_return:;
-    __Pyx_XGIVEREF(__pyx_t_15);
-    __Pyx_XGIVEREF(__pyx_t_16);
-    __Pyx_XGIVEREF(__pyx_t_17);
-    __Pyx_ExceptionReset(__pyx_t_15, __pyx_t_16, __pyx_t_17);
-    goto __pyx_L0;
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":128
- * 
- * @cython.embedsignature(True)
- * def shortest_path(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
- *     """Compute all shortest paths in the graph.
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_XDECREF(__pyx_t_11);
-  __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_XDECREF(__pyx_t_13);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.shortest_path", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_nodes);
-  __Pyx_XDECREF(__pyx_v_cgraph);
-  __Pyx_XDECREF(__pyx_v_weight_arr);
-  __Pyx_XDECREF(__pyx_v_sources);
-  __Pyx_XDECREF(__pyx_v_trgt);
-  __Pyx_XDECREF(__pyx_v_color_arr);
-  __Pyx_XDECREF(__pyx_v_new_color);
-  __Pyx_XDECREF(__pyx_v_pred);
-  __Pyx_XDECREF(__pyx_v_dist);
-  __Pyx_XDECREF(__pyx_v_seen);
-  __Pyx_XDECREF(__pyx_v_no_colors);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":195
+/* "dawdlib/dijkstra/colorful.pyx":199
  * 
  * 
  * def _prep_data(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
@@ -4730,9 +3907,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_2shortest_path(CYTHON_UNU
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_5_prep_data(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_5_prep_data = {"_prep_data", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_5_prep_data, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_5_prep_data(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_3_prep_data(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_3_prep_data = {"_prep_data", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_3_prep_data, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_3_prep_data(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_G = 0;
   PyObject *__pyx_v_source = 0;
   PyObject *__pyx_v_target = 0;
@@ -4788,13 +3965,13 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_5_prep_data(PyObject *__p
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_source)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_prep_data", 0, 3, 9, 1); __PYX_ERR(0, 195, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_prep_data", 0, 3, 9, 1); __PYX_ERR(0, 199, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_target)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_prep_data", 0, 3, 9, 2); __PYX_ERR(0, 195, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_prep_data", 0, 3, 9, 2); __PYX_ERR(0, 199, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -4834,7 +4011,7 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_5_prep_data(PyObject *__p
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_prep_data") < 0)) __PYX_ERR(0, 195, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_prep_data") < 0)) __PYX_ERR(0, 199, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4869,20 +4046,20 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_5_prep_data(PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_prep_data", 0, 3, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 195, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_prep_data", 0, 3, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 199, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("dawdlib.dijkstra.colorful._prep_data", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(__pyx_self, __pyx_v_G, __pyx_v_source, __pyx_v_target, __pyx_v_no_colors, __pyx_v_len_cutoff, __pyx_v_weight, __pyx_v_method, __pyx_v_retries, __pyx_v_res_graph);
+  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_2_prep_data(__pyx_self, __pyx_v_G, __pyx_v_source, __pyx_v_target, __pyx_v_no_colors, __pyx_v_len_cutoff, __pyx_v_weight, __pyx_v_method, __pyx_v_retries, __pyx_v_res_graph);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_source, PyObject *__pyx_v_target, PyObject *__pyx_v_no_colors, PyObject *__pyx_v_len_cutoff, CYTHON_UNUSED PyObject *__pyx_v_weight, PyObject *__pyx_v_method, CYTHON_UNUSED PyObject *__pyx_v_retries, PyObject *__pyx_v_res_graph) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_2_prep_data(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_G, PyObject *__pyx_v_source, PyObject *__pyx_v_target, PyObject *__pyx_v_no_colors, PyObject *__pyx_v_len_cutoff, CYTHON_UNUSED PyObject *__pyx_v_weight, PyObject *__pyx_v_method, CYTHON_UNUSED PyObject *__pyx_v_retries, PyObject *__pyx_v_res_graph) {
   PyObject *__pyx_v_gate_colors = NULL;
   PyObject *__pyx_v_num_of_colors = NULL;
   PyObject *__pyx_r = NULL;
@@ -4903,24 +4080,24 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
   __Pyx_RefNannySetupContext("_prep_data", 0);
   __Pyx_INCREF(__pyx_v_no_colors);
 
-  /* "dawdlib/dijkstra/colorful.pyx":196
+  /* "dawdlib/dijkstra/colorful.pyx":200
  * 
  * def _prep_data(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
  *     if method != 'dijkstra':             # <<<<<<<<<<<<<<
  *         raise ValueError("method not supported: {}".format(method))
  *     if not no_colors and not len_cutoff:
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_method, __pyx_n_u_dijkstra, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_method, __pyx_n_u_dijkstra, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 200, __pyx_L1_error)
   if (unlikely(__pyx_t_1)) {
 
-    /* "dawdlib/dijkstra/colorful.pyx":197
+    /* "dawdlib/dijkstra/colorful.pyx":201
  * def _prep_data(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
  *     if method != 'dijkstra':
  *         raise ValueError("method not supported: {}".format(method))             # <<<<<<<<<<<<<<
  *     if not no_colors and not len_cutoff:
  *         raise ValueError("Either no_colors or len_cutoff are required.")
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_method_not_supported, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_method_not_supported, __pyx_n_s_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -4934,17 +4111,17 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
     }
     __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_method) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_method);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 197, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 197, __pyx_L1_error)
+    __PYX_ERR(0, 201, __pyx_L1_error)
 
-    /* "dawdlib/dijkstra/colorful.pyx":196
+    /* "dawdlib/dijkstra/colorful.pyx":200
  * 
  * def _prep_data(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
  *     if method != 'dijkstra':             # <<<<<<<<<<<<<<
@@ -4953,40 +4130,40 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
  */
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":198
+  /* "dawdlib/dijkstra/colorful.pyx":202
  *     if method != 'dijkstra':
  *         raise ValueError("method not supported: {}".format(method))
  *     if not no_colors and not len_cutoff:             # <<<<<<<<<<<<<<
  *         raise ValueError("Either no_colors or len_cutoff are required.")
  * 
  */
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_no_colors); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_no_colors); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 202, __pyx_L1_error)
   __pyx_t_6 = ((!__pyx_t_5) != 0);
   if (__pyx_t_6) {
   } else {
     __pyx_t_1 = __pyx_t_6;
     goto __pyx_L5_bool_binop_done;
   }
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_len_cutoff); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_len_cutoff); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 202, __pyx_L1_error)
   __pyx_t_5 = ((!__pyx_t_6) != 0);
   __pyx_t_1 = __pyx_t_5;
   __pyx_L5_bool_binop_done:;
   if (unlikely(__pyx_t_1)) {
 
-    /* "dawdlib/dijkstra/colorful.pyx":199
+    /* "dawdlib/dijkstra/colorful.pyx":203
  *         raise ValueError("method not supported: {}".format(method))
  *     if not no_colors and not len_cutoff:
  *         raise ValueError("Either no_colors or len_cutoff are required.")             # <<<<<<<<<<<<<<
  * 
  *     gate_colors, num_of_colors = color_gates(G, GGData(), r_graph=res_graph)
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 199, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 203, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 199, __pyx_L1_error)
+    __PYX_ERR(0, 203, __pyx_L1_error)
 
-    /* "dawdlib/dijkstra/colorful.pyx":198
+    /* "dawdlib/dijkstra/colorful.pyx":202
  *     if method != 'dijkstra':
  *         raise ValueError("method not supported: {}".format(method))
  *     if not no_colors and not len_cutoff:             # <<<<<<<<<<<<<<
@@ -4995,16 +4172,16 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
  */
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":201
+  /* "dawdlib/dijkstra/colorful.pyx":205
  *         raise ValueError("Either no_colors or len_cutoff are required.")
  * 
  *     gate_colors, num_of_colors = color_gates(G, GGData(), r_graph=res_graph)             # <<<<<<<<<<<<<<
  *     if not no_colors:
  *         no_colors = sum(num_of_colors[:len_cutoff])
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_color_gates); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_color_gates); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_GGData); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_GGData); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_7 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
@@ -5018,10 +4195,10 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
   }
   __pyx_t_2 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_v_G);
   __Pyx_GIVEREF(__pyx_v_G);
@@ -5029,10 +4206,10 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_r_graph, __pyx_v_res_graph) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
-  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 201, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_r_graph, __pyx_v_res_graph) < 0) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_4, __pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -5043,7 +4220,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 201, __pyx_L1_error)
+      __PYX_ERR(0, 205, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -5056,15 +4233,15 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_4);
     #else
-    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     #endif
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_3 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_3 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext;
@@ -5072,7 +4249,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
     __Pyx_GOTREF(__pyx_t_2);
     index = 1; __pyx_t_4 = __pyx_t_8(__pyx_t_3); if (unlikely(!__pyx_t_4)) goto __pyx_L7_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_4);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_3), 2) < 0) __PYX_ERR(0, 201, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_3), 2) < 0) __PYX_ERR(0, 205, __pyx_L1_error)
     __pyx_t_8 = NULL;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L8_unpacking_done;
@@ -5080,7 +4257,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_8 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 201, __pyx_L1_error)
+    __PYX_ERR(0, 205, __pyx_L1_error)
     __pyx_L8_unpacking_done:;
   }
   __pyx_v_gate_colors = __pyx_t_2;
@@ -5088,33 +4265,33 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
   __pyx_v_num_of_colors = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":202
+  /* "dawdlib/dijkstra/colorful.pyx":206
  * 
  *     gate_colors, num_of_colors = color_gates(G, GGData(), r_graph=res_graph)
  *     if not no_colors:             # <<<<<<<<<<<<<<
  *         no_colors = sum(num_of_colors[:len_cutoff])
  *     if no_colors > 18:
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_no_colors); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 202, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_no_colors); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 206, __pyx_L1_error)
   __pyx_t_5 = ((!__pyx_t_1) != 0);
   if (__pyx_t_5) {
 
-    /* "dawdlib/dijkstra/colorful.pyx":203
+    /* "dawdlib/dijkstra/colorful.pyx":207
  *     gate_colors, num_of_colors = color_gates(G, GGData(), r_graph=res_graph)
  *     if not no_colors:
  *         no_colors = sum(num_of_colors[:len_cutoff])             # <<<<<<<<<<<<<<
  *     if no_colors > 18:
  *         print(f"Warning! number of colors required {no_colors} is larger than recommended.")
  */
-    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_num_of_colors, 0, 0, NULL, &__pyx_v_len_cutoff, NULL, 0, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 203, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetSlice(__pyx_v_num_of_colors, 0, 0, NULL, &__pyx_v_len_cutoff, NULL, 0, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 207, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 203, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_sum, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 207, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF_SET(__pyx_v_no_colors, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "dawdlib/dijkstra/colorful.pyx":202
+    /* "dawdlib/dijkstra/colorful.pyx":206
  * 
  *     gate_colors, num_of_colors = color_gates(G, GGData(), r_graph=res_graph)
  *     if not no_colors:             # <<<<<<<<<<<<<<
@@ -5123,26 +4300,26 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
  */
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":204
+  /* "dawdlib/dijkstra/colorful.pyx":208
  *     if not no_colors:
  *         no_colors = sum(num_of_colors[:len_cutoff])
  *     if no_colors > 18:             # <<<<<<<<<<<<<<
  *         print(f"Warning! number of colors required {no_colors} is larger than recommended.")
  *     return nxtonumpy(G, [source], target, gate_colors.get, no_colors)
  */
-  __pyx_t_4 = PyObject_RichCompare(__pyx_v_no_colors, __pyx_int_18, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 204, __pyx_L1_error)
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_v_no_colors, __pyx_int_18, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_5) {
 
-    /* "dawdlib/dijkstra/colorful.pyx":205
+    /* "dawdlib/dijkstra/colorful.pyx":209
  *         no_colors = sum(num_of_colors[:len_cutoff])
  *     if no_colors > 18:
  *         print(f"Warning! number of colors required {no_colors} is larger than recommended.")             # <<<<<<<<<<<<<<
  *     return nxtonumpy(G, [source], target, gate_colors.get, no_colors)
  * 
  */
-    __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_9 = 0;
     __pyx_t_10 = 127;
@@ -5150,7 +4327,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
     __pyx_t_9 += 35;
     __Pyx_GIVEREF(__pyx_kp_u_Warning_number_of_colors_require);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_u_Warning_number_of_colors_require);
-    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_v_no_colors, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_v_no_colors, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) : __pyx_t_10;
     __pyx_t_9 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_7);
@@ -5161,15 +4338,15 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
     __pyx_t_9 += 28;
     __Pyx_GIVEREF(__pyx_kp_u_is_larger_than_recommended);
     PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_kp_u_is_larger_than_recommended);
-    __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_4, 3, __pyx_t_9, __pyx_t_10); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_4, 3, __pyx_t_9, __pyx_t_10); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 209, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 209, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "dawdlib/dijkstra/colorful.pyx":204
+    /* "dawdlib/dijkstra/colorful.pyx":208
  *     if not no_colors:
  *         no_colors = sum(num_of_colors[:len_cutoff])
  *     if no_colors > 18:             # <<<<<<<<<<<<<<
@@ -5178,7 +4355,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
  */
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":206
+  /* "dawdlib/dijkstra/colorful.pyx":210
  *     if no_colors > 18:
  *         print(f"Warning! number of colors required {no_colors} is larger than recommended.")
  *     return nxtonumpy(G, [source], target, gate_colors.get, no_colors)             # <<<<<<<<<<<<<<
@@ -5186,14 +4363,14 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_nxtonumpy); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_nxtonumpy); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_source);
   __Pyx_GIVEREF(__pyx_v_source);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_v_source);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_gate_colors, __pyx_n_s_get); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_gate_colors, __pyx_n_s_get); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_11 = NULL;
   __pyx_t_12 = 0;
@@ -5210,7 +4387,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_7)) {
     PyObject *__pyx_temp[6] = {__pyx_t_11, __pyx_v_G, __pyx_t_2, __pyx_v_target, __pyx_t_3, __pyx_v_no_colors};
-    __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_12, 5+__pyx_t_12); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_12, 5+__pyx_t_12); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5220,7 +4397,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_7)) {
     PyObject *__pyx_temp[6] = {__pyx_t_11, __pyx_v_G, __pyx_t_2, __pyx_v_target, __pyx_t_3, __pyx_v_no_colors};
-    __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_12, 5+__pyx_t_12); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_7, __pyx_temp+1-__pyx_t_12, 5+__pyx_t_12); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5228,7 +4405,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
   } else
   #endif
   {
-    __pyx_t_13 = PyTuple_New(5+__pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 206, __pyx_L1_error)
+    __pyx_t_13 = PyTuple_New(5+__pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     if (__pyx_t_11) {
       __Pyx_GIVEREF(__pyx_t_11); PyTuple_SET_ITEM(__pyx_t_13, 0, __pyx_t_11); __pyx_t_11 = NULL;
@@ -5248,7 +4425,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
     PyTuple_SET_ITEM(__pyx_t_13, 4+__pyx_t_12, __pyx_v_no_colors);
     __pyx_t_2 = 0;
     __pyx_t_3 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_13, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 206, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_7, __pyx_t_13, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
   }
@@ -5257,7 +4434,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":195
+  /* "dawdlib/dijkstra/colorful.pyx":199
  * 
  * 
  * def _prep_data(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
@@ -5284,7 +4461,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "dawdlib/dijkstra/colorful.pyx":210
+/* "dawdlib/dijkstra/colorful.pyx":214
  * 
  * @cython.embedsignature(True)
  * def all_colorful_shortest_paths(             # <<<<<<<<<<<<<<
@@ -5293,10 +4470,10 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4_prep_data(CYTHON_UNUSED
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_paths[] = "all_colorful_shortest_paths(nodes: tp.List[int, tp.Any], G: tp.Dict[int, tp.FrozenSet[int]], ndarray weight: np.ndarray, ndarray sources: np.ndarray, target: int, ndarray colors: np.ndarray, ndarray color_map: np.ndarray, no_colors: int, ndarray pred: np.ndarray, ndarray dist: np.ndarray, ndarray seen: np.ndarray, limit: int = 0, repetitions: int = 1) -> tp.Generator[tp.Any]\n\n    :param list nodes: The list of nodes, used to identify each node with an index\n    :param dict G: A mapping representation of the golden gate graph\n    :param numpy.ndarray weight: A numpy array representations of graph edge weights\n    :param numpy.ndarray sources: A numpy array holding indices of sources\n    :param int target: The path target\n    :param numpy.ndarray colors: A numpy array mapping between a node and it's colors\n    :param numpy.ndarray color_map: A numpy array holding the random recoloring\n    :param int no_colors: How many colors were used to created the dist and seen arrays\n    :param numpy.ndarray pred: A numpy array pointing to the predecessor of each node in the paths found\n    :param numpy.ndarray dist: A numpy array holding the minimum distance from source to node using specific colors\n    :param numpy.ndarray seen: A numpy array holding the minimum distance from source to node using specific colors\n    :param int limit: A limit to the number of gates found in the shortest path\n    :param int repetitions: How many times to try and find a shortest path using a random recoloring of no_colors\n    :return: A generator yielding shortest colorful paths\n    :rtype: generator\n    ";
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_paths = {"all_colorful_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_paths, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_paths};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_5all_colorful_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static char __pyx_doc_7dawdlib_8dijkstra_8colorful_4all_colorful_shortest_paths[] = "all_colorful_shortest_paths(nodes: tp.List[int, tp.Any], G: tp.Dict[int, tp.FrozenSet[int]], ndarray weight: np.ndarray, ndarray sources: np.ndarray, target: int, ndarray colors: np.ndarray, ndarray color_map: np.ndarray, no_colors: int, ndarray pred: np.ndarray, ndarray s_pred: np.ndarray, ndarray dist: np.ndarray, ndarray seen: np.ndarray, limit: int = 0, repetitions: int = 1) -> tp.Generator[tp.Any]\n\n    :param list nodes: The list of nodes, used to identify each node with an index\n    :param dict G: A mapping representation of the golden gate graph\n    :param numpy.ndarray weight: A numpy array representations of graph edge weights\n    :param numpy.ndarray sources: A numpy array holding indices of sources\n    :param int target: The path target\n    :param numpy.ndarray colors: A numpy array mapping between a node and it's colors\n    :param numpy.ndarray color_map: A numpy array holding the random recoloring\n    :param int no_colors: How many colors were used to created the dist and seen arrays\n    :param numpy.ndarray pred: A numpy array pointing to the predecessor of each node in the paths found\n    :param numpy.ndarray dist: A numpy array holding the minimum distance from source to node using specific colors\n    :param numpy.ndarray seen: A numpy array holding the minimum distance from source to node using specific colors\n    :param int limit: A limit to the number of gates found in the shortest path\n    :param int repetitions: How many times to try and find a shortest path using a random recoloring of no_colors\n    :return: A generator yielding shortest colorful paths\n    :rtype: generator\n    ";
+static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_5all_colorful_shortest_paths = {"all_colorful_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_5all_colorful_shortest_paths, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_4all_colorful_shortest_paths};
+static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_5all_colorful_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_nodes = 0;
   PyObject *__pyx_v_G = 0;
   PyArrayObject *__pyx_v_weight = 0;
@@ -5306,6 +4483,7 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_pa
   PyArrayObject *__pyx_v_color_map = 0;
   PyObject *__pyx_v_no_colors = 0;
   PyArrayObject *__pyx_v_pred = 0;
+  PyArrayObject *__pyx_v_s_pred = 0;
   PyArrayObject *__pyx_v_dist = 0;
   PyArrayObject *__pyx_v_seen = 0;
   PyObject *__pyx_v_limit = 0;
@@ -5314,14 +4492,16 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_pa
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("all_colorful_shortest_paths (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_nodes,&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_target,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
-    PyObject* values[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
-    values[11] = ((PyObject *)__pyx_int_0);
-    values[12] = ((PyObject *)__pyx_int_1);
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_nodes,&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_target,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
+    PyObject* values[14] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    values[12] = ((PyObject *)__pyx_int_0);
+    values[13] = ((PyObject *)__pyx_int_1);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        CYTHON_FALLTHROUGH;
         case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
         CYTHON_FALLTHROUGH;
         case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
@@ -5360,85 +4540,92 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_pa
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_G)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 1); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 1); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_weight)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 2); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 2); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sources)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 3); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 3); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_target)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 4); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 4); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 5); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 5); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_color_map)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 6); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 6); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  7:
         if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_no_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 7); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 7); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  8:
         if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 8); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 8); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  9:
-        if (likely((values[9] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
+        if (likely((values[9] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 9); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 9); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case 10:
-        if (likely((values[10] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        if (likely((values[10] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, 10); __PYX_ERR(0, 210, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 10); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case 11:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
-          if (value) { values[11] = value; kw_args--; }
+        if (likely((values[11] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, 11); __PYX_ERR(0, 214, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case 12:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
           if (value) { values[12] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case 13:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          if (value) { values[13] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "all_colorful_shortest_paths") < 0)) __PYX_ERR(0, 210, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "all_colorful_shortest_paths") < 0)) __PYX_ERR(0, 214, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 14: values[13] = PyTuple_GET_ITEM(__pyx_args, 13);
+        CYTHON_FALLTHROUGH;
         case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
         CYTHON_FALLTHROUGH;
         case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
-        CYTHON_FALLTHROUGH;
-        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
+        values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
         values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
@@ -5462,27 +4649,29 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_pa
     __pyx_v_color_map = ((PyArrayObject *)values[6]);
     __pyx_v_no_colors = values[7];
     __pyx_v_pred = ((PyArrayObject *)values[8]);
-    __pyx_v_dist = ((PyArrayObject *)values[9]);
-    __pyx_v_seen = ((PyArrayObject *)values[10]);
-    __pyx_v_limit = values[11];
-    __pyx_v_repetitions = values[12];
+    __pyx_v_s_pred = ((PyArrayObject *)values[9]);
+    __pyx_v_dist = ((PyArrayObject *)values[10]);
+    __pyx_v_seen = ((PyArrayObject *)values[11]);
+    __pyx_v_limit = values[12];
+    __pyx_v_repetitions = values[13];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 11, 13, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 210, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("all_colorful_shortest_paths", 0, 12, 14, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 214, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("dawdlib.dijkstra.colorful.all_colorful_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_weight), __pyx_ptype_5numpy_ndarray, 1, "weight", 0))) __PYX_ERR(0, 213, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_sources), __pyx_ptype_5numpy_ndarray, 1, "sources", 0))) __PYX_ERR(0, 214, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_colors), __pyx_ptype_5numpy_ndarray, 1, "colors", 0))) __PYX_ERR(0, 216, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_color_map), __pyx_ptype_5numpy_ndarray, 1, "color_map", 0))) __PYX_ERR(0, 217, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_pred), __pyx_ptype_5numpy_ndarray, 1, "pred", 0))) __PYX_ERR(0, 219, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dist), __pyx_ptype_5numpy_ndarray, 1, "dist", 0))) __PYX_ERR(0, 220, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_seen), __pyx_ptype_5numpy_ndarray, 1, "seen", 0))) __PYX_ERR(0, 221, __pyx_L1_error)
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_paths(__pyx_self, __pyx_v_nodes, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_target, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_weight), __pyx_ptype_5numpy_ndarray, 1, "weight", 0))) __PYX_ERR(0, 217, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_sources), __pyx_ptype_5numpy_ndarray, 1, "sources", 0))) __PYX_ERR(0, 218, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_colors), __pyx_ptype_5numpy_ndarray, 1, "colors", 0))) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_color_map), __pyx_ptype_5numpy_ndarray, 1, "color_map", 0))) __PYX_ERR(0, 221, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_pred), __pyx_ptype_5numpy_ndarray, 1, "pred", 0))) __PYX_ERR(0, 223, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_s_pred), __pyx_ptype_5numpy_ndarray, 1, "s_pred", 0))) __PYX_ERR(0, 224, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dist), __pyx_ptype_5numpy_ndarray, 1, "dist", 0))) __PYX_ERR(0, 225, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_seen), __pyx_ptype_5numpy_ndarray, 1, "seen", 0))) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_4all_colorful_shortest_paths(__pyx_self, __pyx_v_nodes, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_target, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
 
   /* function exit code */
   goto __pyx_L0;
@@ -5492,12 +4681,12 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_pa
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_paths_2generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
+static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_paths_2generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "dawdlib/dijkstra/colorful.pyx":244
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
+/* "dawdlib/dijkstra/colorful.pyx":249
+ *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)
  *     if found:
- *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred, dist) for src in sources))             # <<<<<<<<<<<<<<
+ *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, s_pred, seen, limit) for src in sources))             # <<<<<<<<<<<<<<
  *     else:
  *         raise nx.NetworkXNoPath()
  */
@@ -5511,7 +4700,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 244, __pyx_L1_error)
+    __PYX_ERR(0, 249, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -5519,7 +4708,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
   __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope));
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_paths_2generator2, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_all_colorful_shortest_paths_loca, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!gen)) __PYX_ERR(0, 244, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_paths_2generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_genexpr, __pyx_n_s_all_colorful_shortest_paths_loca, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!gen)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -5535,7 +4724,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
   return __pyx_r;
 }
 
-static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_paths_2generator2(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
+static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_paths_2generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
 {
   struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr *__pyx_cur_scope = ((struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr *)__pyx_generator->closure);
   PyObject *__pyx_r = NULL;
@@ -5557,32 +4746,32 @@ static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 244, __pyx_L1_error)
-  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_sources)) { __Pyx_RaiseClosureNameError("sources"); __PYX_ERR(0, 244, __pyx_L1_error) }
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 249, __pyx_L1_error)
+  if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_sources)) { __Pyx_RaiseClosureNameError("sources"); __PYX_ERR(0, 249, __pyx_L1_error) }
   if (likely(PyList_CheckExact(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_sources))) || PyTuple_CheckExact(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_sources))) {
     __pyx_t_1 = ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_sources); __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_sources)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_sources)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 244, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 249, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 249, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 244, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 249, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -5592,7 +4781,7 @@ static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 244, __pyx_L1_error)
+          else __PYX_ERR(0, 249, __pyx_L1_error)
         }
         break;
       }
@@ -5602,13 +4791,13 @@ static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
     __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_src, __pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_4);
     __pyx_t_4 = 0;
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_yield_colorful_shortest_paths); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 244, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_yield_colorful_shortest_paths); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_nodes)) { __Pyx_RaiseClosureNameError("nodes"); __PYX_ERR(0, 244, __pyx_L1_error) }
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_target)) { __Pyx_RaiseClosureNameError("target"); __PYX_ERR(0, 244, __pyx_L1_error) }
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_color_map)) { __Pyx_RaiseClosureNameError("color_map"); __PYX_ERR(0, 244, __pyx_L1_error) }
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_pred)) { __Pyx_RaiseClosureNameError("pred"); __PYX_ERR(0, 244, __pyx_L1_error) }
-    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_dist)) { __Pyx_RaiseClosureNameError("dist"); __PYX_ERR(0, 244, __pyx_L1_error) }
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_nodes)) { __Pyx_RaiseClosureNameError("nodes"); __PYX_ERR(0, 249, __pyx_L1_error) }
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_target)) { __Pyx_RaiseClosureNameError("target"); __PYX_ERR(0, 249, __pyx_L1_error) }
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_s_pred)) { __Pyx_RaiseClosureNameError("s_pred"); __PYX_ERR(0, 249, __pyx_L1_error) }
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seen)) { __Pyx_RaiseClosureNameError("seen"); __PYX_ERR(0, 249, __pyx_L1_error) }
+    if (unlikely(!__pyx_cur_scope->__pyx_outer_scope->__pyx_v_limit)) { __Pyx_RaiseClosureNameError("limit"); __PYX_ERR(0, 249, __pyx_L1_error) }
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -5623,22 +4812,22 @@ static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
     }
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_5)) {
-      PyObject *__pyx_temp[7] = {__pyx_t_6, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_nodes, __pyx_cur_scope->__pyx_v_src, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_target, ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_color_map), ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_pred), ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_dist)};
-      __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 6+__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
+      PyObject *__pyx_temp[7] = {__pyx_t_6, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_nodes, __pyx_cur_scope->__pyx_v_src, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_target, ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_s_pred), ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seen), __pyx_cur_scope->__pyx_outer_scope->__pyx_v_limit};
+      __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 6+__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_4);
     } else
     #endif
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
-      PyObject *__pyx_temp[7] = {__pyx_t_6, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_nodes, __pyx_cur_scope->__pyx_v_src, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_target, ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_color_map), ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_pred), ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_dist)};
-      __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 6+__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
+      PyObject *__pyx_temp[7] = {__pyx_t_6, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_nodes, __pyx_cur_scope->__pyx_v_src, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_target, ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_s_pred), ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seen), __pyx_cur_scope->__pyx_outer_scope->__pyx_v_limit};
+      __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 6+__pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_4);
     } else
     #endif
     {
-      __pyx_t_8 = PyTuple_New(6+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 244, __pyx_L1_error)
+      __pyx_t_8 = PyTuple_New(6+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 249, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       if (__pyx_t_6) {
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -5652,16 +4841,16 @@ static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
       __Pyx_INCREF(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_target);
       __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_target);
       PyTuple_SET_ITEM(__pyx_t_8, 2+__pyx_t_7, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_target);
-      __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_color_map));
-      __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_color_map));
-      PyTuple_SET_ITEM(__pyx_t_8, 3+__pyx_t_7, ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_color_map));
-      __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_pred));
-      __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_pred));
-      PyTuple_SET_ITEM(__pyx_t_8, 4+__pyx_t_7, ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_pred));
-      __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_dist));
-      __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_dist));
-      PyTuple_SET_ITEM(__pyx_t_8, 5+__pyx_t_7, ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_dist));
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 244, __pyx_L1_error)
+      __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_s_pred));
+      __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_s_pred));
+      PyTuple_SET_ITEM(__pyx_t_8, 3+__pyx_t_7, ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_s_pred));
+      __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seen));
+      __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seen));
+      PyTuple_SET_ITEM(__pyx_t_8, 4+__pyx_t_7, ((PyObject *)__pyx_cur_scope->__pyx_outer_scope->__pyx_v_seen));
+      __Pyx_INCREF(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_limit);
+      __Pyx_GIVEREF(__pyx_cur_scope->__pyx_outer_scope->__pyx_v_limit);
+      PyTuple_SET_ITEM(__pyx_t_8, 5+__pyx_t_7, __pyx_cur_scope->__pyx_outer_scope->__pyx_v_limit);
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
@@ -5684,7 +4873,7 @@ static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
     __Pyx_XGOTREF(__pyx_t_1);
     __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
     __pyx_t_3 = __pyx_cur_scope->__pyx_t_2;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 244, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 249, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
@@ -5710,7 +4899,7 @@ static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
   return __pyx_r;
 }
 
-/* "dawdlib/dijkstra/colorful.pyx":210
+/* "dawdlib/dijkstra/colorful.pyx":214
  * 
  * @cython.embedsignature(True)
  * def all_colorful_shortest_paths(             # <<<<<<<<<<<<<<
@@ -5718,7 +4907,7 @@ static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_p
  *     G: tp.Dict[int, tp.FrozenSet[int]],
  */
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_G, PyArrayObject *__pyx_v_weight, PyArrayObject *__pyx_v_sources, PyObject *__pyx_v_target, PyArrayObject *__pyx_v_colors, PyArrayObject *__pyx_v_color_map, PyObject *__pyx_v_no_colors, PyArrayObject *__pyx_v_pred, PyArrayObject *__pyx_v_dist, PyArrayObject *__pyx_v_seen, PyObject *__pyx_v_limit, PyObject *__pyx_v_repetitions) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_4all_colorful_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_G, PyArrayObject *__pyx_v_weight, PyArrayObject *__pyx_v_sources, PyObject *__pyx_v_target, PyArrayObject *__pyx_v_colors, PyArrayObject *__pyx_v_color_map, PyObject *__pyx_v_no_colors, PyArrayObject *__pyx_v_pred, PyArrayObject *__pyx_v_s_pred, PyArrayObject *__pyx_v_dist, PyArrayObject *__pyx_v_seen, PyObject *__pyx_v_limit, PyObject *__pyx_v_repetitions) {
   struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths *__pyx_cur_scope;
   PyObject *__pyx_v_found = NULL;
   CYTHON_UNUSED PyObject *__pyx_v_res = NULL;
@@ -5736,7 +4925,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 210, __pyx_L1_error)
+    __PYX_ERR(0, 214, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -5749,24 +4938,24 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
   __pyx_cur_scope->__pyx_v_target = __pyx_v_target;
   __Pyx_INCREF(__pyx_cur_scope->__pyx_v_target);
   __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_target);
-  __pyx_cur_scope->__pyx_v_color_map = __pyx_v_color_map;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_color_map);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_color_map);
-  __pyx_cur_scope->__pyx_v_pred = __pyx_v_pred;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_pred);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_pred);
-  __pyx_cur_scope->__pyx_v_dist = __pyx_v_dist;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_dist);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_dist);
+  __pyx_cur_scope->__pyx_v_s_pred = __pyx_v_s_pred;
+  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_s_pred);
+  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_s_pred);
+  __pyx_cur_scope->__pyx_v_seen = __pyx_v_seen;
+  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_seen);
+  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_seen);
+  __pyx_cur_scope->__pyx_v_limit = __pyx_v_limit;
+  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_limit);
+  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_limit);
 
-  /* "dawdlib/dijkstra/colorful.pyx":242
+  /* "dawdlib/dijkstra/colorful.pyx":247
  *     :rtype: generator
  *     """
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)             # <<<<<<<<<<<<<<
+ *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)             # <<<<<<<<<<<<<<
  *     if found:
- *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred, dist) for src in sources))
+ *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, s_pred, seen, limit) for src in sources))
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_find_shortest_paths); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 242, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_find_shortest_paths); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -5782,22 +4971,22 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
   }
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[12] = {__pyx_t_3, __pyx_v_G, ((PyObject *)__pyx_v_weight), ((PyObject *)__pyx_cur_scope->__pyx_v_sources), ((PyObject *)__pyx_v_colors), ((PyObject *)__pyx_cur_scope->__pyx_v_color_map), __pyx_v_no_colors, ((PyObject *)__pyx_cur_scope->__pyx_v_pred), ((PyObject *)__pyx_cur_scope->__pyx_v_dist), ((PyObject *)__pyx_v_seen), __pyx_v_limit, __pyx_v_repetitions};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 11+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
+    PyObject *__pyx_temp[13] = {__pyx_t_3, __pyx_v_G, ((PyObject *)__pyx_v_weight), ((PyObject *)__pyx_cur_scope->__pyx_v_sources), ((PyObject *)__pyx_v_colors), ((PyObject *)__pyx_v_color_map), __pyx_v_no_colors, ((PyObject *)__pyx_v_pred), ((PyObject *)__pyx_cur_scope->__pyx_v_s_pred), ((PyObject *)__pyx_v_dist), ((PyObject *)__pyx_cur_scope->__pyx_v_seen), __pyx_cur_scope->__pyx_v_limit, __pyx_v_repetitions};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 12+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 247, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[12] = {__pyx_t_3, __pyx_v_G, ((PyObject *)__pyx_v_weight), ((PyObject *)__pyx_cur_scope->__pyx_v_sources), ((PyObject *)__pyx_v_colors), ((PyObject *)__pyx_cur_scope->__pyx_v_color_map), __pyx_v_no_colors, ((PyObject *)__pyx_cur_scope->__pyx_v_pred), ((PyObject *)__pyx_cur_scope->__pyx_v_dist), ((PyObject *)__pyx_v_seen), __pyx_v_limit, __pyx_v_repetitions};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 11+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
+    PyObject *__pyx_temp[13] = {__pyx_t_3, __pyx_v_G, ((PyObject *)__pyx_v_weight), ((PyObject *)__pyx_cur_scope->__pyx_v_sources), ((PyObject *)__pyx_v_colors), ((PyObject *)__pyx_v_color_map), __pyx_v_no_colors, ((PyObject *)__pyx_v_pred), ((PyObject *)__pyx_cur_scope->__pyx_v_s_pred), ((PyObject *)__pyx_v_dist), ((PyObject *)__pyx_cur_scope->__pyx_v_seen), __pyx_cur_scope->__pyx_v_limit, __pyx_v_repetitions};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 12+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 247, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(11+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 242, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(12+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 247, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -5814,28 +5003,31 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
     __Pyx_INCREF(((PyObject *)__pyx_v_colors));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_colors));
     PyTuple_SET_ITEM(__pyx_t_5, 3+__pyx_t_4, ((PyObject *)__pyx_v_colors));
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_color_map));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_color_map));
-    PyTuple_SET_ITEM(__pyx_t_5, 4+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_color_map));
+    __Pyx_INCREF(((PyObject *)__pyx_v_color_map));
+    __Pyx_GIVEREF(((PyObject *)__pyx_v_color_map));
+    PyTuple_SET_ITEM(__pyx_t_5, 4+__pyx_t_4, ((PyObject *)__pyx_v_color_map));
     __Pyx_INCREF(__pyx_v_no_colors);
     __Pyx_GIVEREF(__pyx_v_no_colors);
     PyTuple_SET_ITEM(__pyx_t_5, 5+__pyx_t_4, __pyx_v_no_colors);
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_pred));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_pred));
-    PyTuple_SET_ITEM(__pyx_t_5, 6+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_pred));
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_dist));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_dist));
-    PyTuple_SET_ITEM(__pyx_t_5, 7+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_dist));
-    __Pyx_INCREF(((PyObject *)__pyx_v_seen));
-    __Pyx_GIVEREF(((PyObject *)__pyx_v_seen));
-    PyTuple_SET_ITEM(__pyx_t_5, 8+__pyx_t_4, ((PyObject *)__pyx_v_seen));
-    __Pyx_INCREF(__pyx_v_limit);
-    __Pyx_GIVEREF(__pyx_v_limit);
-    PyTuple_SET_ITEM(__pyx_t_5, 9+__pyx_t_4, __pyx_v_limit);
+    __Pyx_INCREF(((PyObject *)__pyx_v_pred));
+    __Pyx_GIVEREF(((PyObject *)__pyx_v_pred));
+    PyTuple_SET_ITEM(__pyx_t_5, 6+__pyx_t_4, ((PyObject *)__pyx_v_pred));
+    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_s_pred));
+    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_s_pred));
+    PyTuple_SET_ITEM(__pyx_t_5, 7+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_s_pred));
+    __Pyx_INCREF(((PyObject *)__pyx_v_dist));
+    __Pyx_GIVEREF(((PyObject *)__pyx_v_dist));
+    PyTuple_SET_ITEM(__pyx_t_5, 8+__pyx_t_4, ((PyObject *)__pyx_v_dist));
+    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_seen));
+    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_seen));
+    PyTuple_SET_ITEM(__pyx_t_5, 9+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_seen));
+    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_limit);
+    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_limit);
+    PyTuple_SET_ITEM(__pyx_t_5, 10+__pyx_t_4, __pyx_cur_scope->__pyx_v_limit);
     __Pyx_INCREF(__pyx_v_repetitions);
     __Pyx_GIVEREF(__pyx_v_repetitions);
-    PyTuple_SET_ITEM(__pyx_t_5, 10+__pyx_t_4, __pyx_v_repetitions);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 242, __pyx_L1_error)
+    PyTuple_SET_ITEM(__pyx_t_5, 11+__pyx_t_4, __pyx_v_repetitions);
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 247, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -5846,7 +5038,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
     if (unlikely(size != 2)) {
       if (size > 2) __Pyx_RaiseTooManyValuesError(2);
       else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 242, __pyx_L1_error)
+      __PYX_ERR(0, 247, __pyx_L1_error)
     }
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
     if (likely(PyTuple_CheckExact(sequence))) {
@@ -5859,15 +5051,15 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
     __Pyx_INCREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_t_5);
     #else
-    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 242, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 247, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 242, __pyx_L1_error)
+    __pyx_t_5 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 247, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     #endif
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   } else {
     Py_ssize_t index = -1;
-    __pyx_t_3 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 242, __pyx_L1_error)
+    __pyx_t_3 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 247, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_6 = Py_TYPE(__pyx_t_3)->tp_iternext;
@@ -5875,7 +5067,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
     __Pyx_GOTREF(__pyx_t_2);
     index = 1; __pyx_t_5 = __pyx_t_6(__pyx_t_3); if (unlikely(!__pyx_t_5)) goto __pyx_L3_unpacking_failed;
     __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_6(__pyx_t_3), 2) < 0) __PYX_ERR(0, 242, __pyx_L1_error)
+    if (__Pyx_IternextUnpackEndCheck(__pyx_t_6(__pyx_t_3), 2) < 0) __PYX_ERR(0, 247, __pyx_L1_error)
     __pyx_t_6 = NULL;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L4_unpacking_done;
@@ -5883,7 +5075,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_6 = NULL;
     if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 242, __pyx_L1_error)
+    __PYX_ERR(0, 247, __pyx_L1_error)
     __pyx_L4_unpacking_done:;
   }
   __pyx_v_found = __pyx_t_2;
@@ -5891,30 +5083,30 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
   __pyx_v_res = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":243
+  /* "dawdlib/dijkstra/colorful.pyx":248
  *     """
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
+ *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)
  *     if found:             # <<<<<<<<<<<<<<
- *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred, dist) for src in sources))
+ *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, s_pred, seen, limit) for src in sources))
  *     else:
  */
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_v_found); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_v_found); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 248, __pyx_L1_error)
   if (likely(__pyx_t_7)) {
 
-    /* "dawdlib/dijkstra/colorful.pyx":244
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
+    /* "dawdlib/dijkstra/colorful.pyx":249
+ *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)
  *     if found:
- *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred, dist) for src in sources))             # <<<<<<<<<<<<<<
+ *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, s_pred, seen, limit) for src in sources))             # <<<<<<<<<<<<<<
  *     else:
  *         raise nx.NetworkXNoPath()
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_chain); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 244, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_chain); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_from_iterable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 244, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_from_iterable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __pyx_pf_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_paths_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 244, __pyx_L1_error)
+    __pyx_t_5 = __pyx_pf_7dawdlib_8dijkstra_8colorful_27all_colorful_shortest_paths_genexpr(((PyObject*)__pyx_cur_scope)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_3 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -5929,33 +5121,33 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
     __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_t_5) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 244, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "dawdlib/dijkstra/colorful.pyx":243
+    /* "dawdlib/dijkstra/colorful.pyx":248
  *     """
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
+ *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)
  *     if found:             # <<<<<<<<<<<<<<
- *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred, dist) for src in sources))
+ *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, s_pred, seen, limit) for src in sources))
  *     else:
  */
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":246
- *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, color_map, pred, dist) for src in sources))
+  /* "dawdlib/dijkstra/colorful.pyx":251
+ *         return chain.from_iterable((yield_colorful_shortest_paths(nodes, src, target, s_pred, seen, limit) for src in sources))
  *     else:
  *         raise nx.NetworkXNoPath()             # <<<<<<<<<<<<<<
  * 
  * 
  */
   /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_nx); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 246, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_nx); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 246, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_2 = NULL;
@@ -5970,15 +5162,15 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
     }
     __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 246, __pyx_L1_error)
+    __PYX_ERR(0, 251, __pyx_L1_error)
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":210
+  /* "dawdlib/dijkstra/colorful.pyx":214
  * 
  * @cython.embedsignature(True)
  * def all_colorful_shortest_paths(             # <<<<<<<<<<<<<<
@@ -6002,686 +5194,19 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6all_colorful_shortest_pa
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_10generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "dawdlib/dijkstra/colorful.pyx":250
- * 
- * @cython.embedsignature(True)
- * def colorful_shortest_path(             # <<<<<<<<<<<<<<
- *     nodes: tp.List[int, tp.Any],
- *     G: tp.Dict[int, tp.FrozenSet[int]],
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_9colorful_shortest_path(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7dawdlib_8dijkstra_8colorful_8colorful_shortest_path[] = "colorful_shortest_path(nodes: tp.List[int, tp.Any], G: tp.Dict[int, tp.FrozenSet[int]], ndarray weight: np.ndarray, ndarray sources: np.ndarray, target: int, ndarray colors: np.ndarray, ndarray color_map: np.ndarray, no_colors: int, ndarray pred: np.ndarray, ndarray dist: np.ndarray, ndarray seen: np.ndarray, limit: int = 0, repetitions: int = 1) -> tp.List[tp.Any]\n\n    :param list nodes: The list of nodes, used to identify each node with an index\n    :param dict G: A mapping representation of the golden gate graph\n    :param numpy.ndarray weight: A numpy array representations of graph edge weights\n    :param numpy.ndarray sources: A numpy array holding indices of sources\n    :param int target: The path target\n    :param numpy.ndarray colors: A numpy array mapping between a node and it's colors\n    :param numpy.ndarray color_map: A numpy array holding the random recoloring\n    :param int no_colors: How many colors were used to created the dist and seen arrays\n    :param numpy.ndarray pred: A numpy array pointing to the predecessor of each node in the paths found\n    :param numpy.ndarray dist: A numpy array holding the minimum distance from source to node using specific colors\n    :param numpy.ndarray seen: A numpy array holding the minimum distance from source to node using specific colors\n    :param int limit: A limit to the number of gates found in the shortest path\n    :param int repetitions: How many times to try and find a shortest path using a random recoloring of no_colors\n    :return: A generator yielding shortest colorful paths\n    :rtype: generator\n    ";
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_9colorful_shortest_path = {"colorful_shortest_path", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_9colorful_shortest_path, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_8colorful_shortest_path};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_9colorful_shortest_path(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_nodes = 0;
-  PyObject *__pyx_v_G = 0;
-  PyArrayObject *__pyx_v_weight = 0;
-  PyArrayObject *__pyx_v_sources = 0;
-  PyObject *__pyx_v_target = 0;
-  PyArrayObject *__pyx_v_colors = 0;
-  PyArrayObject *__pyx_v_color_map = 0;
-  PyObject *__pyx_v_no_colors = 0;
-  PyArrayObject *__pyx_v_pred = 0;
-  PyArrayObject *__pyx_v_dist = 0;
-  PyArrayObject *__pyx_v_seen = 0;
-  PyObject *__pyx_v_limit = 0;
-  PyObject *__pyx_v_repetitions = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("colorful_shortest_path (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_nodes,&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_target,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
-    PyObject* values[13] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
-    values[11] = ((PyObject *)__pyx_int_0);
-    values[12] = ((PyObject *)__pyx_int_1);
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
-        CYTHON_FALLTHROUGH;
-        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
-        CYTHON_FALLTHROUGH;
-        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
-        CYTHON_FALLTHROUGH;
-        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
-        CYTHON_FALLTHROUGH;
-        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
-        CYTHON_FALLTHROUGH;
-        case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
-        CYTHON_FALLTHROUGH;
-        case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
-        CYTHON_FALLTHROUGH;
-        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-        CYTHON_FALLTHROUGH;
-        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-        CYTHON_FALLTHROUGH;
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_nodes)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_G)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 1); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_weight)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 2); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sources)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 3); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  4:
-        if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_target)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 4); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  5:
-        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_colors)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 5); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  6:
-        if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_color_map)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 6); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  7:
-        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_no_colors)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 7); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  8:
-        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pred)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 8); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  9:
-        if (likely((values[9] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 9); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case 10:
-        if (likely((values[10] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, 10); __PYX_ERR(0, 250, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case 11:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
-          if (value) { values[11] = value; kw_args--; }
-        }
-        CYTHON_FALLTHROUGH;
-        case 12:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
-          if (value) { values[12] = value; kw_args--; }
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "colorful_shortest_path") < 0)) __PYX_ERR(0, 250, __pyx_L3_error)
-      }
-    } else {
-      switch (PyTuple_GET_SIZE(__pyx_args)) {
-        case 13: values[12] = PyTuple_GET_ITEM(__pyx_args, 12);
-        CYTHON_FALLTHROUGH;
-        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
-        CYTHON_FALLTHROUGH;
-        case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
-        values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
-        values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
-        values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
-        values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
-        values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-        values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-        values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-    }
-    __pyx_v_nodes = values[0];
-    __pyx_v_G = values[1];
-    __pyx_v_weight = ((PyArrayObject *)values[2]);
-    __pyx_v_sources = ((PyArrayObject *)values[3]);
-    __pyx_v_target = values[4];
-    __pyx_v_colors = ((PyArrayObject *)values[5]);
-    __pyx_v_color_map = ((PyArrayObject *)values[6]);
-    __pyx_v_no_colors = values[7];
-    __pyx_v_pred = ((PyArrayObject *)values[8]);
-    __pyx_v_dist = ((PyArrayObject *)values[9]);
-    __pyx_v_seen = ((PyArrayObject *)values[10]);
-    __pyx_v_limit = values[11];
-    __pyx_v_repetitions = values[12];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 0, 11, 13, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 250, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.colorful_shortest_path", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_weight), __pyx_ptype_5numpy_ndarray, 1, "weight", 0))) __PYX_ERR(0, 253, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_sources), __pyx_ptype_5numpy_ndarray, 1, "sources", 0))) __PYX_ERR(0, 254, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_colors), __pyx_ptype_5numpy_ndarray, 1, "colors", 0))) __PYX_ERR(0, 256, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_color_map), __pyx_ptype_5numpy_ndarray, 1, "color_map", 0))) __PYX_ERR(0, 257, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_pred), __pyx_ptype_5numpy_ndarray, 1, "pred", 0))) __PYX_ERR(0, 259, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dist), __pyx_ptype_5numpy_ndarray, 1, "dist", 0))) __PYX_ERR(0, 260, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_seen), __pyx_ptype_5numpy_ndarray, 1, "seen", 0))) __PYX_ERR(0, 261, __pyx_L1_error)
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_8colorful_shortest_path(__pyx_self, __pyx_v_nodes, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_target, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_8colorful_shortest_path(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_G, PyArrayObject *__pyx_v_weight, PyArrayObject *__pyx_v_sources, PyObject *__pyx_v_target, PyArrayObject *__pyx_v_colors, PyArrayObject *__pyx_v_color_map, PyObject *__pyx_v_no_colors, PyArrayObject *__pyx_v_pred, PyArrayObject *__pyx_v_dist, PyArrayObject *__pyx_v_seen, PyObject *__pyx_v_limit, PyObject *__pyx_v_repetitions) {
-  struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("colorful_shortest_path", 0);
-  __pyx_cur_scope = (struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *)__pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path(__pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 250, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_nodes = __pyx_v_nodes;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_nodes);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_nodes);
-  __pyx_cur_scope->__pyx_v_G = __pyx_v_G;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_G);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_G);
-  __pyx_cur_scope->__pyx_v_weight = __pyx_v_weight;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_weight);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_weight);
-  __pyx_cur_scope->__pyx_v_sources = __pyx_v_sources;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_sources);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_sources);
-  __pyx_cur_scope->__pyx_v_target = __pyx_v_target;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_target);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_target);
-  __pyx_cur_scope->__pyx_v_colors = __pyx_v_colors;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_colors);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_colors);
-  __pyx_cur_scope->__pyx_v_color_map = __pyx_v_color_map;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_color_map);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_color_map);
-  __pyx_cur_scope->__pyx_v_no_colors = __pyx_v_no_colors;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_no_colors);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_no_colors);
-  __pyx_cur_scope->__pyx_v_pred = __pyx_v_pred;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_pred);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_pred);
-  __pyx_cur_scope->__pyx_v_dist = __pyx_v_dist;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_dist);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_dist);
-  __pyx_cur_scope->__pyx_v_seen = __pyx_v_seen;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_seen);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_seen);
-  __pyx_cur_scope->__pyx_v_limit = __pyx_v_limit;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_limit);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_limit);
-  __pyx_cur_scope->__pyx_v_repetitions = __pyx_v_repetitions;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_repetitions);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_repetitions);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_7dawdlib_8dijkstra_8colorful_10generator, __pyx_codeobj__2, (PyObject *) __pyx_cur_scope, __pyx_n_s_colorful_shortest_path, __pyx_n_s_colorful_shortest_path, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!gen)) __PYX_ERR(0, 250, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.colorful_shortest_path", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_10generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *__pyx_cur_scope = ((struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  int __pyx_t_4;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *(*__pyx_t_6)(PyObject *);
-  int __pyx_t_7;
-  Py_ssize_t __pyx_t_8;
-  PyObject *(*__pyx_t_9)(PyObject *);
-  PyObject *__pyx_t_10 = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("colorful_shortest_path", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L9_resume_from_yield;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 250, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":282
- *     :rtype: generator
- *     """
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)             # <<<<<<<<<<<<<<
- *     if found:
- *         for src in sources:
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_find_shortest_paths); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 282, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  __pyx_t_4 = 0;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-      __pyx_t_4 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[12] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_G, ((PyObject *)__pyx_cur_scope->__pyx_v_weight), ((PyObject *)__pyx_cur_scope->__pyx_v_sources), ((PyObject *)__pyx_cur_scope->__pyx_v_colors), ((PyObject *)__pyx_cur_scope->__pyx_v_color_map), __pyx_cur_scope->__pyx_v_no_colors, ((PyObject *)__pyx_cur_scope->__pyx_v_pred), ((PyObject *)__pyx_cur_scope->__pyx_v_dist), ((PyObject *)__pyx_cur_scope->__pyx_v_seen), __pyx_cur_scope->__pyx_v_limit, __pyx_cur_scope->__pyx_v_repetitions};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 11+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 282, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[12] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_G, ((PyObject *)__pyx_cur_scope->__pyx_v_weight), ((PyObject *)__pyx_cur_scope->__pyx_v_sources), ((PyObject *)__pyx_cur_scope->__pyx_v_colors), ((PyObject *)__pyx_cur_scope->__pyx_v_color_map), __pyx_cur_scope->__pyx_v_no_colors, ((PyObject *)__pyx_cur_scope->__pyx_v_pred), ((PyObject *)__pyx_cur_scope->__pyx_v_dist), ((PyObject *)__pyx_cur_scope->__pyx_v_seen), __pyx_cur_scope->__pyx_v_limit, __pyx_cur_scope->__pyx_v_repetitions};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 11+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 282, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-  } else
-  #endif
-  {
-    __pyx_t_5 = PyTuple_New(11+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 282, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (__pyx_t_3) {
-      __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
-    }
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_G);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_G);
-    PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_4, __pyx_cur_scope->__pyx_v_G);
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_weight));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_weight));
-    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_weight));
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_sources));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_sources));
-    PyTuple_SET_ITEM(__pyx_t_5, 2+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_sources));
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_colors));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_colors));
-    PyTuple_SET_ITEM(__pyx_t_5, 3+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_colors));
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_color_map));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_color_map));
-    PyTuple_SET_ITEM(__pyx_t_5, 4+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_color_map));
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_no_colors);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_no_colors);
-    PyTuple_SET_ITEM(__pyx_t_5, 5+__pyx_t_4, __pyx_cur_scope->__pyx_v_no_colors);
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_pred));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_pred));
-    PyTuple_SET_ITEM(__pyx_t_5, 6+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_pred));
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_dist));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_dist));
-    PyTuple_SET_ITEM(__pyx_t_5, 7+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_dist));
-    __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_seen));
-    __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_seen));
-    PyTuple_SET_ITEM(__pyx_t_5, 8+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_seen));
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_limit);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_limit);
-    PyTuple_SET_ITEM(__pyx_t_5, 9+__pyx_t_4, __pyx_cur_scope->__pyx_v_limit);
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_repetitions);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_repetitions);
-    PyTuple_SET_ITEM(__pyx_t_5, 10+__pyx_t_4, __pyx_cur_scope->__pyx_v_repetitions);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 282, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
-    PyObject* sequence = __pyx_t_1;
-    Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
-    if (unlikely(size != 2)) {
-      if (size > 2) __Pyx_RaiseTooManyValuesError(2);
-      else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-      __PYX_ERR(0, 282, __pyx_L1_error)
-    }
-    #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    if (likely(PyTuple_CheckExact(sequence))) {
-      __pyx_t_2 = PyTuple_GET_ITEM(sequence, 0); 
-      __pyx_t_5 = PyTuple_GET_ITEM(sequence, 1); 
-    } else {
-      __pyx_t_2 = PyList_GET_ITEM(sequence, 0); 
-      __pyx_t_5 = PyList_GET_ITEM(sequence, 1); 
-    }
-    __Pyx_INCREF(__pyx_t_2);
-    __Pyx_INCREF(__pyx_t_5);
-    #else
-    __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 282, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 282, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    #endif
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  } else {
-    Py_ssize_t index = -1;
-    __pyx_t_3 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 282, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_6 = Py_TYPE(__pyx_t_3)->tp_iternext;
-    index = 0; __pyx_t_2 = __pyx_t_6(__pyx_t_3); if (unlikely(!__pyx_t_2)) goto __pyx_L4_unpacking_failed;
-    __Pyx_GOTREF(__pyx_t_2);
-    index = 1; __pyx_t_5 = __pyx_t_6(__pyx_t_3); if (unlikely(!__pyx_t_5)) goto __pyx_L4_unpacking_failed;
-    __Pyx_GOTREF(__pyx_t_5);
-    if (__Pyx_IternextUnpackEndCheck(__pyx_t_6(__pyx_t_3), 2) < 0) __PYX_ERR(0, 282, __pyx_L1_error)
-    __pyx_t_6 = NULL;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    goto __pyx_L5_unpacking_done;
-    __pyx_L4_unpacking_failed:;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_6 = NULL;
-    if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-    __PYX_ERR(0, 282, __pyx_L1_error)
-    __pyx_L5_unpacking_done:;
-  }
-  __Pyx_GIVEREF(__pyx_t_2);
-  __pyx_cur_scope->__pyx_v_found = __pyx_t_2;
-  __pyx_t_2 = 0;
-  __Pyx_GIVEREF(__pyx_t_5);
-  __pyx_cur_scope->__pyx_v_res = __pyx_t_5;
-  __pyx_t_5 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":283
- *     """
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
- *     if found:             # <<<<<<<<<<<<<<
- *         for src in sources:
- *             yield colorful_shortest_path(nodes, src, target, color_map, dist)
- */
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_cur_scope->__pyx_v_found); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 283, __pyx_L1_error)
-  if (likely(__pyx_t_7)) {
-
-    /* "dawdlib/dijkstra/colorful.pyx":284
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
- *     if found:
- *         for src in sources:             # <<<<<<<<<<<<<<
- *             yield colorful_shortest_path(nodes, src, target, color_map, dist)
- *     else:
- */
-    if (likely(PyList_CheckExact(((PyObject *)__pyx_cur_scope->__pyx_v_sources))) || PyTuple_CheckExact(((PyObject *)__pyx_cur_scope->__pyx_v_sources))) {
-      __pyx_t_1 = ((PyObject *)__pyx_cur_scope->__pyx_v_sources); __Pyx_INCREF(__pyx_t_1); __pyx_t_8 = 0;
-      __pyx_t_9 = NULL;
-    } else {
-      __pyx_t_8 = -1; __pyx_t_1 = PyObject_GetIter(((PyObject *)__pyx_cur_scope->__pyx_v_sources)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_9 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 284, __pyx_L1_error)
-    }
-    for (;;) {
-      if (likely(!__pyx_t_9)) {
-        if (likely(PyList_CheckExact(__pyx_t_1))) {
-          if (__pyx_t_8 >= PyList_GET_SIZE(__pyx_t_1)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_8); __Pyx_INCREF(__pyx_t_5); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 284, __pyx_L1_error)
-          #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_1, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 284, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_5);
-          #endif
-        } else {
-          if (__pyx_t_8 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_8); __Pyx_INCREF(__pyx_t_5); __pyx_t_8++; if (unlikely(0 < 0)) __PYX_ERR(0, 284, __pyx_L1_error)
-          #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_1, __pyx_t_8); __pyx_t_8++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 284, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_5);
-          #endif
-        }
-      } else {
-        __pyx_t_5 = __pyx_t_9(__pyx_t_1);
-        if (unlikely(!__pyx_t_5)) {
-          PyObject* exc_type = PyErr_Occurred();
-          if (exc_type) {
-            if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 284, __pyx_L1_error)
-          }
-          break;
-        }
-        __Pyx_GOTREF(__pyx_t_5);
-      }
-      __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_src);
-      __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_src, __pyx_t_5);
-      __Pyx_GIVEREF(__pyx_t_5);
-      __pyx_t_5 = 0;
-
-      /* "dawdlib/dijkstra/colorful.pyx":285
- *     if found:
- *         for src in sources:
- *             yield colorful_shortest_path(nodes, src, target, color_map, dist)             # <<<<<<<<<<<<<<
- *     else:
- *         raise nx.NetworkXNoPath()
- */
-      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_colorful_shortest_path); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 285, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = NULL;
-      __pyx_t_4 = 0;
-      if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-        if (likely(__pyx_t_3)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-          __Pyx_INCREF(__pyx_t_3);
-          __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_2, function);
-          __pyx_t_4 = 1;
-        }
-      }
-      #if CYTHON_FAST_PYCALL
-      if (PyFunction_Check(__pyx_t_2)) {
-        PyObject *__pyx_temp[6] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_nodes, __pyx_cur_scope->__pyx_v_src, __pyx_cur_scope->__pyx_v_target, ((PyObject *)__pyx_cur_scope->__pyx_v_color_map), ((PyObject *)__pyx_cur_scope->__pyx_v_dist)};
-        __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 5+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 285, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __Pyx_GOTREF(__pyx_t_5);
-      } else
-      #endif
-      #if CYTHON_FAST_PYCCALL
-      if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-        PyObject *__pyx_temp[6] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_nodes, __pyx_cur_scope->__pyx_v_src, __pyx_cur_scope->__pyx_v_target, ((PyObject *)__pyx_cur_scope->__pyx_v_color_map), ((PyObject *)__pyx_cur_scope->__pyx_v_dist)};
-        __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 5+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 285, __pyx_L1_error)
-        __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __Pyx_GOTREF(__pyx_t_5);
-      } else
-      #endif
-      {
-        __pyx_t_10 = PyTuple_New(5+__pyx_t_4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 285, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_10);
-        if (__pyx_t_3) {
-          __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_3); __pyx_t_3 = NULL;
-        }
-        __Pyx_INCREF(__pyx_cur_scope->__pyx_v_nodes);
-        __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_nodes);
-        PyTuple_SET_ITEM(__pyx_t_10, 0+__pyx_t_4, __pyx_cur_scope->__pyx_v_nodes);
-        __Pyx_INCREF(__pyx_cur_scope->__pyx_v_src);
-        __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_src);
-        PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_4, __pyx_cur_scope->__pyx_v_src);
-        __Pyx_INCREF(__pyx_cur_scope->__pyx_v_target);
-        __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_target);
-        PyTuple_SET_ITEM(__pyx_t_10, 2+__pyx_t_4, __pyx_cur_scope->__pyx_v_target);
-        __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_color_map));
-        __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_color_map));
-        PyTuple_SET_ITEM(__pyx_t_10, 3+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_color_map));
-        __Pyx_INCREF(((PyObject *)__pyx_cur_scope->__pyx_v_dist));
-        __Pyx_GIVEREF(((PyObject *)__pyx_cur_scope->__pyx_v_dist));
-        PyTuple_SET_ITEM(__pyx_t_10, 4+__pyx_t_4, ((PyObject *)__pyx_cur_scope->__pyx_v_dist));
-        __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_10, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 285, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_5);
-        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      }
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_r = __pyx_t_5;
-      __pyx_t_5 = 0;
-      __Pyx_XGIVEREF(__pyx_t_1);
-      __pyx_cur_scope->__pyx_t_0 = __pyx_t_1;
-      __pyx_cur_scope->__pyx_t_1 = __pyx_t_8;
-      __pyx_cur_scope->__pyx_t_2 = __pyx_t_9;
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-      /* return from generator, yielding value */
-      __pyx_generator->resume_label = 1;
-      return __pyx_r;
-      __pyx_L9_resume_from_yield:;
-      __pyx_t_1 = __pyx_cur_scope->__pyx_t_0;
-      __pyx_cur_scope->__pyx_t_0 = 0;
-      __Pyx_XGOTREF(__pyx_t_1);
-      __pyx_t_8 = __pyx_cur_scope->__pyx_t_1;
-      __pyx_t_9 = __pyx_cur_scope->__pyx_t_2;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 285, __pyx_L1_error)
-
-      /* "dawdlib/dijkstra/colorful.pyx":284
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
- *     if found:
- *         for src in sources:             # <<<<<<<<<<<<<<
- *             yield colorful_shortest_path(nodes, src, target, color_map, dist)
- *     else:
- */
-    }
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-    /* "dawdlib/dijkstra/colorful.pyx":283
- *     """
- *     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit, repetitions)
- *     if found:             # <<<<<<<<<<<<<<
- *         for src in sources:
- *             yield colorful_shortest_path(nodes, src, target, color_map, dist)
- */
-    goto __pyx_L6;
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":287
- *             yield colorful_shortest_path(nodes, src, target, color_map, dist)
- *     else:
- *         raise nx.NetworkXNoPath()             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  /*else*/ {
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_nx); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 287, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 287, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
-      if (likely(__pyx_t_5)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-        __Pyx_INCREF(__pyx_t_5);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_2, function);
-      }
-    }
-    __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
-    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_Raise(__pyx_t_1, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 287, __pyx_L1_error)
-  }
-  __pyx_L6:;
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* "dawdlib/dijkstra/colorful.pyx":250
- * 
- * @cython.embedsignature(True)
- * def colorful_shortest_path(             # <<<<<<<<<<<<<<
- *     nodes: tp.List[int, tp.Any],
- *     G: tp.Dict[int, tp.FrozenSet[int]],
- */
-
-  /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_AddTraceback("colorful_shortest_path", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":290
+/* "dawdlib/dijkstra/colorful.pyx":295
  * 
  * 
  * def find_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_12find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_12find_shortest_paths = {"find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_12find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_12find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_7find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_7find_shortest_paths = {"find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_7find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_7find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_signatures = 0;
   PyObject *__pyx_v_args = 0;
   PyObject *__pyx_v_kwargs = 0;
@@ -6716,23 +5241,23 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_12find_shortest_paths(PyO
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_args)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 1); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 1); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_kwargs)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 2); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 2); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_defaults)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 3); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 3); __PYX_ERR(0, 295, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fused_cpdef") < 0)) __PYX_ERR(0, 290, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fused_cpdef") < 0)) __PYX_ERR(0, 295, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
       goto __pyx_L5_argtuple_error;
@@ -6749,20 +5274,20 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_12find_shortest_paths(PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 290, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 295, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("dawdlib.dijkstra.colorful.__pyx_fused_cpdef", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(__pyx_self, __pyx_v_signatures, __pyx_v_args, __pyx_v_kwargs, __pyx_v_defaults);
+  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_6find_shortest_paths(__pyx_self, __pyx_v_signatures, __pyx_v_args, __pyx_v_kwargs, __pyx_v_defaults);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_6find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults) {
   PyObject *__pyx_v_dest_sig = NULL;
   Py_ssize_t __pyx_v_i;
   PyTypeObject *__pyx_v_ndarray = 0;
@@ -6804,7 +5329,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
   int __pyx_t_18;
   __Pyx_RefNannySetupContext("find_shortest_paths", 0);
   __Pyx_INCREF(__pyx_v_kwargs);
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(Py_None);
@@ -6818,7 +5343,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
     __pyx_t_2 = __pyx_t_4;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_kwargs); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_kwargs); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
   __pyx_t_3 = ((!__pyx_t_4) != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
@@ -6826,7 +5351,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
     __Pyx_INCREF(Py_None);
     __Pyx_DECREF_SET(__pyx_v_kwargs, Py_None);
   }
-  __pyx_t_1 = ((PyObject *)__Pyx_ImportNumPyArrayTypeIfAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__Pyx_ImportNumPyArrayTypeIfAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_ndarray = ((PyTypeObject*)__pyx_t_1);
   __pyx_t_1 = 0;
@@ -6837,16 +5362,16 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
   __pyx_v____pyx_uint64_t_is_signed = (!((((uint64_t)-1L) > 0) != 0));
   if (unlikely(__pyx_v_args == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 290, __pyx_L1_error)
+    __PYX_ERR(0, 295, __pyx_L1_error)
   }
-  __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 290, __pyx_L1_error)
-  __pyx_t_2 = ((1 < __pyx_t_5) != 0);
+  __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_t_2 = ((4 < __pyx_t_5) != 0);
   if (__pyx_t_2) {
     if (unlikely(__pyx_v_args == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 290, __pyx_L1_error)
+      __PYX_ERR(0, 295, __pyx_L1_error)
     }
-    __pyx_t_1 = PyTuple_GET_ITEM(((PyObject*)__pyx_v_args), 1);
+    __pyx_t_1 = PyTuple_GET_ITEM(((PyObject*)__pyx_v_args), 4);
     __Pyx_INCREF(__pyx_t_1);
     __pyx_v_arg = __pyx_t_1;
     __pyx_t_1 = 0;
@@ -6861,18 +5386,18 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
   }
   if (unlikely(__pyx_v_kwargs == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 290, __pyx_L1_error)
+    __PYX_ERR(0, 295, __pyx_L1_error)
   }
-  __pyx_t_4 = (__Pyx_PyDict_ContainsTF(__pyx_n_s_weight, ((PyObject*)__pyx_v_kwargs), Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_4 = (__Pyx_PyDict_ContainsTF(__pyx_n_s_color_map, ((PyObject*)__pyx_v_kwargs), Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
   __pyx_t_3 = (__pyx_t_4 != 0);
   __pyx_t_2 = __pyx_t_3;
   __pyx_L7_bool_binop_done:;
   if (__pyx_t_2) {
     if (unlikely(__pyx_v_kwargs == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 290, __pyx_L1_error)
+      __PYX_ERR(0, 295, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_kwargs), __pyx_n_s_weight); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_kwargs), __pyx_n_s_color_map); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_v_arg = __pyx_t_1;
     __pyx_t_1 = 0;
@@ -6881,31 +5406,31 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
   /*else*/ {
     if (unlikely(__pyx_v_args == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      __PYX_ERR(0, 290, __pyx_L1_error)
+      __PYX_ERR(0, 295, __pyx_L1_error)
     }
-    __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 290, __pyx_L1_error)
-    __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 295, __pyx_L1_error)
+    __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_INCREF(__pyx_int_9);
-    __Pyx_GIVEREF(__pyx_int_9);
-    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_int_9);
+    __Pyx_INCREF(__pyx_int_10);
+    __Pyx_GIVEREF(__pyx_int_10);
+    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_int_10);
     __Pyx_INCREF(__pyx_n_s_s);
     __Pyx_GIVEREF(__pyx_n_s_s);
     PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_n_s_s);
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyString_Format(__pyx_kp_s_Expected_at_least_d_argument_s_g, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyString_Format(__pyx_kp_s_Expected_at_least_d_argument_s_g, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 290, __pyx_L1_error)
+    __PYX_ERR(0, 295, __pyx_L1_error)
   }
   __pyx_L6:;
   while (1) {
@@ -6915,7 +5440,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
       __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg, __pyx_v_ndarray); 
       __pyx_t_2 = (__pyx_t_3 != 0);
       if (__pyx_t_2) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_v_dtype = __pyx_t_6;
         __pyx_t_6 = 0;
@@ -6924,14 +5449,14 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
       __pyx_t_2 = __pyx_memoryview_check(__pyx_v_arg); 
       __pyx_t_3 = (__pyx_t_2 != 0);
       if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_v_arg_base = __pyx_t_6;
         __pyx_t_6 = 0;
         __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg_base, __pyx_v_ndarray); 
         __pyx_t_2 = (__pyx_t_3 != 0);
         if (__pyx_t_2) {
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_base, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_base, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_v_dtype = __pyx_t_6;
           __pyx_t_6 = 0;
@@ -6953,14 +5478,14 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
       __pyx_t_2 = (__pyx_v_dtype != Py_None);
       __pyx_t_3 = (__pyx_t_2 != 0);
       if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_itemsize); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_itemsize); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 290, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 295, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_v_itemsize = __pyx_t_5;
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_kind); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_kind); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyObject_Ord(__pyx_t_6); if (unlikely(__pyx_t_7 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 290, __pyx_L1_error)
+        __pyx_t_7 = __Pyx_PyObject_Ord(__pyx_t_6); if (unlikely(__pyx_t_7 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 295, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __pyx_v_kind = __pyx_t_7;
         __pyx_v_dtype_signed = (__pyx_v_kind == 'i');
@@ -6973,11 +5498,11 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L16_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 290, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 295, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
+          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 1) != 0);
           if (__pyx_t_2) {
           } else {
             __pyx_t_3 = __pyx_t_2;
@@ -6987,7 +5512,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
           __pyx_t_3 = __pyx_t_2;
           __pyx_L16_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint8_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint8_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(uint16_t)) == __pyx_v_itemsize) != 0);
@@ -6996,11 +5521,11 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L20_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 290, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 295, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
+          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 1) != 0);
           if (__pyx_t_2) {
           } else {
             __pyx_t_3 = __pyx_t_2;
@@ -7010,7 +5535,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
           __pyx_t_3 = __pyx_t_2;
           __pyx_L20_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint16_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint16_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(uint32_t)) == __pyx_v_itemsize) != 0);
@@ -7019,11 +5544,11 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L24_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 290, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 295, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
+          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 1) != 0);
           if (__pyx_t_2) {
           } else {
             __pyx_t_3 = __pyx_t_2;
@@ -7033,7 +5558,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
           __pyx_t_3 = __pyx_t_2;
           __pyx_L24_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint32_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint32_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           __pyx_t_2 = (((sizeof(uint64_t)) == __pyx_v_itemsize) != 0);
@@ -7042,11 +5567,11 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
             __pyx_t_3 = __pyx_t_2;
             goto __pyx_L28_bool_binop_done;
           }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 290, __pyx_L1_error)
+          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 295, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 2) != 0);
+          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 1) != 0);
           if (__pyx_t_2) {
           } else {
             __pyx_t_3 = __pyx_t_2;
@@ -7056,7 +5581,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
           __pyx_t_3 = __pyx_t_2;
           __pyx_L28_bool_binop_done:;
           if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint64_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint64_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
             goto __pyx_L10_break;
           }
           break;
@@ -7080,12 +5605,12 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
     __pyx_t_3 = __pyx_t_2;
     __pyx_L32_bool_binop_done:;
     if (__pyx_t_3) {
-      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(__pyx_v_arg, 0); 
+      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint8_t(__pyx_v_arg, 0); 
       __pyx_v_memslice = __pyx_t_8;
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint8_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint8_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -7102,12 +5627,12 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
     __pyx_t_3 = __pyx_t_2;
     __pyx_L36_bool_binop_done:;
     if (__pyx_t_3) {
-      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(__pyx_v_arg, 0); 
+      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint16_t(__pyx_v_arg, 0); 
       __pyx_v_memslice = __pyx_t_8;
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint16_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint16_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -7124,12 +5649,12 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
     __pyx_t_3 = __pyx_t_2;
     __pyx_L40_bool_binop_done:;
     if (__pyx_t_3) {
-      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(__pyx_v_arg, 0); 
+      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint32_t(__pyx_v_arg, 0); 
       __pyx_v_memslice = __pyx_t_8;
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint32_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint32_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
@@ -7146,32 +5671,32 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
     __pyx_t_3 = __pyx_t_2;
     __pyx_L44_bool_binop_done:;
     if (__pyx_t_3) {
-      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(__pyx_v_arg, 0); 
+      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint64_t(__pyx_v_arg, 0); 
       __pyx_v_memslice = __pyx_t_8;
       __pyx_t_3 = (__pyx_v_memslice.memview != 0);
       if (__pyx_t_3) {
         __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint64_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint64_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
         goto __pyx_L10_break;
       }
       /*else*/ {
         PyErr_Clear(); 
       }
     }
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
     goto __pyx_L10_break;
   }
   __pyx_L10_break:;
-  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_v_candidates = ((PyObject*)__pyx_t_6);
   __pyx_t_6 = 0;
   __pyx_t_5 = 0;
   if (unlikely(__pyx_v_signatures == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 290, __pyx_L1_error)
+    __PYX_ERR(0, 295, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_dict_iterator(((PyObject*)__pyx_v_signatures), 1, ((PyObject *)NULL), (&__pyx_t_9), (&__pyx_t_10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_dict_iterator(((PyObject*)__pyx_v_signatures), 1, ((PyObject *)NULL), (&__pyx_t_9), (&__pyx_t_10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_6);
   __pyx_t_6 = __pyx_t_1;
@@ -7179,12 +5704,12 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
   while (1) {
     __pyx_t_11 = __Pyx_dict_iter_next(__pyx_t_6, __pyx_t_9, &__pyx_t_5, &__pyx_t_1, NULL, NULL, __pyx_t_10);
     if (unlikely(__pyx_t_11 == 0)) break;
-    if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 290, __pyx_L1_error)
+    if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_sig, __pyx_t_1);
     __pyx_t_1 = 0;
     __pyx_v_match_found = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_sig, __pyx_n_s_strip); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_sig, __pyx_n_s_strip); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __pyx_t_14 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_13))) {
@@ -7196,12 +5721,12 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
         __Pyx_DECREF_SET(__pyx_t_13, function);
       }
     }
-    __pyx_t_12 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_14, __pyx_kp_s__3) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s__3);
+    __pyx_t_12 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_14, __pyx_kp_s__2) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s__2);
     __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 290, __pyx_L1_error)
+    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_split); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_split); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __pyx_t_12 = NULL;
@@ -7214,14 +5739,14 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
         __Pyx_DECREF_SET(__pyx_t_13, function);
       }
     }
-    __pyx_t_1 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_12, __pyx_kp_s__4) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s__4);
+    __pyx_t_1 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_12, __pyx_kp_s__3) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s__3);
     __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_XDECREF_SET(__pyx_v_src_sig, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_15 = PyList_GET_SIZE(__pyx_v_dest_sig); if (unlikely(__pyx_t_15 == ((Py_ssize_t)-1))) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_15 = PyList_GET_SIZE(__pyx_v_dest_sig); if (unlikely(__pyx_t_15 == ((Py_ssize_t)-1))) __PYX_ERR(0, 295, __pyx_L1_error)
     __pyx_t_16 = __pyx_t_15;
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_i = __pyx_t_17;
@@ -7232,11 +5757,11 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
       __pyx_t_3 = (__pyx_v_dst_type != Py_None);
       __pyx_t_2 = (__pyx_t_3 != 0);
       if (__pyx_t_2) {
-        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_src_sig, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_src_sig, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_13 = PyObject_RichCompare(__pyx_t_1, __pyx_v_dst_type, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 290, __pyx_L1_error)
+        __pyx_t_13 = PyObject_RichCompare(__pyx_t_1, __pyx_v_dst_type, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 295, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_13); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 290, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_13); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         if (__pyx_t_2) {
           __pyx_v_match_found = 1;
@@ -7252,35 +5777,35 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
     __pyx_L50_break:;
     __pyx_t_2 = (__pyx_v_match_found != 0);
     if (__pyx_t_2) {
-      __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_candidates, __pyx_v_sig); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 290, __pyx_L1_error)
+      __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_candidates, __pyx_v_sig); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 295, __pyx_L1_error)
     }
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_2 = (PyList_GET_SIZE(__pyx_v_candidates) != 0);
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 290, __pyx_L1_error)
+    __PYX_ERR(0, 295, __pyx_L1_error)
   }
-  __pyx_t_9 = PyList_GET_SIZE(__pyx_v_candidates); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_9 = PyList_GET_SIZE(__pyx_v_candidates); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 295, __pyx_L1_error)
   __pyx_t_3 = ((__pyx_t_9 > 1) != 0);
   if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 290, __pyx_L1_error)
+    __PYX_ERR(0, 295, __pyx_L1_error)
   }
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
     if (unlikely(__pyx_v_signatures == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 290, __pyx_L1_error)
+      __PYX_ERR(0, 295, __pyx_L1_error)
     }
-    __pyx_t_6 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_signatures), PyList_GET_ITEM(__pyx_v_candidates, 0)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 290, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_signatures), PyList_GET_ITEM(__pyx_v_candidates, 0)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 295, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_r = __pyx_t_6;
     __pyx_t_6 = 0;
@@ -7312,7 +5837,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(CYT
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_54__defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28__defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7320,11 +5845,11 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_54__defaults__(CYTHON_UNU
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__defaults__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults4, __pyx_self)->__pyx_arg_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults4, __pyx_self)->__pyx_arg_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults4, __pyx_self)->__pyx_arg_repetitions); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults4, __pyx_self)->__pyx_arg_repetitions); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -7332,7 +5857,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_54__defaults__(CYTHON_UNU
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
@@ -7358,9 +5883,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_54__defaults__(CYTHON_UNU
 }
 
 /* Python wrapper */
-static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_27find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_0__pyx_mdef_7dawdlib_8dijkstra_8colorful_27find_shortest_paths = {"__pyx_fuse_0find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_27find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_27find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_0__pyx_mdef_7dawdlib_8dijkstra_8colorful_11find_shortest_paths = {"__pyx_fuse_0find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_11find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_11find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   std::map<int,std::vector<int> >  __pyx_v_G;
   __Pyx_memviewslice __pyx_v_weight = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_sources = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -7368,6 +5893,7 @@ static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_27find_shorte
   __Pyx_memviewslice __pyx_v_color_map = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_no_colors;
   __Pyx_memviewslice __pyx_v_pred = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_s_pred = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dist = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_seen = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_limit;
@@ -7376,13 +5902,15 @@ static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_27find_shorte
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("find_shortest_paths (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
-    PyObject* values[11] = {0,0,0,0,0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
+    PyObject* values[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
     __pyx_defaults4 *__pyx_dynamic_args = __Pyx_CyFunction_Defaults(__pyx_defaults4, __pyx_self);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
         case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         CYTHON_FALLTHROUGH;
         case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
@@ -7417,73 +5945,80 @@ static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_27find_shorte
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_weight)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 1); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 1); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sources)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 2); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 2); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 3); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 3); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_color_map)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 4); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 4); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_no_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 5); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 5); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 6); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 6); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  7:
-        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 7); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 7); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  8:
-        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 8); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 8); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  9:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
-          if (value) { values[9] = value; kw_args--; }
+        if (likely((values[9] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 9); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case 10:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
           if (value) { values[10] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case 11:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          if (value) { values[11] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_shortest_paths") < 0)) __PYX_ERR(0, 290, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_shortest_paths") < 0)) __PYX_ERR(0, 295, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
         case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         CYTHON_FALLTHROUGH;
         case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
-        CYTHON_FALLTHROUGH;
-        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
         values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -7496,42 +6031,43 @@ static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_27find_shorte
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_G = __pyx_convert_map_from_py_int__and_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 291, __pyx_L3_error)
-    __pyx_v_weight = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_weight.memview)) __PYX_ERR(0, 292, __pyx_L3_error)
-    __pyx_v_sources = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sources.memview)) __PYX_ERR(0, 293, __pyx_L3_error)
-    __pyx_v_colors = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_colors.memview)) __PYX_ERR(0, 294, __pyx_L3_error)
-    __pyx_v_color_map = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint8_t(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_color_map.memview)) __PYX_ERR(0, 295, __pyx_L3_error)
-    __pyx_v_no_colors = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_no_colors == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L3_error)
-    __pyx_v_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_pred.memview)) __PYX_ERR(0, 297, __pyx_L3_error)
-    __pyx_v_dist = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dist.memview)) __PYX_ERR(0, 298, __pyx_L3_error)
-    __pyx_v_seen = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_seen.memview)) __PYX_ERR(0, 299, __pyx_L3_error)
-    if (values[9]) {
-      __pyx_v_limit = __Pyx_PyInt_As_int(values[9]); if (unlikely((__pyx_v_limit == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_G = __pyx_convert_map_from_py_int__and_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L3_error)
+    __pyx_v_weight = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_weight.memview)) __PYX_ERR(0, 297, __pyx_L3_error)
+    __pyx_v_sources = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sources.memview)) __PYX_ERR(0, 298, __pyx_L3_error)
+    __pyx_v_colors = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_colors.memview)) __PYX_ERR(0, 299, __pyx_L3_error)
+    __pyx_v_color_map = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint8_t(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_color_map.memview)) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_no_colors = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_no_colors == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L3_error)
+    __pyx_v_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_pred.memview)) __PYX_ERR(0, 302, __pyx_L3_error)
+    __pyx_v_s_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_s_pred.memview)) __PYX_ERR(0, 303, __pyx_L3_error)
+    __pyx_v_dist = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dist.memview)) __PYX_ERR(0, 304, __pyx_L3_error)
+    __pyx_v_seen = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[9], PyBUF_WRITABLE); if (unlikely(!__pyx_v_seen.memview)) __PYX_ERR(0, 305, __pyx_L3_error)
+    if (values[10]) {
+      __pyx_v_limit = __Pyx_PyInt_As_int(values[10]); if (unlikely((__pyx_v_limit == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L3_error)
     } else {
       __pyx_v_limit = __pyx_dynamic_args->__pyx_arg_limit;
     }
-    if (values[10]) {
-      __pyx_v_repetitions = __Pyx_PyInt_As_int(values[10]); if (unlikely((__pyx_v_repetitions == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L3_error)
+    if (values[11]) {
+      __pyx_v_repetitions = __Pyx_PyInt_As_int(values[11]); if (unlikely((__pyx_v_repetitions == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 307, __pyx_L3_error)
     } else {
       __pyx_v_repetitions = __pyx_dynamic_args->__pyx_arg_repetitions;
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 290, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 295, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("dawdlib.dijkstra.colorful.find_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(__pyx_self, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
+  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_10find_shortest_paths(__pyx_self, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_10find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions) {
   int __pyx_v_j;
   CYTHON_UNUSED int __pyx_v_i;
   int __pyx_v_res;
@@ -7551,7 +6087,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
   PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_0find_shortest_paths", 0);
 
-  /* "dawdlib/dijkstra/colorful.pyx":304
+  /* "dawdlib/dijkstra/colorful.pyx":310
  * ):
  *     cdef:
  *         int j = 0             # <<<<<<<<<<<<<<
@@ -7560,7 +6096,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
  */
   __pyx_v_j = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":305
+  /* "dawdlib/dijkstra/colorful.pyx":311
  *     cdef:
  *         int j = 0
  *         int i = 0             # <<<<<<<<<<<<<<
@@ -7569,7 +6105,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
  */
   __pyx_v_i = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":306
+  /* "dawdlib/dijkstra/colorful.pyx":312
  *         int j = 0
  *         int i = 0
  *         int res = 0             # <<<<<<<<<<<<<<
@@ -7578,24 +6114,24 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
  */
   __pyx_v_res = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":308
+  /* "dawdlib/dijkstra/colorful.pyx":314
  *         int res = 0
  * 
  *     for i in range(repetitions):             # <<<<<<<<<<<<<<
  *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+ *         s_pred[:] = numeric_limits[umy_type].max()
  */
   __pyx_t_1 = __pyx_v_repetitions;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "dawdlib/dijkstra/colorful.pyx":309
+    /* "dawdlib/dijkstra/colorful.pyx":315
  * 
  *     for i in range(repetitions):
  *         pred[:] = 0             # <<<<<<<<<<<<<<
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
- *         for j in range(pred.shape[1]):
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  */
     {
         uint8_t __pyx_temp_scalar = 0;
@@ -7610,21 +6146,41 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
         }
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":310
+    /* "dawdlib/dijkstra/colorful.pyx":316
  *     for i in range(repetitions):
  *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)             # <<<<<<<<<<<<<<
+ *         s_pred[:] = numeric_limits[umy_type].max()             # <<<<<<<<<<<<<<
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
+ *         for j in range(pred.shape[1]):
+ */
+    {
+        uint8_t __pyx_temp_scalar = std::numeric_limits<uint8_t> ::max();
+        {
+            Py_ssize_t __pyx_temp_extent = __pyx_v_s_pred.shape[0] * __pyx_v_s_pred.shape[1];
+            Py_ssize_t __pyx_temp_idx;
+            uint8_t *__pyx_temp_pointer = (uint8_t *) __pyx_v_s_pred.data;
+            for (__pyx_temp_idx = 0; __pyx_temp_idx < __pyx_temp_extent; __pyx_temp_idx++) {
+              *((uint8_t *) __pyx_temp_pointer) = __pyx_temp_scalar;
+              __pyx_temp_pointer += 1;
+            }
+        }
+    }
+
+    /* "dawdlib/dijkstra/colorful.pyx":317
+ *         pred[:] = 0
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)             # <<<<<<<<<<<<<<
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:
  */
     __pyx_t_5.__pyx_n = 1;
     __pyx_t_5.limit = __pyx_v_limit;
-    __pyx_t_4 = __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_5); 
+    __pyx_t_4 = __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_5); 
     __pyx_v_res = __pyx_t_4;
 
-    /* "dawdlib/dijkstra/colorful.pyx":311
- *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+    /* "dawdlib/dijkstra/colorful.pyx":318
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):             # <<<<<<<<<<<<<<
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res
@@ -7634,8 +6190,8 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_7; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "dawdlib/dijkstra/colorful.pyx":312
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+      /* "dawdlib/dijkstra/colorful.pyx":319
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:             # <<<<<<<<<<<<<<
  *                 return True, res
@@ -7646,7 +6202,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
       __pyx_t_10 = (((*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_8 * __pyx_v_pred.strides[0]) )) + __pyx_t_9)) ))) > 0) != 0);
       if (__pyx_t_10) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":313
+        /* "dawdlib/dijkstra/colorful.pyx":320
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res             # <<<<<<<<<<<<<<
@@ -7654,9 +6210,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
  * 
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 320, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 320, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_INCREF(Py_True);
         __Pyx_GIVEREF(Py_True);
@@ -7668,8 +6224,8 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
         __pyx_t_12 = 0;
         goto __pyx_L0;
 
-        /* "dawdlib/dijkstra/colorful.pyx":312
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+        /* "dawdlib/dijkstra/colorful.pyx":319
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:             # <<<<<<<<<<<<<<
  *                 return True, res
@@ -7679,7 +6235,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":314
+  /* "dawdlib/dijkstra/colorful.pyx":321
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res
  *     return False, res             # <<<<<<<<<<<<<<
@@ -7687,9 +6243,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_INCREF(Py_False);
   __Pyx_GIVEREF(Py_False);
@@ -7701,12 +6257,12 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
   __pyx_t_11 = 0;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":290
+  /* "dawdlib/dijkstra/colorful.pyx":295
  * 
  * 
  * def find_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -7721,6 +6277,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
   __PYX_XDEC_MEMVIEW(&__pyx_v_colors, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_color_map, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_pred, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_s_pred, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_dist, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_seen, 1);
   __Pyx_XGIVEREF(__pyx_r);
@@ -7728,7 +6285,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_26find_shortest_paths(CYT
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_56__defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30__defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -7736,11 +6293,11 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_56__defaults__(CYTHON_UNU
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__defaults__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults5, __pyx_self)->__pyx_arg_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults5, __pyx_self)->__pyx_arg_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults5, __pyx_self)->__pyx_arg_repetitions); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults5, __pyx_self)->__pyx_arg_repetitions); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -7748,7 +6305,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_56__defaults__(CYTHON_UNU
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
@@ -7774,9 +6331,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_56__defaults__(CYTHON_UNU
 }
 
 /* Python wrapper */
-static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_29find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_1__pyx_mdef_7dawdlib_8dijkstra_8colorful_29find_shortest_paths = {"__pyx_fuse_1find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_29find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_29find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_13find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_1__pyx_mdef_7dawdlib_8dijkstra_8colorful_13find_shortest_paths = {"__pyx_fuse_1find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_13find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_13find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   std::map<int,std::vector<int> >  __pyx_v_G;
   __Pyx_memviewslice __pyx_v_weight = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_sources = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -7784,6 +6341,7 @@ static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_29find_shorte
   __Pyx_memviewslice __pyx_v_color_map = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_no_colors;
   __Pyx_memviewslice __pyx_v_pred = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_s_pred = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dist = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_seen = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_limit;
@@ -7792,13 +6350,15 @@ static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_29find_shorte
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("find_shortest_paths (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
-    PyObject* values[11] = {0,0,0,0,0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
+    PyObject* values[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
     __pyx_defaults5 *__pyx_dynamic_args = __Pyx_CyFunction_Defaults(__pyx_defaults5, __pyx_self);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
         case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         CYTHON_FALLTHROUGH;
         case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
@@ -7833,73 +6393,80 @@ static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_29find_shorte
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_weight)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 1); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 1); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sources)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 2); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 2); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 3); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 3); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_color_map)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 4); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 4); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_no_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 5); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 5); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 6); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 6); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  7:
-        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 7); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 7); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  8:
-        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 8); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 8); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  9:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
-          if (value) { values[9] = value; kw_args--; }
+        if (likely((values[9] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 9); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case 10:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
           if (value) { values[10] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case 11:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          if (value) { values[11] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_shortest_paths") < 0)) __PYX_ERR(0, 290, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_shortest_paths") < 0)) __PYX_ERR(0, 295, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
         case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         CYTHON_FALLTHROUGH;
         case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
-        CYTHON_FALLTHROUGH;
-        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
         values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -7912,42 +6479,43 @@ static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_29find_shorte
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_G = __pyx_convert_map_from_py_int__and_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 291, __pyx_L3_error)
-    __pyx_v_weight = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_weight.memview)) __PYX_ERR(0, 292, __pyx_L3_error)
-    __pyx_v_sources = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sources.memview)) __PYX_ERR(0, 293, __pyx_L3_error)
-    __pyx_v_colors = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_colors.memview)) __PYX_ERR(0, 294, __pyx_L3_error)
-    __pyx_v_color_map = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint16_t(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_color_map.memview)) __PYX_ERR(0, 295, __pyx_L3_error)
-    __pyx_v_no_colors = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_no_colors == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L3_error)
-    __pyx_v_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_pred.memview)) __PYX_ERR(0, 297, __pyx_L3_error)
-    __pyx_v_dist = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dist.memview)) __PYX_ERR(0, 298, __pyx_L3_error)
-    __pyx_v_seen = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_seen.memview)) __PYX_ERR(0, 299, __pyx_L3_error)
-    if (values[9]) {
-      __pyx_v_limit = __Pyx_PyInt_As_int(values[9]); if (unlikely((__pyx_v_limit == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_G = __pyx_convert_map_from_py_int__and_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L3_error)
+    __pyx_v_weight = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_weight.memview)) __PYX_ERR(0, 297, __pyx_L3_error)
+    __pyx_v_sources = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sources.memview)) __PYX_ERR(0, 298, __pyx_L3_error)
+    __pyx_v_colors = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_colors.memview)) __PYX_ERR(0, 299, __pyx_L3_error)
+    __pyx_v_color_map = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint16_t(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_color_map.memview)) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_no_colors = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_no_colors == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L3_error)
+    __pyx_v_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_pred.memview)) __PYX_ERR(0, 302, __pyx_L3_error)
+    __pyx_v_s_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_s_pred.memview)) __PYX_ERR(0, 303, __pyx_L3_error)
+    __pyx_v_dist = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dist.memview)) __PYX_ERR(0, 304, __pyx_L3_error)
+    __pyx_v_seen = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[9], PyBUF_WRITABLE); if (unlikely(!__pyx_v_seen.memview)) __PYX_ERR(0, 305, __pyx_L3_error)
+    if (values[10]) {
+      __pyx_v_limit = __Pyx_PyInt_As_int(values[10]); if (unlikely((__pyx_v_limit == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L3_error)
     } else {
       __pyx_v_limit = __pyx_dynamic_args->__pyx_arg_limit;
     }
-    if (values[10]) {
-      __pyx_v_repetitions = __Pyx_PyInt_As_int(values[10]); if (unlikely((__pyx_v_repetitions == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L3_error)
+    if (values[11]) {
+      __pyx_v_repetitions = __Pyx_PyInt_As_int(values[11]); if (unlikely((__pyx_v_repetitions == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 307, __pyx_L3_error)
     } else {
       __pyx_v_repetitions = __pyx_dynamic_args->__pyx_arg_repetitions;
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 290, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 295, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("dawdlib.dijkstra.colorful.find_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(__pyx_self, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
+  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_12find_shortest_paths(__pyx_self, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_12find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions) {
   int __pyx_v_j;
   CYTHON_UNUSED int __pyx_v_i;
   int __pyx_v_res;
@@ -7967,7 +6535,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
   PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_1find_shortest_paths", 0);
 
-  /* "dawdlib/dijkstra/colorful.pyx":304
+  /* "dawdlib/dijkstra/colorful.pyx":310
  * ):
  *     cdef:
  *         int j = 0             # <<<<<<<<<<<<<<
@@ -7976,7 +6544,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
  */
   __pyx_v_j = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":305
+  /* "dawdlib/dijkstra/colorful.pyx":311
  *     cdef:
  *         int j = 0
  *         int i = 0             # <<<<<<<<<<<<<<
@@ -7985,7 +6553,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
  */
   __pyx_v_i = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":306
+  /* "dawdlib/dijkstra/colorful.pyx":312
  *         int j = 0
  *         int i = 0
  *         int res = 0             # <<<<<<<<<<<<<<
@@ -7994,24 +6562,24 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
  */
   __pyx_v_res = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":308
+  /* "dawdlib/dijkstra/colorful.pyx":314
  *         int res = 0
  * 
  *     for i in range(repetitions):             # <<<<<<<<<<<<<<
  *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+ *         s_pred[:] = numeric_limits[umy_type].max()
  */
   __pyx_t_1 = __pyx_v_repetitions;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "dawdlib/dijkstra/colorful.pyx":309
+    /* "dawdlib/dijkstra/colorful.pyx":315
  * 
  *     for i in range(repetitions):
  *         pred[:] = 0             # <<<<<<<<<<<<<<
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
- *         for j in range(pred.shape[1]):
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  */
     {
         uint8_t __pyx_temp_scalar = 0;
@@ -8026,21 +6594,41 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
         }
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":310
+    /* "dawdlib/dijkstra/colorful.pyx":316
  *     for i in range(repetitions):
  *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)             # <<<<<<<<<<<<<<
+ *         s_pred[:] = numeric_limits[umy_type].max()             # <<<<<<<<<<<<<<
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
+ *         for j in range(pred.shape[1]):
+ */
+    {
+        uint16_t __pyx_temp_scalar = std::numeric_limits<uint16_t> ::max();
+        {
+            Py_ssize_t __pyx_temp_extent = __pyx_v_s_pred.shape[0] * __pyx_v_s_pred.shape[1];
+            Py_ssize_t __pyx_temp_idx;
+            uint16_t *__pyx_temp_pointer = (uint16_t *) __pyx_v_s_pred.data;
+            for (__pyx_temp_idx = 0; __pyx_temp_idx < __pyx_temp_extent; __pyx_temp_idx++) {
+              *((uint16_t *) __pyx_temp_pointer) = __pyx_temp_scalar;
+              __pyx_temp_pointer += 1;
+            }
+        }
+    }
+
+    /* "dawdlib/dijkstra/colorful.pyx":317
+ *         pred[:] = 0
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)             # <<<<<<<<<<<<<<
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:
  */
     __pyx_t_5.__pyx_n = 1;
     __pyx_t_5.limit = __pyx_v_limit;
-    __pyx_t_4 = __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_5); 
+    __pyx_t_4 = __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_5); 
     __pyx_v_res = __pyx_t_4;
 
-    /* "dawdlib/dijkstra/colorful.pyx":311
- *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+    /* "dawdlib/dijkstra/colorful.pyx":318
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):             # <<<<<<<<<<<<<<
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res
@@ -8050,8 +6638,8 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_7; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "dawdlib/dijkstra/colorful.pyx":312
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+      /* "dawdlib/dijkstra/colorful.pyx":319
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:             # <<<<<<<<<<<<<<
  *                 return True, res
@@ -8062,7 +6650,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
       __pyx_t_10 = (((*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_8 * __pyx_v_pred.strides[0]) )) + __pyx_t_9)) ))) > 0) != 0);
       if (__pyx_t_10) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":313
+        /* "dawdlib/dijkstra/colorful.pyx":320
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res             # <<<<<<<<<<<<<<
@@ -8070,9 +6658,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
  * 
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 320, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 320, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_INCREF(Py_True);
         __Pyx_GIVEREF(Py_True);
@@ -8084,8 +6672,8 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
         __pyx_t_12 = 0;
         goto __pyx_L0;
 
-        /* "dawdlib/dijkstra/colorful.pyx":312
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+        /* "dawdlib/dijkstra/colorful.pyx":319
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:             # <<<<<<<<<<<<<<
  *                 return True, res
@@ -8095,7 +6683,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":314
+  /* "dawdlib/dijkstra/colorful.pyx":321
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res
  *     return False, res             # <<<<<<<<<<<<<<
@@ -8103,9 +6691,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_INCREF(Py_False);
   __Pyx_GIVEREF(Py_False);
@@ -8117,12 +6705,12 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
   __pyx_t_11 = 0;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":290
+  /* "dawdlib/dijkstra/colorful.pyx":295
  * 
  * 
  * def find_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -8137,6 +6725,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
   __PYX_XDEC_MEMVIEW(&__pyx_v_colors, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_color_map, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_pred, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_s_pred, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_dist, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_seen, 1);
   __Pyx_XGIVEREF(__pyx_r);
@@ -8144,7 +6733,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_28find_shortest_paths(CYT
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_58__defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32__defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -8152,11 +6741,11 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_58__defaults__(CYTHON_UNU
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__defaults__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults6, __pyx_self)->__pyx_arg_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults6, __pyx_self)->__pyx_arg_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults6, __pyx_self)->__pyx_arg_repetitions); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults6, __pyx_self)->__pyx_arg_repetitions); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -8164,7 +6753,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_58__defaults__(CYTHON_UNU
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
@@ -8190,9 +6779,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_58__defaults__(CYTHON_UNU
 }
 
 /* Python wrapper */
-static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_31find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_2__pyx_mdef_7dawdlib_8dijkstra_8colorful_31find_shortest_paths = {"__pyx_fuse_2find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_31find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_31find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_15find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_2__pyx_mdef_7dawdlib_8dijkstra_8colorful_15find_shortest_paths = {"__pyx_fuse_2find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_15find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_15find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   std::map<int,std::vector<int> >  __pyx_v_G;
   __Pyx_memviewslice __pyx_v_weight = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_sources = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -8200,6 +6789,7 @@ static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_31find_shorte
   __Pyx_memviewslice __pyx_v_color_map = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_no_colors;
   __Pyx_memviewslice __pyx_v_pred = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_s_pred = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dist = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_seen = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_limit;
@@ -8208,13 +6798,15 @@ static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_31find_shorte
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("find_shortest_paths (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
-    PyObject* values[11] = {0,0,0,0,0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
+    PyObject* values[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
     __pyx_defaults6 *__pyx_dynamic_args = __Pyx_CyFunction_Defaults(__pyx_defaults6, __pyx_self);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
         case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         CYTHON_FALLTHROUGH;
         case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
@@ -8249,73 +6841,80 @@ static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_31find_shorte
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_weight)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 1); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 1); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sources)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 2); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 2); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 3); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 3); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_color_map)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 4); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 4); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_no_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 5); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 5); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 6); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 6); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  7:
-        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 7); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 7); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  8:
-        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 8); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 8); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  9:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
-          if (value) { values[9] = value; kw_args--; }
+        if (likely((values[9] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 9); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case 10:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
           if (value) { values[10] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case 11:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          if (value) { values[11] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_shortest_paths") < 0)) __PYX_ERR(0, 290, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_shortest_paths") < 0)) __PYX_ERR(0, 295, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
         case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         CYTHON_FALLTHROUGH;
         case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
-        CYTHON_FALLTHROUGH;
-        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
         values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -8328,42 +6927,43 @@ static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_31find_shorte
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_G = __pyx_convert_map_from_py_int__and_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 291, __pyx_L3_error)
-    __pyx_v_weight = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_weight.memview)) __PYX_ERR(0, 292, __pyx_L3_error)
-    __pyx_v_sources = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sources.memview)) __PYX_ERR(0, 293, __pyx_L3_error)
-    __pyx_v_colors = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_colors.memview)) __PYX_ERR(0, 294, __pyx_L3_error)
-    __pyx_v_color_map = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint32_t(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_color_map.memview)) __PYX_ERR(0, 295, __pyx_L3_error)
-    __pyx_v_no_colors = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_no_colors == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L3_error)
-    __pyx_v_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_pred.memview)) __PYX_ERR(0, 297, __pyx_L3_error)
-    __pyx_v_dist = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dist.memview)) __PYX_ERR(0, 298, __pyx_L3_error)
-    __pyx_v_seen = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_seen.memview)) __PYX_ERR(0, 299, __pyx_L3_error)
-    if (values[9]) {
-      __pyx_v_limit = __Pyx_PyInt_As_int(values[9]); if (unlikely((__pyx_v_limit == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_G = __pyx_convert_map_from_py_int__and_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L3_error)
+    __pyx_v_weight = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_weight.memview)) __PYX_ERR(0, 297, __pyx_L3_error)
+    __pyx_v_sources = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sources.memview)) __PYX_ERR(0, 298, __pyx_L3_error)
+    __pyx_v_colors = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_colors.memview)) __PYX_ERR(0, 299, __pyx_L3_error)
+    __pyx_v_color_map = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint32_t(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_color_map.memview)) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_no_colors = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_no_colors == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L3_error)
+    __pyx_v_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_pred.memview)) __PYX_ERR(0, 302, __pyx_L3_error)
+    __pyx_v_s_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_s_pred.memview)) __PYX_ERR(0, 303, __pyx_L3_error)
+    __pyx_v_dist = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dist.memview)) __PYX_ERR(0, 304, __pyx_L3_error)
+    __pyx_v_seen = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(values[9], PyBUF_WRITABLE); if (unlikely(!__pyx_v_seen.memview)) __PYX_ERR(0, 305, __pyx_L3_error)
+    if (values[10]) {
+      __pyx_v_limit = __Pyx_PyInt_As_int(values[10]); if (unlikely((__pyx_v_limit == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L3_error)
     } else {
       __pyx_v_limit = __pyx_dynamic_args->__pyx_arg_limit;
     }
-    if (values[10]) {
-      __pyx_v_repetitions = __Pyx_PyInt_As_int(values[10]); if (unlikely((__pyx_v_repetitions == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L3_error)
+    if (values[11]) {
+      __pyx_v_repetitions = __Pyx_PyInt_As_int(values[11]); if (unlikely((__pyx_v_repetitions == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 307, __pyx_L3_error)
     } else {
       __pyx_v_repetitions = __pyx_dynamic_args->__pyx_arg_repetitions;
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 290, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 295, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("dawdlib.dijkstra.colorful.find_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(__pyx_self, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
+  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_14find_shortest_paths(__pyx_self, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_14find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions) {
   int __pyx_v_j;
   CYTHON_UNUSED int __pyx_v_i;
   int __pyx_v_res;
@@ -8383,7 +6983,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
   PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_2find_shortest_paths", 0);
 
-  /* "dawdlib/dijkstra/colorful.pyx":304
+  /* "dawdlib/dijkstra/colorful.pyx":310
  * ):
  *     cdef:
  *         int j = 0             # <<<<<<<<<<<<<<
@@ -8392,7 +6992,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
  */
   __pyx_v_j = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":305
+  /* "dawdlib/dijkstra/colorful.pyx":311
  *     cdef:
  *         int j = 0
  *         int i = 0             # <<<<<<<<<<<<<<
@@ -8401,7 +7001,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
  */
   __pyx_v_i = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":306
+  /* "dawdlib/dijkstra/colorful.pyx":312
  *         int j = 0
  *         int i = 0
  *         int res = 0             # <<<<<<<<<<<<<<
@@ -8410,24 +7010,24 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
  */
   __pyx_v_res = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":308
+  /* "dawdlib/dijkstra/colorful.pyx":314
  *         int res = 0
  * 
  *     for i in range(repetitions):             # <<<<<<<<<<<<<<
  *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+ *         s_pred[:] = numeric_limits[umy_type].max()
  */
   __pyx_t_1 = __pyx_v_repetitions;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "dawdlib/dijkstra/colorful.pyx":309
+    /* "dawdlib/dijkstra/colorful.pyx":315
  * 
  *     for i in range(repetitions):
  *         pred[:] = 0             # <<<<<<<<<<<<<<
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
- *         for j in range(pred.shape[1]):
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  */
     {
         uint8_t __pyx_temp_scalar = 0;
@@ -8442,21 +7042,41 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
         }
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":310
+    /* "dawdlib/dijkstra/colorful.pyx":316
  *     for i in range(repetitions):
  *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)             # <<<<<<<<<<<<<<
+ *         s_pred[:] = numeric_limits[umy_type].max()             # <<<<<<<<<<<<<<
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
+ *         for j in range(pred.shape[1]):
+ */
+    {
+        uint32_t __pyx_temp_scalar = std::numeric_limits<uint32_t> ::max();
+        {
+            Py_ssize_t __pyx_temp_extent = __pyx_v_s_pred.shape[0] * __pyx_v_s_pred.shape[1];
+            Py_ssize_t __pyx_temp_idx;
+            uint32_t *__pyx_temp_pointer = (uint32_t *) __pyx_v_s_pred.data;
+            for (__pyx_temp_idx = 0; __pyx_temp_idx < __pyx_temp_extent; __pyx_temp_idx++) {
+              *((uint32_t *) __pyx_temp_pointer) = __pyx_temp_scalar;
+              __pyx_temp_pointer += 1;
+            }
+        }
+    }
+
+    /* "dawdlib/dijkstra/colorful.pyx":317
+ *         pred[:] = 0
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)             # <<<<<<<<<<<<<<
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:
  */
     __pyx_t_5.__pyx_n = 1;
     __pyx_t_5.limit = __pyx_v_limit;
-    __pyx_t_4 = __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_5); 
+    __pyx_t_4 = __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_5); 
     __pyx_v_res = __pyx_t_4;
 
-    /* "dawdlib/dijkstra/colorful.pyx":311
- *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+    /* "dawdlib/dijkstra/colorful.pyx":318
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):             # <<<<<<<<<<<<<<
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res
@@ -8466,8 +7086,8 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_7; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "dawdlib/dijkstra/colorful.pyx":312
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+      /* "dawdlib/dijkstra/colorful.pyx":319
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:             # <<<<<<<<<<<<<<
  *                 return True, res
@@ -8478,7 +7098,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
       __pyx_t_10 = (((*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_8 * __pyx_v_pred.strides[0]) )) + __pyx_t_9)) ))) > 0) != 0);
       if (__pyx_t_10) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":313
+        /* "dawdlib/dijkstra/colorful.pyx":320
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res             # <<<<<<<<<<<<<<
@@ -8486,9 +7106,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
  * 
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 320, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 320, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_INCREF(Py_True);
         __Pyx_GIVEREF(Py_True);
@@ -8500,8 +7120,8 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
         __pyx_t_12 = 0;
         goto __pyx_L0;
 
-        /* "dawdlib/dijkstra/colorful.pyx":312
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+        /* "dawdlib/dijkstra/colorful.pyx":319
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:             # <<<<<<<<<<<<<<
  *                 return True, res
@@ -8511,7 +7131,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":314
+  /* "dawdlib/dijkstra/colorful.pyx":321
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res
  *     return False, res             # <<<<<<<<<<<<<<
@@ -8519,9 +7139,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_INCREF(Py_False);
   __Pyx_GIVEREF(Py_False);
@@ -8533,12 +7153,12 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
   __pyx_t_11 = 0;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":290
+  /* "dawdlib/dijkstra/colorful.pyx":295
  * 
  * 
  * def find_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -8553,6 +7173,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
   __PYX_XDEC_MEMVIEW(&__pyx_v_colors, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_color_map, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_pred, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_s_pred, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_dist, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_seen, 1);
   __Pyx_XGIVEREF(__pyx_r);
@@ -8560,7 +7181,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_30find_shortest_paths(CYT
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_60__defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_34__defaults__(CYTHON_UNUSED PyObject *__pyx_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -8568,11 +7189,11 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_60__defaults__(CYTHON_UNU
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__defaults__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults7, __pyx_self)->__pyx_arg_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults7, __pyx_self)->__pyx_arg_limit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults7, __pyx_self)->__pyx_arg_repetitions); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__Pyx_CyFunction_Defaults(__pyx_defaults7, __pyx_self)->__pyx_arg_repetitions); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
@@ -8580,7 +7201,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_60__defaults__(CYTHON_UNU
   PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_3);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
@@ -8606,9 +7227,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_60__defaults__(CYTHON_UNU
 }
 
 /* Python wrapper */
-static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_33find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_3__pyx_mdef_7dawdlib_8dijkstra_8colorful_33find_shortest_paths = {"__pyx_fuse_3find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_33find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_33find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_17find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_fuse_3__pyx_mdef_7dawdlib_8dijkstra_8colorful_17find_shortest_paths = {"__pyx_fuse_3find_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_17find_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_17find_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   std::map<int,std::vector<int> >  __pyx_v_G;
   __Pyx_memviewslice __pyx_v_weight = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_sources = { 0, 0, { 0 }, { 0 }, { 0 } };
@@ -8616,6 +7237,7 @@ static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_33find_shorte
   __Pyx_memviewslice __pyx_v_color_map = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_no_colors;
   __Pyx_memviewslice __pyx_v_pred = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_s_pred = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_dist = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_memviewslice __pyx_v_seen = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_limit;
@@ -8624,13 +7246,15 @@ static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_33find_shorte
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("find_shortest_paths (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
-    PyObject* values[11] = {0,0,0,0,0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_G,&__pyx_n_s_weight,&__pyx_n_s_sources,&__pyx_n_s_colors,&__pyx_n_s_color_map,&__pyx_n_s_no_colors,&__pyx_n_s_pred,&__pyx_n_s_s_pred,&__pyx_n_s_dist,&__pyx_n_s_seen,&__pyx_n_s_limit,&__pyx_n_s_repetitions,0};
+    PyObject* values[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
     __pyx_defaults7 *__pyx_dynamic_args = __Pyx_CyFunction_Defaults(__pyx_defaults7, __pyx_self);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
         case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         CYTHON_FALLTHROUGH;
         case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
@@ -8665,73 +7289,80 @@ static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_33find_shorte
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_weight)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 1); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 1); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_sources)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 2); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 2); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 3); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 3); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_color_map)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 4); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 4); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_no_colors)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 5); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 5); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 6); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 6); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  7:
-        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
+        if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_s_pred)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 7); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 7); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  8:
-        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, 8); __PYX_ERR(0, 290, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 8); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  9:
-        if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
-          if (value) { values[9] = value; kw_args--; }
+        if (likely((values[9] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_seen)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, 9); __PYX_ERR(0, 295, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case 10:
         if (kw_args > 0) {
-          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_limit);
           if (value) { values[10] = value; kw_args--; }
+        }
+        CYTHON_FALLTHROUGH;
+        case 11:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_repetitions);
+          if (value) { values[11] = value; kw_args--; }
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_shortest_paths") < 0)) __PYX_ERR(0, 290, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "find_shortest_paths") < 0)) __PYX_ERR(0, 295, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 12: values[11] = PyTuple_GET_ITEM(__pyx_args, 11);
+        CYTHON_FALLTHROUGH;
         case 11: values[10] = PyTuple_GET_ITEM(__pyx_args, 10);
         CYTHON_FALLTHROUGH;
         case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
-        CYTHON_FALLTHROUGH;
-        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
         values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
         values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
@@ -8744,42 +7375,43 @@ static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_33find_shorte
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_G = __pyx_convert_map_from_py_int__and_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 291, __pyx_L3_error)
-    __pyx_v_weight = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_weight.memview)) __PYX_ERR(0, 292, __pyx_L3_error)
-    __pyx_v_sources = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sources.memview)) __PYX_ERR(0, 293, __pyx_L3_error)
-    __pyx_v_colors = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_colors.memview)) __PYX_ERR(0, 294, __pyx_L3_error)
-    __pyx_v_color_map = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint64_t(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_color_map.memview)) __PYX_ERR(0, 295, __pyx_L3_error)
-    __pyx_v_no_colors = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_no_colors == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L3_error)
-    __pyx_v_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_pred.memview)) __PYX_ERR(0, 297, __pyx_L3_error)
-    __pyx_v_dist = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dist.memview)) __PYX_ERR(0, 298, __pyx_L3_error)
-    __pyx_v_seen = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_seen.memview)) __PYX_ERR(0, 299, __pyx_L3_error)
-    if (values[9]) {
-      __pyx_v_limit = __Pyx_PyInt_As_int(values[9]); if (unlikely((__pyx_v_limit == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_G = __pyx_convert_map_from_py_int__and_std_3a__3a_vector_3c_int_3e___(values[0]); if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 296, __pyx_L3_error)
+    __pyx_v_weight = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_weight.memview)) __PYX_ERR(0, 297, __pyx_L3_error)
+    __pyx_v_sources = __Pyx_PyObject_to_MemoryviewSlice_dc_int(values[2], PyBUF_WRITABLE); if (unlikely(!__pyx_v_sources.memview)) __PYX_ERR(0, 298, __pyx_L3_error)
+    __pyx_v_colors = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[3], PyBUF_WRITABLE); if (unlikely(!__pyx_v_colors.memview)) __PYX_ERR(0, 299, __pyx_L3_error)
+    __pyx_v_color_map = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint64_t(values[4], PyBUF_WRITABLE); if (unlikely(!__pyx_v_color_map.memview)) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_no_colors = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_no_colors == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L3_error)
+    __pyx_v_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(values[6], PyBUF_WRITABLE); if (unlikely(!__pyx_v_pred.memview)) __PYX_ERR(0, 302, __pyx_L3_error)
+    __pyx_v_s_pred = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(values[7], PyBUF_WRITABLE); if (unlikely(!__pyx_v_s_pred.memview)) __PYX_ERR(0, 303, __pyx_L3_error)
+    __pyx_v_dist = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(values[8], PyBUF_WRITABLE); if (unlikely(!__pyx_v_dist.memview)) __PYX_ERR(0, 304, __pyx_L3_error)
+    __pyx_v_seen = __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(values[9], PyBUF_WRITABLE); if (unlikely(!__pyx_v_seen.memview)) __PYX_ERR(0, 305, __pyx_L3_error)
+    if (values[10]) {
+      __pyx_v_limit = __Pyx_PyInt_As_int(values[10]); if (unlikely((__pyx_v_limit == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L3_error)
     } else {
       __pyx_v_limit = __pyx_dynamic_args->__pyx_arg_limit;
     }
-    if (values[10]) {
-      __pyx_v_repetitions = __Pyx_PyInt_As_int(values[10]); if (unlikely((__pyx_v_repetitions == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L3_error)
+    if (values[11]) {
+      __pyx_v_repetitions = __Pyx_PyInt_As_int(values[11]); if (unlikely((__pyx_v_repetitions == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 307, __pyx_L3_error)
     } else {
       __pyx_v_repetitions = __pyx_dynamic_args->__pyx_arg_repetitions;
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 9, 11, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 290, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("find_shortest_paths", 0, 10, 12, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 295, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("dawdlib.dijkstra.colorful.find_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(__pyx_self, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
+  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_16find_shortest_paths(__pyx_self, __pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, __pyx_v_limit, __pyx_v_repetitions);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_16find_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, int __pyx_v_limit, int __pyx_v_repetitions) {
   int __pyx_v_j;
   CYTHON_UNUSED int __pyx_v_i;
   int __pyx_v_res;
@@ -8799,7 +7431,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
   PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("__pyx_fuse_3find_shortest_paths", 0);
 
-  /* "dawdlib/dijkstra/colorful.pyx":304
+  /* "dawdlib/dijkstra/colorful.pyx":310
  * ):
  *     cdef:
  *         int j = 0             # <<<<<<<<<<<<<<
@@ -8808,7 +7440,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
  */
   __pyx_v_j = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":305
+  /* "dawdlib/dijkstra/colorful.pyx":311
  *     cdef:
  *         int j = 0
  *         int i = 0             # <<<<<<<<<<<<<<
@@ -8817,7 +7449,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
  */
   __pyx_v_i = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":306
+  /* "dawdlib/dijkstra/colorful.pyx":312
  *         int j = 0
  *         int i = 0
  *         int res = 0             # <<<<<<<<<<<<<<
@@ -8826,24 +7458,24 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
  */
   __pyx_v_res = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":308
+  /* "dawdlib/dijkstra/colorful.pyx":314
  *         int res = 0
  * 
  *     for i in range(repetitions):             # <<<<<<<<<<<<<<
  *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+ *         s_pred[:] = numeric_limits[umy_type].max()
  */
   __pyx_t_1 = __pyx_v_repetitions;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "dawdlib/dijkstra/colorful.pyx":309
+    /* "dawdlib/dijkstra/colorful.pyx":315
  * 
  *     for i in range(repetitions):
  *         pred[:] = 0             # <<<<<<<<<<<<<<
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
- *         for j in range(pred.shape[1]):
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  */
     {
         uint8_t __pyx_temp_scalar = 0;
@@ -8858,21 +7490,41 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
         }
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":310
+    /* "dawdlib/dijkstra/colorful.pyx":316
  *     for i in range(repetitions):
  *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)             # <<<<<<<<<<<<<<
+ *         s_pred[:] = numeric_limits[umy_type].max()             # <<<<<<<<<<<<<<
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
+ *         for j in range(pred.shape[1]):
+ */
+    {
+        uint64_t __pyx_temp_scalar = std::numeric_limits<uint64_t> ::max();
+        {
+            Py_ssize_t __pyx_temp_extent = __pyx_v_s_pred.shape[0] * __pyx_v_s_pred.shape[1];
+            Py_ssize_t __pyx_temp_idx;
+            uint64_t *__pyx_temp_pointer = (uint64_t *) __pyx_v_s_pred.data;
+            for (__pyx_temp_idx = 0; __pyx_temp_idx < __pyx_temp_extent; __pyx_temp_idx++) {
+              *((uint64_t *) __pyx_temp_pointer) = __pyx_temp_scalar;
+              __pyx_temp_pointer += 1;
+            }
+        }
+    }
+
+    /* "dawdlib/dijkstra/colorful.pyx":317
+ *         pred[:] = 0
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)             # <<<<<<<<<<<<<<
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:
  */
     __pyx_t_5.__pyx_n = 1;
     __pyx_t_5.limit = __pyx_v_limit;
-    __pyx_t_4 = __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_5); 
+    __pyx_t_4 = __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_colors, __pyx_v_color_map, __pyx_v_no_colors, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_5); 
     __pyx_v_res = __pyx_t_4;
 
-    /* "dawdlib/dijkstra/colorful.pyx":311
- *         pred[:] = 0
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+    /* "dawdlib/dijkstra/colorful.pyx":318
+ *         s_pred[:] = numeric_limits[umy_type].max()
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):             # <<<<<<<<<<<<<<
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res
@@ -8882,8 +7534,8 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_7; __pyx_t_4+=1) {
       __pyx_v_j = __pyx_t_4;
 
-      /* "dawdlib/dijkstra/colorful.pyx":312
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+      /* "dawdlib/dijkstra/colorful.pyx":319
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:             # <<<<<<<<<<<<<<
  *                 return True, res
@@ -8894,7 +7546,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
       __pyx_t_10 = (((*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_8 * __pyx_v_pred.strides[0]) )) + __pyx_t_9)) ))) > 0) != 0);
       if (__pyx_t_10) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":313
+        /* "dawdlib/dijkstra/colorful.pyx":320
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res             # <<<<<<<<<<<<<<
@@ -8902,9 +7554,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
  * 
  */
         __Pyx_XDECREF(__pyx_r);
-        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_11 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 320, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_11);
-        __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 320, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_12);
         __Pyx_INCREF(Py_True);
         __Pyx_GIVEREF(Py_True);
@@ -8916,8 +7568,8 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
         __pyx_t_12 = 0;
         goto __pyx_L0;
 
-        /* "dawdlib/dijkstra/colorful.pyx":312
- *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, dist, seen, limit)
+        /* "dawdlib/dijkstra/colorful.pyx":319
+ *         res = random_colorful_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit)
  *         for j in range(pred.shape[1]):
  *             if pred[pred.shape[0]-1, j] > 0:             # <<<<<<<<<<<<<<
  *                 return True, res
@@ -8927,7 +7579,7 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":314
+  /* "dawdlib/dijkstra/colorful.pyx":321
  *             if pred[pred.shape[0]-1, j] > 0:
  *                 return True, res
  *     return False, res             # <<<<<<<<<<<<<<
@@ -8935,9 +7587,9 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_From_int(__pyx_v_res); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
-  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 314, __pyx_L1_error)
+  __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 321, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_INCREF(Py_False);
   __Pyx_GIVEREF(Py_False);
@@ -8949,12 +7601,12 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
   __pyx_t_11 = 0;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":290
+  /* "dawdlib/dijkstra/colorful.pyx":295
  * 
  * 
  * def find_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -8969,1605 +7621,24 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_32find_shortest_paths(CYT
   __PYX_XDEC_MEMVIEW(&__pyx_v_colors, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_color_map, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_pred, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_s_pred, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_dist, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_v_seen, 1);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_15generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "dawdlib/dijkstra/colorful.pyx":317
- * 
- * 
- * def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):             # <<<<<<<<<<<<<<
- *     pred_dict = defaultdict(list)
- *     for key, val in np.argwhere(pred).tolist():
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_14yield_colorful_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_14yield_colorful_shortest_paths = {"yield_colorful_shortest_paths", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_14yield_colorful_shortest_paths, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_14yield_colorful_shortest_paths(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_nodes = 0;
-  PyObject *__pyx_v_src = 0;
-  PyObject *__pyx_v_trgt = 0;
-  PyObject *__pyx_v_node_colors = 0;
-  PyObject *__pyx_v_pred = 0;
-  PyObject *__pyx_v_dist = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("yield_colorful_shortest_paths (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_nodes,&__pyx_n_s_src,&__pyx_n_s_trgt,&__pyx_n_s_node_colors,&__pyx_n_s_pred,&__pyx_n_s_dist,0};
-    PyObject* values[6] = {0,0,0,0,0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-        CYTHON_FALLTHROUGH;
-        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-        CYTHON_FALLTHROUGH;
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_nodes)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_src)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("yield_colorful_shortest_paths", 1, 6, 6, 1); __PYX_ERR(0, 317, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_trgt)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("yield_colorful_shortest_paths", 1, 6, 6, 2); __PYX_ERR(0, 317, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_node_colors)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("yield_colorful_shortest_paths", 1, 6, 6, 3); __PYX_ERR(0, 317, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  4:
-        if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pred)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("yield_colorful_shortest_paths", 1, 6, 6, 4); __PYX_ERR(0, 317, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  5:
-        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("yield_colorful_shortest_paths", 1, 6, 6, 5); __PYX_ERR(0, 317, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "yield_colorful_shortest_paths") < 0)) __PYX_ERR(0, 317, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
-    }
-    __pyx_v_nodes = values[0];
-    __pyx_v_src = values[1];
-    __pyx_v_trgt = values[2];
-    __pyx_v_node_colors = values[3];
-    __pyx_v_pred = values[4];
-    __pyx_v_dist = values[5];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("yield_colorful_shortest_paths", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 317, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.yield_colorful_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_13yield_colorful_shortest_paths(__pyx_self, __pyx_v_nodes, __pyx_v_src, __pyx_v_trgt, __pyx_v_node_colors, __pyx_v_pred, __pyx_v_dist);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":322
- *         pred_dict[key].append((val, dist[key, val]))
- *     for key, val in pred_dict.items():
- *         pred_dict[key] = [tup[0] for tup in sorted(val, key=lambda x: x[1])]             # <<<<<<<<<<<<<<
- *     stack = [[trgt, 0, node_colors[trgt]]]
- *     top = 0
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_29yield_colorful_shortest_paths_8genexpr1_lambda1(PyObject *__pyx_self, PyObject *__pyx_v_x); /*proto*/
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_29yield_colorful_shortest_paths_8genexpr1_lambda1 = {"lambda1", (PyCFunction)__pyx_pw_7dawdlib_8dijkstra_8colorful_29yield_colorful_shortest_paths_8genexpr1_lambda1, METH_O, 0};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_29yield_colorful_shortest_paths_8genexpr1_lambda1(PyObject *__pyx_self, PyObject *__pyx_v_x) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("lambda1 (wrapper)", 0);
-  __pyx_r = __pyx_lambda_funcdef_lambda1(__pyx_self, ((PyObject *)__pyx_v_x));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_lambda_funcdef_lambda1(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_x) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("lambda1", 0);
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_x, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 322, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.yield_colorful_shortest_paths.lambda1", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":317
- * 
- * 
- * def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):             # <<<<<<<<<<<<<<
- *     pred_dict = defaultdict(list)
- *     for key, val in np.argwhere(pred).tolist():
- */
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_13yield_colorful_shortest_paths(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_src, PyObject *__pyx_v_trgt, PyObject *__pyx_v_node_colors, PyObject *__pyx_v_pred, PyObject *__pyx_v_dist) {
-  struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("yield_colorful_shortest_paths", 0);
-  __pyx_cur_scope = (struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *)__pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths(__pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 317, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_nodes = __pyx_v_nodes;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_nodes);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_nodes);
-  __pyx_cur_scope->__pyx_v_src = __pyx_v_src;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_src);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_src);
-  __pyx_cur_scope->__pyx_v_trgt = __pyx_v_trgt;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_trgt);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_trgt);
-  __pyx_cur_scope->__pyx_v_node_colors = __pyx_v_node_colors;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_node_colors);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_node_colors);
-  __pyx_cur_scope->__pyx_v_pred = __pyx_v_pred;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_pred);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_pred);
-  __pyx_cur_scope->__pyx_v_dist = __pyx_v_dist;
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_dist);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_dist);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_7dawdlib_8dijkstra_8colorful_15generator1, __pyx_codeobj__7, (PyObject *) __pyx_cur_scope, __pyx_n_s_yield_colorful_shortest_paths, __pyx_n_s_yield_colorful_shortest_paths, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!gen)) __PYX_ERR(0, 317, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.yield_colorful_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_7dawdlib_8dijkstra_8colorful_15generator1(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *__pyx_cur_scope = ((struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  Py_ssize_t __pyx_t_5;
-  PyObject *(*__pyx_t_6)(PyObject *);
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *(*__pyx_t_8)(PyObject *);
-  int __pyx_t_9;
-  Py_ssize_t __pyx_t_10;
-  int __pyx_t_11;
-  int __pyx_t_12;
-  Py_ssize_t __pyx_t_13;
-  int __pyx_t_14;
-  PyObject *__pyx_t_15 = NULL;
-  PyObject *__pyx_t_16 = NULL;
-  int __pyx_t_17;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("yield_colorful_shortest_paths", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L21_resume_from_yield;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 317, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":318
- * 
- * def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):
- *     pred_dict = defaultdict(list)             # <<<<<<<<<<<<<<
- *     for key, val in np.argwhere(pred).tolist():
- *         pred_dict[key].append((val, dist[key, val]))
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_defaultdict); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 318, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, ((PyObject *)(&PyList_Type))) : __Pyx_PyObject_CallOneArg(__pyx_t_2, ((PyObject *)(&PyList_Type)));
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v_pred_dict = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":319
- * def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):
- *     pred_dict = defaultdict(list)
- *     for key, val in np.argwhere(pred).tolist():             # <<<<<<<<<<<<<<
- *         pred_dict[key].append((val, dist[key, val]))
- *     for key, val in pred_dict.items():
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 319, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_argwhere); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 319, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-    }
-  }
-  __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_3, __pyx_cur_scope->__pyx_v_pred) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_cur_scope->__pyx_v_pred);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 319, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_tolist); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 319, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
-    __pyx_t_4 = __pyx_t_1; __Pyx_INCREF(__pyx_t_4); __pyx_t_5 = 0;
-    __pyx_t_6 = NULL;
-  } else {
-    __pyx_t_5 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 319, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 319, __pyx_L1_error)
-  }
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  for (;;) {
-    if (likely(!__pyx_t_6)) {
-      if (likely(PyList_CheckExact(__pyx_t_4))) {
-        if (__pyx_t_5 >= PyList_GET_SIZE(__pyx_t_4)) break;
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 319, __pyx_L1_error)
-        #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        #endif
-      } else {
-        if (__pyx_t_5 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
-        #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_5); __Pyx_INCREF(__pyx_t_1); __pyx_t_5++; if (unlikely(0 < 0)) __PYX_ERR(0, 319, __pyx_L1_error)
-        #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_4, __pyx_t_5); __pyx_t_5++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        #endif
-      }
-    } else {
-      __pyx_t_1 = __pyx_t_6(__pyx_t_4);
-      if (unlikely(!__pyx_t_1)) {
-        PyObject* exc_type = PyErr_Occurred();
-        if (exc_type) {
-          if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 319, __pyx_L1_error)
-        }
-        break;
-      }
-      __Pyx_GOTREF(__pyx_t_1);
-    }
-    if ((likely(PyTuple_CheckExact(__pyx_t_1))) || (PyList_CheckExact(__pyx_t_1))) {
-      PyObject* sequence = __pyx_t_1;
-      Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
-      if (unlikely(size != 2)) {
-        if (size > 2) __Pyx_RaiseTooManyValuesError(2);
-        else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 319, __pyx_L1_error)
-      }
-      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      if (likely(PyTuple_CheckExact(sequence))) {
-        __pyx_t_2 = PyTuple_GET_ITEM(sequence, 0); 
-        __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1); 
-      } else {
-        __pyx_t_2 = PyList_GET_ITEM(sequence, 0); 
-        __pyx_t_3 = PyList_GET_ITEM(sequence, 1); 
-      }
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      #else
-      __pyx_t_2 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 319, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 319, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      #endif
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    } else {
-      Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 319, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
-      index = 0; __pyx_t_2 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_2)) goto __pyx_L6_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_2);
-      index = 1; __pyx_t_3 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_3)) goto __pyx_L6_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_3);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 319, __pyx_L1_error)
-      __pyx_t_8 = NULL;
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      goto __pyx_L7_unpacking_done;
-      __pyx_L6_unpacking_failed:;
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_8 = NULL;
-      if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 319, __pyx_L1_error)
-      __pyx_L7_unpacking_done:;
-    }
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_key);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_key, __pyx_t_2);
-    __Pyx_GIVEREF(__pyx_t_2);
-    __pyx_t_2 = 0;
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_val);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_val, __pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_3);
-    __pyx_t_3 = 0;
-
-    /* "dawdlib/dijkstra/colorful.pyx":320
- *     pred_dict = defaultdict(list)
- *     for key, val in np.argwhere(pred).tolist():
- *         pred_dict[key].append((val, dist[key, val]))             # <<<<<<<<<<<<<<
- *     for key, val in pred_dict.items():
- *         pred_dict[key] = [tup[0] for tup in sorted(val, key=lambda x: x[1])]
- */
-    __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_pred_dict, __pyx_cur_scope->__pyx_v_key); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 320, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 320, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_key);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_key);
-    PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_cur_scope->__pyx_v_key);
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_val);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_val);
-    PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_cur_scope->__pyx_v_val);
-    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_dist, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 320, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 320, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_INCREF(__pyx_cur_scope->__pyx_v_val);
-    __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_val);
-    PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_cur_scope->__pyx_v_val);
-    __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
-    __pyx_t_2 = 0;
-    __pyx_t_9 = __Pyx_PyObject_Append(__pyx_t_1, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 320, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "dawdlib/dijkstra/colorful.pyx":319
- * def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):
- *     pred_dict = defaultdict(list)
- *     for key, val in np.argwhere(pred).tolist():             # <<<<<<<<<<<<<<
- *         pred_dict[key].append((val, dist[key, val]))
- *     for key, val in pred_dict.items():
- */
-  }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":321
- *     for key, val in np.argwhere(pred).tolist():
- *         pred_dict[key].append((val, dist[key, val]))
- *     for key, val in pred_dict.items():             # <<<<<<<<<<<<<<
- *         pred_dict[key] = [tup[0] for tup in sorted(val, key=lambda x: x[1])]
- *     stack = [[trgt, 0, node_colors[trgt]]]
- */
-  __pyx_t_5 = 0;
-  if (unlikely(__pyx_cur_scope->__pyx_v_pred_dict == Py_None)) {
-    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 321, __pyx_L1_error)
-  }
-  __pyx_t_3 = __Pyx_dict_iterator(__pyx_cur_scope->__pyx_v_pred_dict, 0, __pyx_n_s_items, (&__pyx_t_10), (&__pyx_t_11)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 321, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __pyx_t_4 = __pyx_t_3;
-  __pyx_t_3 = 0;
-  while (1) {
-    __pyx_t_12 = __Pyx_dict_iter_next(__pyx_t_4, __pyx_t_10, &__pyx_t_5, &__pyx_t_3, &__pyx_t_1, NULL, __pyx_t_11);
-    if (unlikely(__pyx_t_12 == 0)) break;
-    if (unlikely(__pyx_t_12 == -1)) __PYX_ERR(0, 321, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_key);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_key, __pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_3);
-    __pyx_t_3 = 0;
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_val);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_val, __pyx_t_1);
-    __Pyx_GIVEREF(__pyx_t_1);
-    __pyx_t_1 = 0;
-
-    /* "dawdlib/dijkstra/colorful.pyx":322
- *         pred_dict[key].append((val, dist[key, val]))
- *     for key, val in pred_dict.items():
- *         pred_dict[key] = [tup[0] for tup in sorted(val, key=lambda x: x[1])]             # <<<<<<<<<<<<<<
- *     stack = [[trgt, 0, node_colors[trgt]]]
- *     top = 0
- */
-    { /* enter inner scope */
-      __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 322, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 322, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_INCREF(__pyx_cur_scope->__pyx_v_val);
-      __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_val);
-      PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_cur_scope->__pyx_v_val);
-      __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 322, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_29yield_colorful_shortest_paths_8genexpr1_lambda1, 0, __pyx_n_s_yield_colorful_shortest_paths_lo, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 322, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_key, __pyx_t_7) < 0) __PYX_ERR(0, 322, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_builtin_sorted, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 322, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (likely(PyList_CheckExact(__pyx_t_7)) || PyTuple_CheckExact(__pyx_t_7)) {
-        __pyx_t_2 = __pyx_t_7; __Pyx_INCREF(__pyx_t_2); __pyx_t_13 = 0;
-        __pyx_t_6 = NULL;
-      } else {
-        __pyx_t_13 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 322, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_6 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 322, __pyx_L1_error)
-      }
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      for (;;) {
-        if (likely(!__pyx_t_6)) {
-          if (likely(PyList_CheckExact(__pyx_t_2))) {
-            if (__pyx_t_13 >= PyList_GET_SIZE(__pyx_t_2)) break;
-            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_13); __Pyx_INCREF(__pyx_t_7); __pyx_t_13++; if (unlikely(0 < 0)) __PYX_ERR(0, 322, __pyx_L1_error)
-            #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_13); __pyx_t_13++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 322, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_7);
-            #endif
-          } else {
-            if (__pyx_t_13 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
-            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_7 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_13); __Pyx_INCREF(__pyx_t_7); __pyx_t_13++; if (unlikely(0 < 0)) __PYX_ERR(0, 322, __pyx_L1_error)
-            #else
-            __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_13); __pyx_t_13++; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 322, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_7);
-            #endif
-          }
-        } else {
-          __pyx_t_7 = __pyx_t_6(__pyx_t_2);
-          if (unlikely(!__pyx_t_7)) {
-            PyObject* exc_type = PyErr_Occurred();
-            if (exc_type) {
-              if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 322, __pyx_L1_error)
-            }
-            break;
-          }
-          __Pyx_GOTREF(__pyx_t_7);
-        }
-        __Pyx_XGOTREF(__pyx_cur_scope->__pyx_8genexpr1__pyx_v_tup);
-        __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_8genexpr1__pyx_v_tup, __pyx_t_7);
-        __Pyx_GIVEREF(__pyx_t_7);
-        __pyx_t_7 = 0;
-        __pyx_t_7 = __Pyx_GetItemInt(__pyx_cur_scope->__pyx_8genexpr1__pyx_v_tup, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 322, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_7);
-        if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_7))) __PYX_ERR(0, 322, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      }
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    } /* exit inner scope */
-    if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_pred_dict, __pyx_cur_scope->__pyx_v_key, __pyx_t_1) < 0)) __PYX_ERR(0, 322, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":323
- *     for key, val in pred_dict.items():
- *         pred_dict[key] = [tup[0] for tup in sorted(val, key=lambda x: x[1])]
- *     stack = [[trgt, 0, node_colors[trgt]]]             # <<<<<<<<<<<<<<
- *     top = 0
- *     while top >= 0:
- */
-  __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_node_colors, __pyx_cur_scope->__pyx_v_trgt); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 323, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 323, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_cur_scope->__pyx_v_trgt);
-  __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_trgt);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_cur_scope->__pyx_v_trgt);
-  __Pyx_INCREF(__pyx_int_0);
-  __Pyx_GIVEREF(__pyx_int_0);
-  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_int_0);
-  __Pyx_GIVEREF(__pyx_t_4);
-  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_t_4);
-  __pyx_t_4 = 0;
-  __pyx_t_4 = PyList_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 323, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyList_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
-  __Pyx_GIVEREF(__pyx_t_4);
-  __pyx_cur_scope->__pyx_v_stack = ((PyObject*)__pyx_t_4);
-  __pyx_t_4 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":324
- *         pred_dict[key] = [tup[0] for tup in sorted(val, key=lambda x: x[1])]
- *     stack = [[trgt, 0, node_colors[trgt]]]
- *     top = 0             # <<<<<<<<<<<<<<
- *     while top >= 0:
- *         node, i, color = stack[top]
- */
-  __Pyx_INCREF(__pyx_int_0);
-  __Pyx_GIVEREF(__pyx_int_0);
-  __pyx_cur_scope->__pyx_v_top = __pyx_int_0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":325
- *     stack = [[trgt, 0, node_colors[trgt]]]
- *     top = 0
- *     while top >= 0:             # <<<<<<<<<<<<<<
- *         node, i, color = stack[top]
- *         if node == src:
- */
-  while (1) {
-    __pyx_t_4 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_top, __pyx_int_0, Py_GE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 325, __pyx_L1_error)
-    __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_14 < 0)) __PYX_ERR(0, 325, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (!__pyx_t_14) break;
-
-    /* "dawdlib/dijkstra/colorful.pyx":326
- *     top = 0
- *     while top >= 0:
- *         node, i, color = stack[top]             # <<<<<<<<<<<<<<
- *         if node == src:
- *             yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
- */
-    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_stack, __pyx_cur_scope->__pyx_v_top); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 326, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
-      PyObject* sequence = __pyx_t_4;
-      Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
-      if (unlikely(size != 3)) {
-        if (size > 3) __Pyx_RaiseTooManyValuesError(3);
-        else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 326, __pyx_L1_error)
-      }
-      #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-      if (likely(PyTuple_CheckExact(sequence))) {
-        __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
-        __pyx_t_2 = PyTuple_GET_ITEM(sequence, 1); 
-        __pyx_t_7 = PyTuple_GET_ITEM(sequence, 2); 
-      } else {
-        __pyx_t_1 = PyList_GET_ITEM(sequence, 0); 
-        __pyx_t_2 = PyList_GET_ITEM(sequence, 1); 
-        __pyx_t_7 = PyList_GET_ITEM(sequence, 2); 
-      }
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_7);
-      #else
-      __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 326, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_2 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 326, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_7 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 326, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      #endif
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    } else {
-      Py_ssize_t index = -1;
-      __pyx_t_3 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 326, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext;
-      index = 0; __pyx_t_1 = __pyx_t_8(__pyx_t_3); if (unlikely(!__pyx_t_1)) goto __pyx_L14_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_1);
-      index = 1; __pyx_t_2 = __pyx_t_8(__pyx_t_3); if (unlikely(!__pyx_t_2)) goto __pyx_L14_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_2);
-      index = 2; __pyx_t_7 = __pyx_t_8(__pyx_t_3); if (unlikely(!__pyx_t_7)) goto __pyx_L14_unpacking_failed;
-      __Pyx_GOTREF(__pyx_t_7);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_3), 3) < 0) __PYX_ERR(0, 326, __pyx_L1_error)
-      __pyx_t_8 = NULL;
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      goto __pyx_L15_unpacking_done;
-      __pyx_L14_unpacking_failed:;
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_8 = NULL;
-      if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 326, __pyx_L1_error)
-      __pyx_L15_unpacking_done:;
-    }
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_node);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_node, __pyx_t_1);
-    __Pyx_GIVEREF(__pyx_t_1);
-    __pyx_t_1 = 0;
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_i);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_i, __pyx_t_2);
-    __Pyx_GIVEREF(__pyx_t_2);
-    __pyx_t_2 = 0;
-    __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_color);
-    __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_v_color, __pyx_t_7);
-    __Pyx_GIVEREF(__pyx_t_7);
-    __pyx_t_7 = 0;
-
-    /* "dawdlib/dijkstra/colorful.pyx":327
- *     while top >= 0:
- *         node, i, color = stack[top]
- *         if node == src:             # <<<<<<<<<<<<<<
- *             yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
- *         if len(pred_dict[node]) > i:
- */
-    __pyx_t_4 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_node, __pyx_cur_scope->__pyx_v_src, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 327, __pyx_L1_error)
-    __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_14 < 0)) __PYX_ERR(0, 327, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (__pyx_t_14) {
-
-      /* "dawdlib/dijkstra/colorful.pyx":328
- *         node, i, color = stack[top]
- *         if node == src:
- *             yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]             # <<<<<<<<<<<<<<
- *         if len(pred_dict[node]) > i:
- *             if not (color & node_colors[pred_dict[node][i]]):
- */
-      { /* enter inner scope */
-        __pyx_t_4 = PyList_New(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 328, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_7 = __Pyx_PyInt_AddObjC(__pyx_cur_scope->__pyx_v_top, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 328, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_14 = (__pyx_t_7 == Py_None);
-        if (__pyx_t_14) {
-          __pyx_t_10 = PY_SSIZE_T_MAX;
-        } else {
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_7); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 328, __pyx_L1_error)
-          __pyx_t_10 = __pyx_t_5;
-        }
-        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __pyx_t_7 = __Pyx_PyList_GetSlice(__pyx_cur_scope->__pyx_v_stack, 0, __pyx_t_10); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 328, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_7);
-        __pyx_t_2 = __pyx_t_7; __Pyx_INCREF(__pyx_t_2); __pyx_t_10 = PyList_GET_SIZE(__pyx_t_2) - 1;
-        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        for (;;) {
-          if (__pyx_t_10 < 0) break;
-          if (__pyx_t_10 >= PyList_GET_SIZE(__pyx_t_2)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_7 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_10); __Pyx_INCREF(__pyx_t_7); __pyx_t_10--; if (unlikely(0 < 0)) __PYX_ERR(0, 328, __pyx_L1_error)
-          #else
-          __pyx_t_7 = PySequence_ITEM(__pyx_t_2, __pyx_t_10); __pyx_t_10--; if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 328, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_7);
-          #endif
-          if ((likely(PyTuple_CheckExact(__pyx_t_7))) || (PyList_CheckExact(__pyx_t_7))) {
-            PyObject* sequence = __pyx_t_7;
-            Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
-            if (unlikely(size != 3)) {
-              if (size > 3) __Pyx_RaiseTooManyValuesError(3);
-              else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-              __PYX_ERR(0, 328, __pyx_L1_error)
-            }
-            #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            if (likely(PyTuple_CheckExact(sequence))) {
-              __pyx_t_1 = PyTuple_GET_ITEM(sequence, 0); 
-              __pyx_t_3 = PyTuple_GET_ITEM(sequence, 1); 
-              __pyx_t_15 = PyTuple_GET_ITEM(sequence, 2); 
-            } else {
-              __pyx_t_1 = PyList_GET_ITEM(sequence, 0); 
-              __pyx_t_3 = PyList_GET_ITEM(sequence, 1); 
-              __pyx_t_15 = PyList_GET_ITEM(sequence, 2); 
-            }
-            __Pyx_INCREF(__pyx_t_1);
-            __Pyx_INCREF(__pyx_t_3);
-            __Pyx_INCREF(__pyx_t_15);
-            #else
-            __pyx_t_1 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 328, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __pyx_t_3 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 328, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_3);
-            __pyx_t_15 = PySequence_ITEM(sequence, 2); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 328, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_15);
-            #endif
-            __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-          } else {
-            Py_ssize_t index = -1;
-            __pyx_t_16 = PyObject_GetIter(__pyx_t_7); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 328, __pyx_L1_error)
-            __Pyx_GOTREF(__pyx_t_16);
-            __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-            __pyx_t_8 = Py_TYPE(__pyx_t_16)->tp_iternext;
-            index = 0; __pyx_t_1 = __pyx_t_8(__pyx_t_16); if (unlikely(!__pyx_t_1)) goto __pyx_L19_unpacking_failed;
-            __Pyx_GOTREF(__pyx_t_1);
-            index = 1; __pyx_t_3 = __pyx_t_8(__pyx_t_16); if (unlikely(!__pyx_t_3)) goto __pyx_L19_unpacking_failed;
-            __Pyx_GOTREF(__pyx_t_3);
-            index = 2; __pyx_t_15 = __pyx_t_8(__pyx_t_16); if (unlikely(!__pyx_t_15)) goto __pyx_L19_unpacking_failed;
-            __Pyx_GOTREF(__pyx_t_15);
-            if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_16), 3) < 0) __PYX_ERR(0, 328, __pyx_L1_error)
-            __pyx_t_8 = NULL;
-            __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-            goto __pyx_L20_unpacking_done;
-            __pyx_L19_unpacking_failed:;
-            __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-            __pyx_t_8 = NULL;
-            if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-            __PYX_ERR(0, 328, __pyx_L1_error)
-            __pyx_L20_unpacking_done:;
-          }
-          __Pyx_XGOTREF(__pyx_cur_scope->__pyx_8genexpr2__pyx_v_p);
-          __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_8genexpr2__pyx_v_p, __pyx_t_1);
-          __Pyx_GIVEREF(__pyx_t_1);
-          __pyx_t_1 = 0;
-          __Pyx_XGOTREF(__pyx_cur_scope->__pyx_8genexpr2__pyx_v_n);
-          __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_8genexpr2__pyx_v_n, __pyx_t_3);
-          __Pyx_GIVEREF(__pyx_t_3);
-          __pyx_t_3 = 0;
-          __Pyx_XGOTREF(__pyx_cur_scope->__pyx_8genexpr2__pyx_v_c);
-          __Pyx_XDECREF_SET(__pyx_cur_scope->__pyx_8genexpr2__pyx_v_c, __pyx_t_15);
-          __Pyx_GIVEREF(__pyx_t_15);
-          __pyx_t_15 = 0;
-          __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_nodes, __pyx_cur_scope->__pyx_8genexpr2__pyx_v_p); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 328, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_7);
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_4, (PyObject*)__pyx_t_7))) __PYX_ERR(0, 328, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        }
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      } /* exit inner scope */
-      __pyx_r = __pyx_t_4;
-      __pyx_t_4 = 0;
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-      /* return from generator, yielding value */
-      __pyx_generator->resume_label = 1;
-      return __pyx_r;
-      __pyx_L21_resume_from_yield:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 328, __pyx_L1_error)
-
-      /* "dawdlib/dijkstra/colorful.pyx":327
- *     while top >= 0:
- *         node, i, color = stack[top]
- *         if node == src:             # <<<<<<<<<<<<<<
- *             yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
- *         if len(pred_dict[node]) > i:
- */
-    }
-
-    /* "dawdlib/dijkstra/colorful.pyx":329
- *         if node == src:
- *             yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
- *         if len(pred_dict[node]) > i:             # <<<<<<<<<<<<<<
- *             if not (color & node_colors[pred_dict[node][i]]):
- *                 top += 1
- */
-    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_pred_dict, __pyx_cur_scope->__pyx_v_node); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 329, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_10 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 329, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyInt_FromSsize_t(__pyx_t_10); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 329, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_4, __pyx_cur_scope->__pyx_v_i, Py_GT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 329, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_14 < 0)) __PYX_ERR(0, 329, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (__pyx_t_14) {
-
-      /* "dawdlib/dijkstra/colorful.pyx":330
- *             yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
- *         if len(pred_dict[node]) > i:
- *             if not (color & node_colors[pred_dict[node][i]]):             # <<<<<<<<<<<<<<
- *                 top += 1
- *                 if top == len(stack):
- */
-      __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_pred_dict, __pyx_cur_scope->__pyx_v_node); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 330, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_node_colors, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = PyNumber_And(__pyx_cur_scope->__pyx_v_color, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 330, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_14 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_14 < 0)) __PYX_ERR(0, 330, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_17 = ((!__pyx_t_14) != 0);
-      if (__pyx_t_17) {
-
-        /* "dawdlib/dijkstra/colorful.pyx":331
- *         if len(pred_dict[node]) > i:
- *             if not (color & node_colors[pred_dict[node][i]]):
- *                 top += 1             # <<<<<<<<<<<<<<
- *                 if top == len(stack):
- *                     stack.append([pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]])
- */
-        __pyx_t_4 = __Pyx_PyInt_AddObjC(__pyx_cur_scope->__pyx_v_top, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 331, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_top);
-        __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_top, __pyx_t_4);
-        __Pyx_GIVEREF(__pyx_t_4);
-        __pyx_t_4 = 0;
-
-        /* "dawdlib/dijkstra/colorful.pyx":332
- *             if not (color & node_colors[pred_dict[node][i]]):
- *                 top += 1
- *                 if top == len(stack):             # <<<<<<<<<<<<<<
- *                     stack.append([pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]])
- *                 else:
- */
-        __pyx_t_10 = PyList_GET_SIZE(__pyx_cur_scope->__pyx_v_stack); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 332, __pyx_L1_error)
-        __pyx_t_4 = PyInt_FromSsize_t(__pyx_t_10); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 332, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_2 = PyObject_RichCompare(__pyx_cur_scope->__pyx_v_top, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 332, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_17 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_17 < 0)) __PYX_ERR(0, 332, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (__pyx_t_17) {
-
-          /* "dawdlib/dijkstra/colorful.pyx":333
- *                 top += 1
- *                 if top == len(stack):
- *                     stack.append([pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]])             # <<<<<<<<<<<<<<
- *                 else:
- *                     stack[top] = [pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]]
- */
-          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_pred_dict, __pyx_cur_scope->__pyx_v_node); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 333, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 333, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_pred_dict, __pyx_cur_scope->__pyx_v_node); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 333, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 333, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_7);
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_node_colors, __pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 333, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-          __pyx_t_7 = PyNumber_Or(__pyx_cur_scope->__pyx_v_color, __pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 333, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_7);
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 333, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __Pyx_GIVEREF(__pyx_t_4);
-          PyList_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
-          __Pyx_INCREF(__pyx_int_0);
-          __Pyx_GIVEREF(__pyx_int_0);
-          PyList_SET_ITEM(__pyx_t_2, 1, __pyx_int_0);
-          __Pyx_GIVEREF(__pyx_t_7);
-          PyList_SET_ITEM(__pyx_t_2, 2, __pyx_t_7);
-          __pyx_t_4 = 0;
-          __pyx_t_7 = 0;
-          __pyx_t_9 = __Pyx_PyList_Append(__pyx_cur_scope->__pyx_v_stack, __pyx_t_2); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(0, 333, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-          /* "dawdlib/dijkstra/colorful.pyx":332
- *             if not (color & node_colors[pred_dict[node][i]]):
- *                 top += 1
- *                 if top == len(stack):             # <<<<<<<<<<<<<<
- *                     stack.append([pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]])
- *                 else:
- */
-          goto __pyx_L24;
-        }
-
-        /* "dawdlib/dijkstra/colorful.pyx":335
- *                     stack.append([pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]])
- *                 else:
- *                     stack[top] = [pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]]             # <<<<<<<<<<<<<<
- *             else:
- *                 stack[top][1] += 1
- */
-        /*else*/ {
-          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_pred_dict, __pyx_cur_scope->__pyx_v_node); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 335, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 335, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_7);
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_pred_dict, __pyx_cur_scope->__pyx_v_node); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 335, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_cur_scope->__pyx_v_i); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 335, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_node_colors, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 335, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          __pyx_t_4 = PyNumber_Or(__pyx_cur_scope->__pyx_v_color, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 335, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 335, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          __Pyx_GIVEREF(__pyx_t_7);
-          PyList_SET_ITEM(__pyx_t_2, 0, __pyx_t_7);
-          __Pyx_INCREF(__pyx_int_0);
-          __Pyx_GIVEREF(__pyx_int_0);
-          PyList_SET_ITEM(__pyx_t_2, 1, __pyx_int_0);
-          __Pyx_GIVEREF(__pyx_t_4);
-          PyList_SET_ITEM(__pyx_t_2, 2, __pyx_t_4);
-          __pyx_t_7 = 0;
-          __pyx_t_4 = 0;
-          if (unlikely(PyObject_SetItem(__pyx_cur_scope->__pyx_v_stack, __pyx_cur_scope->__pyx_v_top, __pyx_t_2) < 0)) __PYX_ERR(0, 335, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        }
-        __pyx_L24:;
-
-        /* "dawdlib/dijkstra/colorful.pyx":330
- *             yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
- *         if len(pred_dict[node]) > i:
- *             if not (color & node_colors[pred_dict[node][i]]):             # <<<<<<<<<<<<<<
- *                 top += 1
- *                 if top == len(stack):
- */
-        goto __pyx_L23;
-      }
-
-      /* "dawdlib/dijkstra/colorful.pyx":337
- *                     stack[top] = [pred_dict[node][i], 0, color | node_colors[pred_dict[node][i]]]
- *             else:
- *                 stack[top][1] += 1             # <<<<<<<<<<<<<<
- *         else:
- *             stack[top-1][1] += 1
- */
-      /*else*/ {
-        __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_stack, __pyx_cur_scope->__pyx_v_top); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 337, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_2);
-        __pyx_t_10 = 1;
-        __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_2, __pyx_t_10, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 337, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_7 = __Pyx_PyInt_AddObjC(__pyx_t_4, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 337, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_7);
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        if (unlikely(__Pyx_SetItemInt(__pyx_t_2, __pyx_t_10, __pyx_t_7, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0) < 0)) __PYX_ERR(0, 337, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      }
-      __pyx_L23:;
-
-      /* "dawdlib/dijkstra/colorful.pyx":329
- *         if node == src:
- *             yield [nodes[p] for p, n, c in reversed(stack[:top + 1])]
- *         if len(pred_dict[node]) > i:             # <<<<<<<<<<<<<<
- *             if not (color & node_colors[pred_dict[node][i]]):
- *                 top += 1
- */
-      goto __pyx_L22;
-    }
-
-    /* "dawdlib/dijkstra/colorful.pyx":339
- *                 stack[top][1] += 1
- *         else:
- *             stack[top-1][1] += 1             # <<<<<<<<<<<<<<
- *             top -= 1
- * 
- */
-    /*else*/ {
-      __pyx_t_2 = __Pyx_PyInt_SubtractObjC(__pyx_cur_scope->__pyx_v_top, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 339, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_7 = __Pyx_PyObject_GetItem(__pyx_cur_scope->__pyx_v_stack, __pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 339, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_10 = 1;
-      __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_7, __pyx_t_10, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 339, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_4 = __Pyx_PyInt_AddObjC(__pyx_t_2, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 339, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(__Pyx_SetItemInt(__pyx_t_7, __pyx_t_10, __pyx_t_4, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0) < 0)) __PYX_ERR(0, 339, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-
-      /* "dawdlib/dijkstra/colorful.pyx":340
- *         else:
- *             stack[top-1][1] += 1
- *             top -= 1             # <<<<<<<<<<<<<<
- * 
- * 
- */
-      __pyx_t_7 = __Pyx_PyInt_SubtractObjC(__pyx_cur_scope->__pyx_v_top, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 340, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_7);
-      __Pyx_GOTREF(__pyx_cur_scope->__pyx_v_top);
-      __Pyx_DECREF_SET(__pyx_cur_scope->__pyx_v_top, __pyx_t_7);
-      __Pyx_GIVEREF(__pyx_t_7);
-      __pyx_t_7 = 0;
-    }
-    __pyx_L22:;
-  }
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* "dawdlib/dijkstra/colorful.pyx":317
- * 
- * 
- * def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):             # <<<<<<<<<<<<<<
- *     pred_dict = defaultdict(list)
- *     for key, val in np.argwhere(pred).tolist():
- */
-
-  /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_15);
-  __Pyx_XDECREF(__pyx_t_16);
-  __Pyx_AddTraceback("yield_colorful_shortest_paths", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  #if !CYTHON_USE_EXC_INFO_STACK
-  __Pyx_Coroutine_ResetAndClearException(__pyx_generator);
-  #endif
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":343
- * 
- * 
- * def colorful_shortest_path(nodes, src, trgt, node_colors, dist):             # <<<<<<<<<<<<<<
- *     current = trgt
- *     dist_cp = dist.copy()
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_17colorful_shortest_path(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_17colorful_shortest_path = {"colorful_shortest_path", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_17colorful_shortest_path, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_17colorful_shortest_path(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_nodes = 0;
-  PyObject *__pyx_v_src = 0;
-  PyObject *__pyx_v_trgt = 0;
-  CYTHON_UNUSED PyObject *__pyx_v_node_colors = 0;
-  PyObject *__pyx_v_dist = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("colorful_shortest_path (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_nodes,&__pyx_n_s_src,&__pyx_n_s_trgt,&__pyx_n_s_node_colors,&__pyx_n_s_dist,0};
-    PyObject* values[5] = {0,0,0,0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-        CYTHON_FALLTHROUGH;
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_nodes)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_src)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 1, 5, 5, 1); __PYX_ERR(0, 343, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_trgt)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 1, 5, 5, 2); __PYX_ERR(0, 343, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_node_colors)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 1, 5, 5, 3); __PYX_ERR(0, 343, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  4:
-        if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_dist)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 1, 5, 5, 4); __PYX_ERR(0, 343, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "colorful_shortest_path") < 0)) __PYX_ERR(0, 343, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-      values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
-    }
-    __pyx_v_nodes = values[0];
-    __pyx_v_src = values[1];
-    __pyx_v_trgt = values[2];
-    __pyx_v_node_colors = values[3];
-    __pyx_v_dist = values[4];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("colorful_shortest_path", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 343, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.colorful_shortest_path", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_16colorful_shortest_path(__pyx_self, __pyx_v_nodes, __pyx_v_src, __pyx_v_trgt, __pyx_v_node_colors, __pyx_v_dist);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_16colorful_shortest_path(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_nodes, PyObject *__pyx_v_src, PyObject *__pyx_v_trgt, CYTHON_UNUSED PyObject *__pyx_v_node_colors, PyObject *__pyx_v_dist) {
-  PyObject *__pyx_v_current = NULL;
-  PyObject *__pyx_v_dist_cp = NULL;
-  PyObject *__pyx_v_max_val = NULL;
-  PyObject *__pyx_v_pred = NULL;
-  PyObject *__pyx_v_path = NULL;
-  PyObject *__pyx_8genexpr3__pyx_v_p = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  int __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  int __pyx_t_7;
-  __Pyx_RefNannySetupContext("colorful_shortest_path", 0);
-
-  /* "dawdlib/dijkstra/colorful.pyx":344
- * 
- * def colorful_shortest_path(nodes, src, trgt, node_colors, dist):
- *     current = trgt             # <<<<<<<<<<<<<<
- *     dist_cp = dist.copy()
- *     max_val = np.iinfo(dist_cp.dtype).max
- */
-  __Pyx_INCREF(__pyx_v_trgt);
-  __pyx_v_current = __pyx_v_trgt;
-
-  /* "dawdlib/dijkstra/colorful.pyx":345
- * def colorful_shortest_path(nodes, src, trgt, node_colors, dist):
- *     current = trgt
- *     dist_cp = dist.copy()             # <<<<<<<<<<<<<<
- *     max_val = np.iinfo(dist_cp.dtype).max
- * 
- */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_dist, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 345, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 345, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_dist_cp = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":346
- *     current = trgt
- *     dist_cp = dist.copy()
- *     max_val = np.iinfo(dist_cp.dtype).max             # <<<<<<<<<<<<<<
- * 
- *     dist_cp[trgt, dist_cp[trgt] < 0] = max_val
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 346, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_iinfo); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 346, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_dist_cp, __pyx_n_s_dtype); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 346, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_3, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 346, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_max); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 346, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_max_val = __pyx_t_3;
-  __pyx_t_3 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":348
- *     max_val = np.iinfo(dist_cp.dtype).max
- * 
- *     dist_cp[trgt, dist_cp[trgt] < 0] = max_val             # <<<<<<<<<<<<<<
- *     pred = np.argmin(dist_cp[trgt])
- *     path = [trgt]
- */
-  __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_dist_cp, __pyx_v_trgt); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 348, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_1 = PyObject_RichCompare(__pyx_t_3, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 348, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 348, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_INCREF(__pyx_v_trgt);
-  __Pyx_GIVEREF(__pyx_v_trgt);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_trgt);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
-  __pyx_t_1 = 0;
-  if (unlikely(PyObject_SetItem(__pyx_v_dist_cp, __pyx_t_3, __pyx_v_max_val) < 0)) __PYX_ERR(0, 348, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":349
- * 
- *     dist_cp[trgt, dist_cp[trgt] < 0] = max_val
- *     pred = np.argmin(dist_cp[trgt])             # <<<<<<<<<<<<<<
- *     path = [trgt]
- *     while pred < current:
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 349, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_argmin); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 349, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_v_dist_cp, __pyx_v_trgt); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 349, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_1) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 349, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_pred = __pyx_t_3;
-  __pyx_t_3 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":350
- *     dist_cp[trgt, dist_cp[trgt] < 0] = max_val
- *     pred = np.argmin(dist_cp[trgt])
- *     path = [trgt]             # <<<<<<<<<<<<<<
- *     while pred < current:
- *         current = pred
- */
-  __pyx_t_3 = PyList_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 350, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_INCREF(__pyx_v_trgt);
-  __Pyx_GIVEREF(__pyx_v_trgt);
-  PyList_SET_ITEM(__pyx_t_3, 0, __pyx_v_trgt);
-  __pyx_v_path = ((PyObject*)__pyx_t_3);
-  __pyx_t_3 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":351
- *     pred = np.argmin(dist_cp[trgt])
- *     path = [trgt]
- *     while pred < current:             # <<<<<<<<<<<<<<
- *         current = pred
- *         if current == src:
- */
-  while (1) {
-    __pyx_t_3 = PyObject_RichCompare(__pyx_v_pred, __pyx_v_current, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 351, __pyx_L1_error)
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 351, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!__pyx_t_5) break;
-
-    /* "dawdlib/dijkstra/colorful.pyx":352
- *     path = [trgt]
- *     while pred < current:
- *         current = pred             # <<<<<<<<<<<<<<
- *         if current == src:
- *             return [nodes[p] for p in reversed(path)]
- */
-    __Pyx_INCREF(__pyx_v_pred);
-    __Pyx_DECREF_SET(__pyx_v_current, __pyx_v_pred);
-
-    /* "dawdlib/dijkstra/colorful.pyx":353
- *     while pred < current:
- *         current = pred
- *         if current == src:             # <<<<<<<<<<<<<<
- *             return [nodes[p] for p in reversed(path)]
- *         path.append(current)
- */
-    __pyx_t_3 = PyObject_RichCompare(__pyx_v_current, __pyx_v_src, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 353, __pyx_L1_error)
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 353, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (__pyx_t_5) {
-
-      /* "dawdlib/dijkstra/colorful.pyx":354
- *         current = pred
- *         if current == src:
- *             return [nodes[p] for p in reversed(path)]             # <<<<<<<<<<<<<<
- *         path.append(current)
- *         dist_cp[current, dist_cp[current] < 0] = max_val
- */
-      __Pyx_XDECREF(__pyx_r);
-      { /* enter inner scope */
-        __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L8_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_2 = __pyx_v_path; __Pyx_INCREF(__pyx_t_2); __pyx_t_6 = PyList_GET_SIZE(__pyx_t_2) - 1;
-        for (;;) {
-          if (__pyx_t_6 < 0) break;
-          if (__pyx_t_6 >= PyList_GET_SIZE(__pyx_t_2)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_6); __Pyx_INCREF(__pyx_t_1); __pyx_t_6--; if (unlikely(0 < 0)) __PYX_ERR(0, 354, __pyx_L8_error)
-          #else
-          __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_6); __pyx_t_6--; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L8_error)
-          __Pyx_GOTREF(__pyx_t_1);
-          #endif
-          __Pyx_XDECREF_SET(__pyx_8genexpr3__pyx_v_p, __pyx_t_1);
-          __pyx_t_1 = 0;
-          __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_v_nodes, __pyx_8genexpr3__pyx_v_p); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 354, __pyx_L8_error)
-          __Pyx_GOTREF(__pyx_t_1);
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_1))) __PYX_ERR(0, 354, __pyx_L8_error)
-          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        }
-        __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-        __Pyx_XDECREF(__pyx_8genexpr3__pyx_v_p); __pyx_8genexpr3__pyx_v_p = 0;
-        goto __pyx_L11_exit_scope;
-        __pyx_L8_error:;
-        __Pyx_XDECREF(__pyx_8genexpr3__pyx_v_p); __pyx_8genexpr3__pyx_v_p = 0;
-        goto __pyx_L1_error;
-        __pyx_L11_exit_scope:;
-      } /* exit inner scope */
-      __pyx_r = __pyx_t_3;
-      __pyx_t_3 = 0;
-      goto __pyx_L0;
-
-      /* "dawdlib/dijkstra/colorful.pyx":353
- *     while pred < current:
- *         current = pred
- *         if current == src:             # <<<<<<<<<<<<<<
- *             return [nodes[p] for p in reversed(path)]
- *         path.append(current)
- */
-    }
-
-    /* "dawdlib/dijkstra/colorful.pyx":355
- *         if current == src:
- *             return [nodes[p] for p in reversed(path)]
- *         path.append(current)             # <<<<<<<<<<<<<<
- *         dist_cp[current, dist_cp[current] < 0] = max_val
- *         pred = np.argmin(dist_cp[current])
- */
-    __pyx_t_7 = __Pyx_PyList_Append(__pyx_v_path, __pyx_v_current); if (unlikely(__pyx_t_7 == ((int)-1))) __PYX_ERR(0, 355, __pyx_L1_error)
-
-    /* "dawdlib/dijkstra/colorful.pyx":356
- *             return [nodes[p] for p in reversed(path)]
- *         path.append(current)
- *         dist_cp[current, dist_cp[current] < 0] = max_val             # <<<<<<<<<<<<<<
- *         pred = np.argmin(dist_cp[current])
- *     raise nx.NetworkXNoPath()
- */
-    __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_dist_cp, __pyx_v_current); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 356, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = PyObject_RichCompare(__pyx_t_3, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 356, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 356, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_INCREF(__pyx_v_current);
-    __Pyx_GIVEREF(__pyx_v_current);
-    PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_current);
-    __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
-    __pyx_t_2 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_v_dist_cp, __pyx_t_3, __pyx_v_max_val) < 0)) __PYX_ERR(0, 356, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "dawdlib/dijkstra/colorful.pyx":357
- *         path.append(current)
- *         dist_cp[current, dist_cp[current] < 0] = max_val
- *         pred = np.argmin(dist_cp[current])             # <<<<<<<<<<<<<<
- *     raise nx.NetworkXNoPath()
- * 
- */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 357, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_argmin); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 357, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_dist_cp, __pyx_v_current); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 357, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = NULL;
-    if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
-      }
-    }
-    __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_2);
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 357, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_DECREF_SET(__pyx_v_pred, __pyx_t_3);
-    __pyx_t_3 = 0;
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":358
- *         dist_cp[current, dist_cp[current] < 0] = max_val
- *         pred = np.argmin(dist_cp[current])
- *     raise nx.NetworkXNoPath()             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_nx); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 358, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_NetworkXNoPath); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 358, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_1)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_1) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 358, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __PYX_ERR(0, 358, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":343
- * 
- * 
- * def colorful_shortest_path(nodes, src, trgt, node_colors, dist):             # <<<<<<<<<<<<<<
- *     current = trgt
- *     dist_cp = dist.copy()
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.colorful_shortest_path", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_current);
-  __Pyx_XDECREF(__pyx_v_dist_cp);
-  __Pyx_XDECREF(__pyx_v_max_val);
-  __Pyx_XDECREF(__pyx_v_pred);
-  __Pyx_XDECREF(__pyx_v_path);
-  __Pyx_XDECREF(__pyx_8genexpr3__pyx_v_p);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":361
+/* "dawdlib/dijkstra/colorful.pyx":360
  * 
  * 
  * cdef int random_colorful_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
-static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__8;
+static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__6;
   int __pyx_v_res;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -10601,18 +7672,18 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   /* "dawdlib/dijkstra/colorful.pyx":378
  * 
  *     # Check if we found paths and return them as iterator
- *     res = predecessor_and_distance(G, weight, sources, color_map, pred, dist, seen, limit)             # <<<<<<<<<<<<<<
+ *     res = predecessor_and_distance(G, weight, sources, color_map, pred, s_pred, dist, seen, limit)             # <<<<<<<<<<<<<<
  *     return res
  * 
  */
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.limit = __pyx_v_limit;
-  __pyx_t_1 = __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color_map, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
+  __pyx_t_1 = __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color_map, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
   __pyx_v_res = __pyx_t_1;
 
   /* "dawdlib/dijkstra/colorful.pyx":379
  *     # Check if we found paths and return them as iterator
- *     res = predecessor_and_distance(G, weight, sources, color_map, pred, dist, seen, limit)
+ *     res = predecessor_and_distance(G, weight, sources, color_map, pred, s_pred, dist, seen, limit)
  *     return res             # <<<<<<<<<<<<<<
  * 
  * 
@@ -10620,12 +7691,12 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   __pyx_r = __pyx_v_res;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":361
+  /* "dawdlib/dijkstra/colorful.pyx":360
  * 
  * 
  * cdef int random_colorful_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -10634,8 +7705,8 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   return __pyx_r;
 }
 
-static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__9;
+static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__7;
   int __pyx_v_res;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -10669,18 +7740,18 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   /* "dawdlib/dijkstra/colorful.pyx":378
  * 
  *     # Check if we found paths and return them as iterator
- *     res = predecessor_and_distance(G, weight, sources, color_map, pred, dist, seen, limit)             # <<<<<<<<<<<<<<
+ *     res = predecessor_and_distance(G, weight, sources, color_map, pred, s_pred, dist, seen, limit)             # <<<<<<<<<<<<<<
  *     return res
  * 
  */
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.limit = __pyx_v_limit;
-  __pyx_t_1 = __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color_map, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
+  __pyx_t_1 = __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color_map, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
   __pyx_v_res = __pyx_t_1;
 
   /* "dawdlib/dijkstra/colorful.pyx":379
  *     # Check if we found paths and return them as iterator
- *     res = predecessor_and_distance(G, weight, sources, color_map, pred, dist, seen, limit)
+ *     res = predecessor_and_distance(G, weight, sources, color_map, pred, s_pred, dist, seen, limit)
  *     return res             # <<<<<<<<<<<<<<
  * 
  * 
@@ -10688,12 +7759,12 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   __pyx_r = __pyx_v_res;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":361
+  /* "dawdlib/dijkstra/colorful.pyx":360
  * 
  * 
  * cdef int random_colorful_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -10702,8 +7773,8 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   return __pyx_r;
 }
 
-static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__10;
+static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__8;
   int __pyx_v_res;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -10737,18 +7808,18 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   /* "dawdlib/dijkstra/colorful.pyx":378
  * 
  *     # Check if we found paths and return them as iterator
- *     res = predecessor_and_distance(G, weight, sources, color_map, pred, dist, seen, limit)             # <<<<<<<<<<<<<<
+ *     res = predecessor_and_distance(G, weight, sources, color_map, pred, s_pred, dist, seen, limit)             # <<<<<<<<<<<<<<
  *     return res
  * 
  */
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.limit = __pyx_v_limit;
-  __pyx_t_1 = __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color_map, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
+  __pyx_t_1 = __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color_map, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
   __pyx_v_res = __pyx_t_1;
 
   /* "dawdlib/dijkstra/colorful.pyx":379
  *     # Check if we found paths and return them as iterator
- *     res = predecessor_and_distance(G, weight, sources, color_map, pred, dist, seen, limit)
+ *     res = predecessor_and_distance(G, weight, sources, color_map, pred, s_pred, dist, seen, limit)
  *     return res             # <<<<<<<<<<<<<<
  * 
  * 
@@ -10756,12 +7827,12 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   __pyx_r = __pyx_v_res;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":361
+  /* "dawdlib/dijkstra/colorful.pyx":360
  * 
  * 
  * cdef int random_colorful_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -10770,8 +7841,8 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   return __pyx_r;
 }
 
-static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__11;
+static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_colors, __Pyx_memviewslice __pyx_v_color_map, int __pyx_v_no_colors, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful_random_colorful_shortest_paths *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__9;
   int __pyx_v_res;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -10805,18 +7876,18 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   /* "dawdlib/dijkstra/colorful.pyx":378
  * 
  *     # Check if we found paths and return them as iterator
- *     res = predecessor_and_distance(G, weight, sources, color_map, pred, dist, seen, limit)             # <<<<<<<<<<<<<<
+ *     res = predecessor_and_distance(G, weight, sources, color_map, pred, s_pred, dist, seen, limit)             # <<<<<<<<<<<<<<
  *     return res
  * 
  */
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.limit = __pyx_v_limit;
-  __pyx_t_1 = __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color_map, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
+  __pyx_t_1 = __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color_map, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
   __pyx_v_res = __pyx_t_1;
 
   /* "dawdlib/dijkstra/colorful.pyx":379
  *     # Check if we found paths and return them as iterator
- *     res = predecessor_and_distance(G, weight, sources, color_map, pred, dist, seen, limit)
+ *     res = predecessor_and_distance(G, weight, sources, color_map, pred, s_pred, dist, seen, limit)
  *     return res             # <<<<<<<<<<<<<<
  * 
  * 
@@ -10824,12 +7895,12 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_colorful_shor
   __pyx_r = __pyx_v_res;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":361
+  /* "dawdlib/dijkstra/colorful.pyx":360
  * 
  * 
  * cdef int random_colorful_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -10931,7 +8002,7 @@ static void __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_random_recolor(__Py
  *     finally:
  *         free(random_coloring)             # <<<<<<<<<<<<<<
  * 
- * @cython.embedsignature(True)
+ * # @cython.embedsignature(True)
  */
   /*finally:*/ {
     /*normal exit:*/{
@@ -11042,7 +8113,7 @@ static void __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_random_recolor(__Py
  *     finally:
  *         free(random_coloring)             # <<<<<<<<<<<<<<
  * 
- * @cython.embedsignature(True)
+ * # @cython.embedsignature(True)
  */
   /*finally:*/ {
     /*normal exit:*/{
@@ -11153,7 +8224,7 @@ static void __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_random_recolor(__Py
  *     finally:
  *         free(random_coloring)             # <<<<<<<<<<<<<<
  * 
- * @cython.embedsignature(True)
+ * # @cython.embedsignature(True)
  */
   /*finally:*/ {
     /*normal exit:*/{
@@ -11264,7 +8335,7 @@ static void __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_recolor(__Py
  *     finally:
  *         free(random_coloring)             # <<<<<<<<<<<<<<
  * 
- * @cython.embedsignature(True)
+ * # @cython.embedsignature(True)
  */
   /*finally:*/ {
     /*normal exit:*/{
@@ -11288,390 +8359,6 @@ static void __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_random_recolor(__Py
   __Pyx_WriteUnraisable("dawdlib.dijkstra.colorful.random_recolor", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":397
- * 
- * @cython.embedsignature(True)
- * def recolor(color_arr, no_colors):             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t cshape = color_arr.shape[1]
- *     recolor_arr = np.zeros((cshape, no_colors), np.ubyte)
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_19recolor(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7dawdlib_8dijkstra_8colorful_18recolor[] = "recolor(color_arr, no_colors)";
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_19recolor = {"recolor", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_19recolor, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_18recolor};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_19recolor(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_color_arr = 0;
-  PyObject *__pyx_v_no_colors = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("recolor (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_color_arr,&__pyx_n_s_no_colors,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_color_arr)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_no_colors)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("recolor", 1, 2, 2, 1); __PYX_ERR(0, 397, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "recolor") < 0)) __PYX_ERR(0, 397, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_color_arr = values[0];
-    __pyx_v_no_colors = values[1];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("recolor", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 397, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.recolor", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_18recolor(__pyx_self, __pyx_v_color_arr, __pyx_v_no_colors);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_18recolor(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_color_arr, PyObject *__pyx_v_no_colors) {
-  Py_ssize_t __pyx_v_cshape;
-  PyObject *__pyx_v_recolor_arr = NULL;
-  PyObject *__pyx_v_rand_colors = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  Py_ssize_t __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  int __pyx_t_7;
-  PyObject *__pyx_t_8 = NULL;
-  __Pyx_RefNannySetupContext("recolor", 0);
-
-  /* "dawdlib/dijkstra/colorful.pyx":398
- * @cython.embedsignature(True)
- * def recolor(color_arr, no_colors):
- *     cdef Py_ssize_t cshape = color_arr.shape[1]             # <<<<<<<<<<<<<<
- *     recolor_arr = np.zeros((cshape, no_colors), np.ubyte)
- *     rand_colors = np.random.randint(0, no_colors, color_arr.shape[1])
- */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_color_arr, __pyx_n_s_shape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 398, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_GetItemInt(__pyx_t_1, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 398, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_3 = __Pyx_PyIndex_AsSsize_t(__pyx_t_2); if (unlikely((__pyx_t_3 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 398, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_v_cshape = __pyx_t_3;
-
-  /* "dawdlib/dijkstra/colorful.pyx":399
- * def recolor(color_arr, no_colors):
- *     cdef Py_ssize_t cshape = color_arr.shape[1]
- *     recolor_arr = np.zeros((cshape, no_colors), np.ubyte)             # <<<<<<<<<<<<<<
- *     rand_colors = np.random.randint(0, no_colors, color_arr.shape[1])
- *     recolor_arr[np.arange(cshape), rand_colors] = True
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 399, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 399, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_cshape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 399, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 399, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_1);
-  __Pyx_INCREF(__pyx_v_no_colors);
-  __Pyx_GIVEREF(__pyx_v_no_colors);
-  PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_v_no_colors);
-  __pyx_t_1 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 399, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_ubyte); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 399, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = NULL;
-  __pyx_t_7 = 0;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_1 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_1)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-      __pyx_t_7 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_t_5, __pyx_t_6};
-    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 399, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_1, __pyx_t_5, __pyx_t_6};
-    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 399, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  } else
-  #endif
-  {
-    __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 399, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    if (__pyx_t_1) {
-      __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_1); __pyx_t_1 = NULL;
-    }
-    __Pyx_GIVEREF(__pyx_t_5);
-    PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_7, __pyx_t_5);
-    __Pyx_GIVEREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, __pyx_t_6);
-    __pyx_t_5 = 0;
-    __pyx_t_6 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_8, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 399, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_v_recolor_arr = __pyx_t_2;
-  __pyx_t_2 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":400
- *     cdef Py_ssize_t cshape = color_arr.shape[1]
- *     recolor_arr = np.zeros((cshape, no_colors), np.ubyte)
- *     rand_colors = np.random.randint(0, no_colors, color_arr.shape[1])             # <<<<<<<<<<<<<<
- *     recolor_arr[np.arange(cshape), rand_colors] = True
- *     return np.matmul(color_arr, recolor_arr)
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 400, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_random); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 400, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_randint); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 400, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = __Pyx_PyObject_GetAttrStr(__pyx_v_color_arr, __pyx_n_s_shape); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 400, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_6 = __Pyx_GetItemInt(__pyx_t_8, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 400, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  __pyx_t_8 = NULL;
-  __pyx_t_7 = 0;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_8)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_8);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-      __pyx_t_7 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[4] = {__pyx_t_8, __pyx_int_0, __pyx_v_no_colors, __pyx_t_6};
-    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[4] = {__pyx_t_8, __pyx_int_0, __pyx_v_no_colors, __pyx_t_6};
-    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  } else
-  #endif
-  {
-    __pyx_t_5 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 400, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (__pyx_t_8) {
-      __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_8); __pyx_t_8 = NULL;
-    }
-    __Pyx_INCREF(__pyx_int_0);
-    __Pyx_GIVEREF(__pyx_int_0);
-    PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_7, __pyx_int_0);
-    __Pyx_INCREF(__pyx_v_no_colors);
-    __Pyx_GIVEREF(__pyx_v_no_colors);
-    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_7, __pyx_v_no_colors);
-    __Pyx_GIVEREF(__pyx_t_6);
-    PyTuple_SET_ITEM(__pyx_t_5, 2+__pyx_t_7, __pyx_t_6);
-    __pyx_t_6 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_v_rand_colors = __pyx_t_2;
-  __pyx_t_2 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":401
- *     recolor_arr = np.zeros((cshape, no_colors), np.ubyte)
- *     rand_colors = np.random.randint(0, no_colors, color_arr.shape[1])
- *     recolor_arr[np.arange(cshape), rand_colors] = True             # <<<<<<<<<<<<<<
- *     return np.matmul(color_arr, recolor_arr)
- * 
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 401, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_arange); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 401, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_cshape); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 401, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_6 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
-    __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
-    if (likely(__pyx_t_6)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-      __Pyx_INCREF(__pyx_t_6);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_5, function);
-    }
-  }
-  __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 401, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 401, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_2);
-  __Pyx_INCREF(__pyx_v_rand_colors);
-  __Pyx_GIVEREF(__pyx_v_rand_colors);
-  PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_v_rand_colors);
-  __pyx_t_2 = 0;
-  if (unlikely(PyObject_SetItem(__pyx_v_recolor_arr, __pyx_t_5, Py_True) < 0)) __PYX_ERR(0, 401, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":402
- *     rand_colors = np.random.randint(0, no_colors, color_arr.shape[1])
- *     recolor_arr[np.arange(cshape), rand_colors] = True
- *     return np.matmul(color_arr, recolor_arr)             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_matmul); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 402, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = NULL;
-  __pyx_t_7 = 0;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_2)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_2);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-      __pyx_t_7 = 1;
-    }
-  }
-  #if CYTHON_FAST_PYCALL
-  if (PyFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_color_arr, __pyx_v_recolor_arr};
-    __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 402, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_GOTREF(__pyx_t_5);
-  } else
-  #endif
-  #if CYTHON_FAST_PYCCALL
-  if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_2, __pyx_v_color_arr, __pyx_v_recolor_arr};
-    __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 402, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_GOTREF(__pyx_t_5);
-  } else
-  #endif
-  {
-    __pyx_t_6 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 402, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    if (__pyx_t_2) {
-      __Pyx_GIVEREF(__pyx_t_2); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_2); __pyx_t_2 = NULL;
-    }
-    __Pyx_INCREF(__pyx_v_color_arr);
-    __Pyx_GIVEREF(__pyx_v_color_arr);
-    PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_7, __pyx_v_color_arr);
-    __Pyx_INCREF(__pyx_v_recolor_arr);
-    __Pyx_GIVEREF(__pyx_v_recolor_arr);
-    PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_7, __pyx_v_recolor_arr);
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_6, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 402, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  }
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_r = __pyx_t_5;
-  __pyx_t_5 = 0;
-  goto __pyx_L0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":397
- * 
- * @cython.embedsignature(True)
- * def recolor(color_arr, no_colors):             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t cshape = color_arr.shape[1]
- *     recolor_arr = np.zeros((cshape, no_colors), np.ubyte)
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.recolor", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_recolor_arr);
-  __Pyx_XDECREF(__pyx_v_rand_colors);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
 }
 
 /* "dawdlib/dijkstra/colorful.pyx":406
@@ -11857,7 +8544,7 @@ static void __pyx_f_7dawdlib_8dijkstra_8colorful_recolor_c(__Pyx_memviewslice __
  *     finally:
  *         free(recolor_arr)             # <<<<<<<<<<<<<<
  * 
- * @cython.embedsignature(True)
+ * # @cython.embedsignature(True)
  */
   /*finally:*/ {
     /*normal exit:*/{
@@ -11881,1581 +8568,6 @@ static void __pyx_f_7dawdlib_8dijkstra_8colorful_recolor_c(__Pyx_memviewslice __
   __Pyx_WriteUnraisable("dawdlib.dijkstra.colorful.recolor_c", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":428
- * 
- * @cython.embedsignature(True)
- * cdef umy_type bool2int(uint8_t[:] arr, umy_type* res_ref) nogil:             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t x_max = arr.shape[0]
- *     cdef Py_ssize_t x
- */
-
-static uint8_t __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__Pyx_memviewslice __pyx_v_arr, uint8_t *__pyx_v_res_ref) {
-  Py_ssize_t __pyx_v_x_max;
-  Py_ssize_t __pyx_v_x;
-  uint8_t __pyx_v_res;
-  uint8_t __pyx_r;
-  Py_ssize_t __pyx_t_1;
-  Py_ssize_t __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  Py_ssize_t __pyx_t_4;
-
-  /* "dawdlib/dijkstra/colorful.pyx":429
- * @cython.embedsignature(True)
- * cdef umy_type bool2int(uint8_t[:] arr, umy_type* res_ref) nogil:
- *     cdef Py_ssize_t x_max = arr.shape[0]             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)
- */
-  __pyx_v_x_max = (__pyx_v_arr.shape[0]);
-
-  /* "dawdlib/dijkstra/colorful.pyx":431
- *     cdef Py_ssize_t x_max = arr.shape[0]
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)             # <<<<<<<<<<<<<<
- *     res = 0
- *     for x in range(x_max):
- */
-  __pyx_v_res = (*__pyx_v_res_ref);
-
-  /* "dawdlib/dijkstra/colorful.pyx":432
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)
- *     res = 0             # <<<<<<<<<<<<<<
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]
- */
-  __pyx_v_res = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":433
- *     cdef umy_type res = deref(res_ref)
- *     res = 0
- *     for x in range(x_max):             # <<<<<<<<<<<<<<
- *         res = (res << 1) ^ arr[x]
- *     return res
- */
-  __pyx_t_1 = __pyx_v_x_max;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_x = __pyx_t_3;
-
-    /* "dawdlib/dijkstra/colorful.pyx":434
- *     res = 0
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]             # <<<<<<<<<<<<<<
- *     return res
- * 
- */
-    __pyx_t_4 = __pyx_v_x;
-    __pyx_v_res = ((__pyx_v_res << 1) ^ (*((uint8_t *) ( /* dim=0 */ (__pyx_v_arr.data + __pyx_t_4 * __pyx_v_arr.strides[0]) ))));
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":435
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]
- *     return res             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_r = __pyx_v_res;
-  goto __pyx_L0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":428
- * 
- * @cython.embedsignature(True)
- * cdef umy_type bool2int(uint8_t[:] arr, umy_type* res_ref) nogil:             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t x_max = arr.shape[0]
- *     cdef Py_ssize_t x
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-static uint16_t __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__Pyx_memviewslice __pyx_v_arr, uint16_t *__pyx_v_res_ref) {
-  Py_ssize_t __pyx_v_x_max;
-  Py_ssize_t __pyx_v_x;
-  uint16_t __pyx_v_res;
-  uint16_t __pyx_r;
-  Py_ssize_t __pyx_t_1;
-  Py_ssize_t __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  Py_ssize_t __pyx_t_4;
-
-  /* "dawdlib/dijkstra/colorful.pyx":429
- * @cython.embedsignature(True)
- * cdef umy_type bool2int(uint8_t[:] arr, umy_type* res_ref) nogil:
- *     cdef Py_ssize_t x_max = arr.shape[0]             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)
- */
-  __pyx_v_x_max = (__pyx_v_arr.shape[0]);
-
-  /* "dawdlib/dijkstra/colorful.pyx":431
- *     cdef Py_ssize_t x_max = arr.shape[0]
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)             # <<<<<<<<<<<<<<
- *     res = 0
- *     for x in range(x_max):
- */
-  __pyx_v_res = (*__pyx_v_res_ref);
-
-  /* "dawdlib/dijkstra/colorful.pyx":432
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)
- *     res = 0             # <<<<<<<<<<<<<<
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]
- */
-  __pyx_v_res = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":433
- *     cdef umy_type res = deref(res_ref)
- *     res = 0
- *     for x in range(x_max):             # <<<<<<<<<<<<<<
- *         res = (res << 1) ^ arr[x]
- *     return res
- */
-  __pyx_t_1 = __pyx_v_x_max;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_x = __pyx_t_3;
-
-    /* "dawdlib/dijkstra/colorful.pyx":434
- *     res = 0
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]             # <<<<<<<<<<<<<<
- *     return res
- * 
- */
-    __pyx_t_4 = __pyx_v_x;
-    __pyx_v_res = ((__pyx_v_res << 1) ^ (*((uint8_t *) ( /* dim=0 */ (__pyx_v_arr.data + __pyx_t_4 * __pyx_v_arr.strides[0]) ))));
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":435
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]
- *     return res             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_r = __pyx_v_res;
-  goto __pyx_L0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":428
- * 
- * @cython.embedsignature(True)
- * cdef umy_type bool2int(uint8_t[:] arr, umy_type* res_ref) nogil:             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t x_max = arr.shape[0]
- *     cdef Py_ssize_t x
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-static uint32_t __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__Pyx_memviewslice __pyx_v_arr, uint32_t *__pyx_v_res_ref) {
-  Py_ssize_t __pyx_v_x_max;
-  Py_ssize_t __pyx_v_x;
-  uint32_t __pyx_v_res;
-  uint32_t __pyx_r;
-  Py_ssize_t __pyx_t_1;
-  Py_ssize_t __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  Py_ssize_t __pyx_t_4;
-
-  /* "dawdlib/dijkstra/colorful.pyx":429
- * @cython.embedsignature(True)
- * cdef umy_type bool2int(uint8_t[:] arr, umy_type* res_ref) nogil:
- *     cdef Py_ssize_t x_max = arr.shape[0]             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)
- */
-  __pyx_v_x_max = (__pyx_v_arr.shape[0]);
-
-  /* "dawdlib/dijkstra/colorful.pyx":431
- *     cdef Py_ssize_t x_max = arr.shape[0]
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)             # <<<<<<<<<<<<<<
- *     res = 0
- *     for x in range(x_max):
- */
-  __pyx_v_res = (*__pyx_v_res_ref);
-
-  /* "dawdlib/dijkstra/colorful.pyx":432
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)
- *     res = 0             # <<<<<<<<<<<<<<
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]
- */
-  __pyx_v_res = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":433
- *     cdef umy_type res = deref(res_ref)
- *     res = 0
- *     for x in range(x_max):             # <<<<<<<<<<<<<<
- *         res = (res << 1) ^ arr[x]
- *     return res
- */
-  __pyx_t_1 = __pyx_v_x_max;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_x = __pyx_t_3;
-
-    /* "dawdlib/dijkstra/colorful.pyx":434
- *     res = 0
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]             # <<<<<<<<<<<<<<
- *     return res
- * 
- */
-    __pyx_t_4 = __pyx_v_x;
-    __pyx_v_res = ((__pyx_v_res << 1) ^ (*((uint8_t *) ( /* dim=0 */ (__pyx_v_arr.data + __pyx_t_4 * __pyx_v_arr.strides[0]) ))));
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":435
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]
- *     return res             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_r = __pyx_v_res;
-  goto __pyx_L0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":428
- * 
- * @cython.embedsignature(True)
- * cdef umy_type bool2int(uint8_t[:] arr, umy_type* res_ref) nogil:             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t x_max = arr.shape[0]
- *     cdef Py_ssize_t x
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-static uint64_t __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__Pyx_memviewslice __pyx_v_arr, uint64_t *__pyx_v_res_ref) {
-  Py_ssize_t __pyx_v_x_max;
-  Py_ssize_t __pyx_v_x;
-  uint64_t __pyx_v_res;
-  uint64_t __pyx_r;
-  Py_ssize_t __pyx_t_1;
-  Py_ssize_t __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  Py_ssize_t __pyx_t_4;
-
-  /* "dawdlib/dijkstra/colorful.pyx":429
- * @cython.embedsignature(True)
- * cdef umy_type bool2int(uint8_t[:] arr, umy_type* res_ref) nogil:
- *     cdef Py_ssize_t x_max = arr.shape[0]             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)
- */
-  __pyx_v_x_max = (__pyx_v_arr.shape[0]);
-
-  /* "dawdlib/dijkstra/colorful.pyx":431
- *     cdef Py_ssize_t x_max = arr.shape[0]
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)             # <<<<<<<<<<<<<<
- *     res = 0
- *     for x in range(x_max):
- */
-  __pyx_v_res = (*__pyx_v_res_ref);
-
-  /* "dawdlib/dijkstra/colorful.pyx":432
- *     cdef Py_ssize_t x
- *     cdef umy_type res = deref(res_ref)
- *     res = 0             # <<<<<<<<<<<<<<
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]
- */
-  __pyx_v_res = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":433
- *     cdef umy_type res = deref(res_ref)
- *     res = 0
- *     for x in range(x_max):             # <<<<<<<<<<<<<<
- *         res = (res << 1) ^ arr[x]
- *     return res
- */
-  __pyx_t_1 = __pyx_v_x_max;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_x = __pyx_t_3;
-
-    /* "dawdlib/dijkstra/colorful.pyx":434
- *     res = 0
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]             # <<<<<<<<<<<<<<
- *     return res
- * 
- */
-    __pyx_t_4 = __pyx_v_x;
-    __pyx_v_res = ((__pyx_v_res << 1) ^ (*((uint8_t *) ( /* dim=0 */ (__pyx_v_arr.data + __pyx_t_4 * __pyx_v_arr.strides[0]) ))));
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":435
- *     for x in range(x_max):
- *         res = (res << 1) ^ arr[x]
- *     return res             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __pyx_r = __pyx_v_res;
-  goto __pyx_L0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":428
- * 
- * @cython.embedsignature(True)
- * cdef umy_type bool2int(uint8_t[:] arr, umy_type* res_ref) nogil:             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t x_max = arr.shape[0]
- *     cdef Py_ssize_t x
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  return __pyx_r;
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":439
- * 
- * @cython.embedsignature(True)
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):             # <<<<<<<<<<<<<<
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_21boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_7dawdlib_8dijkstra_8colorful_20boolmat2int[] = "boolmat2int(signatures, args, kwargs, defaults)";
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_21boolmat2int = {"boolmat2int", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_7dawdlib_8dijkstra_8colorful_21boolmat2int, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_20boolmat2int};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_21boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_signatures = 0;
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  CYTHON_UNUSED PyObject *__pyx_v_defaults = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__pyx_fused_cpdef (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_signatures,&__pyx_n_s_args,&__pyx_n_s_kwargs,&__pyx_n_s_defaults,0};
-    PyObject* values[4] = {0,0,0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-        CYTHON_FALLTHROUGH;
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_signatures)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_args)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 1); __PYX_ERR(0, 439, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_kwargs)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 2); __PYX_ERR(0, 439, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_defaults)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, 3); __PYX_ERR(0, 439, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__pyx_fused_cpdef") < 0)) __PYX_ERR(0, 439, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 4) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-      values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
-    }
-    __pyx_v_signatures = values[0];
-    __pyx_v_args = values[1];
-    __pyx_v_kwargs = values[2];
-    __pyx_v_defaults = values[3];
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__pyx_fused_cpdef", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 439, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.__pyx_fused_cpdef", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_20boolmat2int(__pyx_self, __pyx_v_signatures, __pyx_v_args, __pyx_v_kwargs, __pyx_v_defaults);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_20boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_signatures, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs, CYTHON_UNUSED PyObject *__pyx_v_defaults) {
-  PyObject *__pyx_v_dest_sig = NULL;
-  Py_ssize_t __pyx_v_i;
-  PyTypeObject *__pyx_v_ndarray = 0;
-  __Pyx_memviewslice __pyx_v_memslice;
-  Py_ssize_t __pyx_v_itemsize;
-  int __pyx_v_dtype_signed;
-  char __pyx_v_kind;
-  int __pyx_v____pyx_uint8_t_is_signed;
-  int __pyx_v____pyx_uint16_t_is_signed;
-  int __pyx_v____pyx_uint32_t_is_signed;
-  int __pyx_v____pyx_uint64_t_is_signed;
-  PyObject *__pyx_v_arg = NULL;
-  PyObject *__pyx_v_dtype = NULL;
-  PyObject *__pyx_v_arg_base = NULL;
-  PyObject *__pyx_v_candidates = NULL;
-  PyObject *__pyx_v_sig = NULL;
-  int __pyx_v_match_found;
-  PyObject *__pyx_v_src_sig = NULL;
-  PyObject *__pyx_v_dst_type = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  int __pyx_t_4;
-  Py_ssize_t __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
-  long __pyx_t_7;
-  __Pyx_memviewslice __pyx_t_8;
-  Py_ssize_t __pyx_t_9;
-  int __pyx_t_10;
-  int __pyx_t_11;
-  PyObject *__pyx_t_12 = NULL;
-  PyObject *__pyx_t_13 = NULL;
-  PyObject *__pyx_t_14 = NULL;
-  Py_ssize_t __pyx_t_15;
-  Py_ssize_t __pyx_t_16;
-  Py_ssize_t __pyx_t_17;
-  int __pyx_t_18;
-  __Pyx_RefNannySetupContext("boolmat2int", 0);
-  __Pyx_INCREF(__pyx_v_kwargs);
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(Py_None);
-  __Pyx_GIVEREF(Py_None);
-  PyList_SET_ITEM(__pyx_t_1, 0, Py_None);
-  __pyx_v_dest_sig = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-  __pyx_t_3 = (__pyx_v_kwargs != Py_None);
-  __pyx_t_4 = (__pyx_t_3 != 0);
-  if (__pyx_t_4) {
-  } else {
-    __pyx_t_2 = __pyx_t_4;
-    goto __pyx_L4_bool_binop_done;
-  }
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_kwargs); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __pyx_t_3 = ((!__pyx_t_4) != 0);
-  __pyx_t_2 = __pyx_t_3;
-  __pyx_L4_bool_binop_done:;
-  if (__pyx_t_2) {
-    __Pyx_INCREF(Py_None);
-    __Pyx_DECREF_SET(__pyx_v_kwargs, Py_None);
-  }
-  __pyx_t_1 = ((PyObject *)__Pyx_ImportNumPyArrayTypeIfAvailable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_ndarray = ((PyTypeObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-  __pyx_v_itemsize = -1L;
-  __pyx_v____pyx_uint8_t_is_signed = (!((((uint8_t)-1L) > 0) != 0));
-  __pyx_v____pyx_uint16_t_is_signed = (!((((uint16_t)-1L) > 0) != 0));
-  __pyx_v____pyx_uint32_t_is_signed = (!((((uint32_t)-1L) > 0) != 0));
-  __pyx_v____pyx_uint64_t_is_signed = (!((((uint64_t)-1L) > 0) != 0));
-  if (unlikely(__pyx_v_args == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 439, __pyx_L1_error)
-  }
-  __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 439, __pyx_L1_error)
-  __pyx_t_2 = ((1 < __pyx_t_5) != 0);
-  if (__pyx_t_2) {
-    if (unlikely(__pyx_v_args == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 439, __pyx_L1_error)
-    }
-    __pyx_t_1 = PyTuple_GET_ITEM(((PyObject*)__pyx_v_args), 1);
-    __Pyx_INCREF(__pyx_t_1);
-    __pyx_v_arg = __pyx_t_1;
-    __pyx_t_1 = 0;
-    goto __pyx_L6;
-  }
-  __pyx_t_3 = (__pyx_v_kwargs != Py_None);
-  __pyx_t_4 = (__pyx_t_3 != 0);
-  if (__pyx_t_4) {
-  } else {
-    __pyx_t_2 = __pyx_t_4;
-    goto __pyx_L7_bool_binop_done;
-  }
-  if (unlikely(__pyx_v_kwargs == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 439, __pyx_L1_error)
-  }
-  __pyx_t_4 = (__Pyx_PyDict_ContainsTF(__pyx_n_s_result, ((PyObject*)__pyx_v_kwargs), Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __pyx_t_3 = (__pyx_t_4 != 0);
-  __pyx_t_2 = __pyx_t_3;
-  __pyx_L7_bool_binop_done:;
-  if (__pyx_t_2) {
-    if (unlikely(__pyx_v_kwargs == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 439, __pyx_L1_error)
-    }
-    __pyx_t_1 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_kwargs), __pyx_n_s_result); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_v_arg = __pyx_t_1;
-    __pyx_t_1 = 0;
-    goto __pyx_L6;
-  }
-  /*else*/ {
-    if (unlikely(__pyx_v_args == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      __PYX_ERR(0, 439, __pyx_L1_error)
-    }
-    __pyx_t_5 = PyTuple_GET_SIZE(((PyObject*)__pyx_v_args)); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 439, __pyx_L1_error)
-    __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyTuple_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_INCREF(__pyx_int_2);
-    __Pyx_GIVEREF(__pyx_int_2);
-    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_int_2);
-    __Pyx_INCREF(__pyx_n_s_s);
-    __Pyx_GIVEREF(__pyx_n_s_s);
-    PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_n_s_s);
-    __Pyx_GIVEREF(__pyx_t_1);
-    PyTuple_SET_ITEM(__pyx_t_6, 2, __pyx_t_1);
-    __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyString_Format(__pyx_kp_s_Expected_at_least_d_argument_s_g, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_Raise(__pyx_t_6, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 439, __pyx_L1_error)
-  }
-  __pyx_L6:;
-  while (1) {
-    __pyx_t_2 = (__pyx_v_ndarray != ((PyTypeObject*)Py_None));
-    __pyx_t_3 = (__pyx_t_2 != 0);
-    if (__pyx_t_3) {
-      __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg, __pyx_v_ndarray); 
-      __pyx_t_2 = (__pyx_t_3 != 0);
-      if (__pyx_t_2) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_v_dtype = __pyx_t_6;
-        __pyx_t_6 = 0;
-        goto __pyx_L12;
-      }
-      __pyx_t_2 = __pyx_memoryview_check(__pyx_v_arg); 
-      __pyx_t_3 = (__pyx_t_2 != 0);
-      if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_base); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_v_arg_base = __pyx_t_6;
-        __pyx_t_6 = 0;
-        __pyx_t_3 = __Pyx_TypeCheck(__pyx_v_arg_base, __pyx_v_ndarray); 
-        __pyx_t_2 = (__pyx_t_3 != 0);
-        if (__pyx_t_2) {
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_base, __pyx_n_s_dtype); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          __pyx_v_dtype = __pyx_t_6;
-          __pyx_t_6 = 0;
-          goto __pyx_L13;
-        }
-        /*else*/ {
-          __Pyx_INCREF(Py_None);
-          __pyx_v_dtype = Py_None;
-        }
-        __pyx_L13:;
-        goto __pyx_L12;
-      }
-      /*else*/ {
-        __Pyx_INCREF(Py_None);
-        __pyx_v_dtype = Py_None;
-      }
-      __pyx_L12:;
-      __pyx_v_itemsize = -1L;
-      __pyx_t_2 = (__pyx_v_dtype != Py_None);
-      __pyx_t_3 = (__pyx_t_2 != 0);
-      if (__pyx_t_3) {
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_itemsize); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 439, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_v_itemsize = __pyx_t_5;
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_dtype, __pyx_n_s_kind); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_7 = __Pyx_PyObject_Ord(__pyx_t_6); if (unlikely(__pyx_t_7 == ((long)(long)(Py_UCS4)-1))) __PYX_ERR(0, 439, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_v_kind = __pyx_t_7;
-        __pyx_v_dtype_signed = (__pyx_v_kind == 'i');
-        switch (__pyx_v_kind) {
-          case 'i':
-          case 'u':
-          __pyx_t_2 = (((sizeof(uint8_t)) == __pyx_v_itemsize) != 0);
-          if (__pyx_t_2) {
-          } else {
-            __pyx_t_3 = __pyx_t_2;
-            goto __pyx_L16_bool_binop_done;
-          }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 439, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 1) != 0);
-          if (__pyx_t_2) {
-          } else {
-            __pyx_t_3 = __pyx_t_2;
-            goto __pyx_L16_bool_binop_done;
-          }
-          __pyx_t_2 = ((!((__pyx_v____pyx_uint8_t_is_signed ^ __pyx_v_dtype_signed) != 0)) != 0);
-          __pyx_t_3 = __pyx_t_2;
-          __pyx_L16_bool_binop_done:;
-          if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint8_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-            goto __pyx_L10_break;
-          }
-          __pyx_t_2 = (((sizeof(uint16_t)) == __pyx_v_itemsize) != 0);
-          if (__pyx_t_2) {
-          } else {
-            __pyx_t_3 = __pyx_t_2;
-            goto __pyx_L20_bool_binop_done;
-          }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 439, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 1) != 0);
-          if (__pyx_t_2) {
-          } else {
-            __pyx_t_3 = __pyx_t_2;
-            goto __pyx_L20_bool_binop_done;
-          }
-          __pyx_t_2 = ((!((__pyx_v____pyx_uint16_t_is_signed ^ __pyx_v_dtype_signed) != 0)) != 0);
-          __pyx_t_3 = __pyx_t_2;
-          __pyx_L20_bool_binop_done:;
-          if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint16_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-            goto __pyx_L10_break;
-          }
-          __pyx_t_2 = (((sizeof(uint32_t)) == __pyx_v_itemsize) != 0);
-          if (__pyx_t_2) {
-          } else {
-            __pyx_t_3 = __pyx_t_2;
-            goto __pyx_L24_bool_binop_done;
-          }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 439, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 1) != 0);
-          if (__pyx_t_2) {
-          } else {
-            __pyx_t_3 = __pyx_t_2;
-            goto __pyx_L24_bool_binop_done;
-          }
-          __pyx_t_2 = ((!((__pyx_v____pyx_uint32_t_is_signed ^ __pyx_v_dtype_signed) != 0)) != 0);
-          __pyx_t_3 = __pyx_t_2;
-          __pyx_L24_bool_binop_done:;
-          if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint32_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-            goto __pyx_L10_break;
-          }
-          __pyx_t_2 = (((sizeof(uint64_t)) == __pyx_v_itemsize) != 0);
-          if (__pyx_t_2) {
-          } else {
-            __pyx_t_3 = __pyx_t_2;
-            goto __pyx_L28_bool_binop_done;
-          }
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg, __pyx_n_s_ndim); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-          __Pyx_GOTREF(__pyx_t_6);
-          __pyx_t_5 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_5 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 439, __pyx_L1_error)
-          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __pyx_t_2 = ((((Py_ssize_t)__pyx_t_5) == 1) != 0);
-          if (__pyx_t_2) {
-          } else {
-            __pyx_t_3 = __pyx_t_2;
-            goto __pyx_L28_bool_binop_done;
-          }
-          __pyx_t_2 = ((!((__pyx_v____pyx_uint64_t_is_signed ^ __pyx_v_dtype_signed) != 0)) != 0);
-          __pyx_t_3 = __pyx_t_2;
-          __pyx_L28_bool_binop_done:;
-          if (__pyx_t_3) {
-            if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint64_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-            goto __pyx_L10_break;
-          }
-          break;
-          case 'f':
-          break;
-          case 'c':
-          break;
-          case 'O':
-          break;
-          default: break;
-        }
-      }
-    }
-    __pyx_t_2 = ((__pyx_v_itemsize == -1L) != 0);
-    if (!__pyx_t_2) {
-    } else {
-      __pyx_t_3 = __pyx_t_2;
-      goto __pyx_L32_bool_binop_done;
-    }
-    __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(uint8_t))) != 0);
-    __pyx_t_3 = __pyx_t_2;
-    __pyx_L32_bool_binop_done:;
-    if (__pyx_t_3) {
-      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint8_t(__pyx_v_arg, 0); 
-      __pyx_v_memslice = __pyx_t_8;
-      __pyx_t_3 = (__pyx_v_memslice.memview != 0);
-      if (__pyx_t_3) {
-        __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint8_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-        goto __pyx_L10_break;
-      }
-      /*else*/ {
-        PyErr_Clear(); 
-      }
-    }
-    __pyx_t_2 = ((__pyx_v_itemsize == -1L) != 0);
-    if (!__pyx_t_2) {
-    } else {
-      __pyx_t_3 = __pyx_t_2;
-      goto __pyx_L36_bool_binop_done;
-    }
-    __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(uint16_t))) != 0);
-    __pyx_t_3 = __pyx_t_2;
-    __pyx_L36_bool_binop_done:;
-    if (__pyx_t_3) {
-      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint16_t(__pyx_v_arg, 0); 
-      __pyx_v_memslice = __pyx_t_8;
-      __pyx_t_3 = (__pyx_v_memslice.memview != 0);
-      if (__pyx_t_3) {
-        __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint16_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-        goto __pyx_L10_break;
-      }
-      /*else*/ {
-        PyErr_Clear(); 
-      }
-    }
-    __pyx_t_2 = ((__pyx_v_itemsize == -1L) != 0);
-    if (!__pyx_t_2) {
-    } else {
-      __pyx_t_3 = __pyx_t_2;
-      goto __pyx_L40_bool_binop_done;
-    }
-    __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(uint32_t))) != 0);
-    __pyx_t_3 = __pyx_t_2;
-    __pyx_L40_bool_binop_done:;
-    if (__pyx_t_3) {
-      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint32_t(__pyx_v_arg, 0); 
-      __pyx_v_memslice = __pyx_t_8;
-      __pyx_t_3 = (__pyx_v_memslice.memview != 0);
-      if (__pyx_t_3) {
-        __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint32_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-        goto __pyx_L10_break;
-      }
-      /*else*/ {
-        PyErr_Clear(); 
-      }
-    }
-    __pyx_t_2 = ((__pyx_v_itemsize == -1L) != 0);
-    if (!__pyx_t_2) {
-    } else {
-      __pyx_t_3 = __pyx_t_2;
-      goto __pyx_L44_bool_binop_done;
-    }
-    __pyx_t_2 = ((__pyx_v_itemsize == (sizeof(uint64_t))) != 0);
-    __pyx_t_3 = __pyx_t_2;
-    __pyx_L44_bool_binop_done:;
-    if (__pyx_t_3) {
-      __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint64_t(__pyx_v_arg, 0); 
-      __pyx_v_memslice = __pyx_t_8;
-      __pyx_t_3 = (__pyx_v_memslice.memview != 0);
-      if (__pyx_t_3) {
-        __PYX_XDEC_MEMVIEW((&__pyx_v_memslice), 1); 
-        if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, __pyx_n_s_uint64_t, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-        goto __pyx_L10_break;
-      }
-      /*else*/ {
-        PyErr_Clear(); 
-      }
-    }
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_dest_sig, 0, Py_None, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-    goto __pyx_L10_break;
-  }
-  __pyx_L10_break:;
-  __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __pyx_v_candidates = ((PyObject*)__pyx_t_6);
-  __pyx_t_6 = 0;
-  __pyx_t_5 = 0;
-  if (unlikely(__pyx_v_signatures == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 439, __pyx_L1_error)
-  }
-  __pyx_t_1 = __Pyx_dict_iterator(((PyObject*)__pyx_v_signatures), 1, ((PyObject *)NULL), (&__pyx_t_9), (&__pyx_t_10)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_6);
-  __pyx_t_6 = __pyx_t_1;
-  __pyx_t_1 = 0;
-  while (1) {
-    __pyx_t_11 = __Pyx_dict_iter_next(__pyx_t_6, __pyx_t_9, &__pyx_t_5, &__pyx_t_1, NULL, NULL, __pyx_t_10);
-    if (unlikely(__pyx_t_11 == 0)) break;
-    if (unlikely(__pyx_t_11 == -1)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_XDECREF_SET(__pyx_v_sig, __pyx_t_1);
-    __pyx_t_1 = 0;
-    __pyx_v_match_found = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_v_sig, __pyx_n_s_strip); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_13))) {
-      __pyx_t_14 = PyMethod_GET_SELF(__pyx_t_13);
-      if (likely(__pyx_t_14)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_13);
-        __Pyx_INCREF(__pyx_t_14);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_13, function);
-      }
-    }
-    __pyx_t_12 = (__pyx_t_14) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_14, __pyx_kp_s__3) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s__3);
-    __Pyx_XDECREF(__pyx_t_14); __pyx_t_14 = 0;
-    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_12);
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __pyx_t_13 = __Pyx_PyObject_GetAttrStr(__pyx_t_12, __pyx_n_s_split); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_13);
-    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_12 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_13))) {
-      __pyx_t_12 = PyMethod_GET_SELF(__pyx_t_13);
-      if (likely(__pyx_t_12)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_13);
-        __Pyx_INCREF(__pyx_t_12);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_13, function);
-      }
-    }
-    __pyx_t_1 = (__pyx_t_12) ? __Pyx_PyObject_Call2Args(__pyx_t_13, __pyx_t_12, __pyx_kp_s__4) : __Pyx_PyObject_CallOneArg(__pyx_t_13, __pyx_kp_s__4);
-    __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-    __Pyx_XDECREF_SET(__pyx_v_src_sig, __pyx_t_1);
-    __pyx_t_1 = 0;
-    __pyx_t_15 = PyList_GET_SIZE(__pyx_v_dest_sig); if (unlikely(__pyx_t_15 == ((Py_ssize_t)-1))) __PYX_ERR(0, 439, __pyx_L1_error)
-    __pyx_t_16 = __pyx_t_15;
-    for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
-      __pyx_v_i = __pyx_t_17;
-      __pyx_t_1 = PyList_GET_ITEM(__pyx_v_dest_sig, __pyx_v_i);
-      __Pyx_INCREF(__pyx_t_1);
-      __Pyx_XDECREF_SET(__pyx_v_dst_type, __pyx_t_1);
-      __pyx_t_1 = 0;
-      __pyx_t_3 = (__pyx_v_dst_type != Py_None);
-      __pyx_t_2 = (__pyx_t_3 != 0);
-      if (__pyx_t_2) {
-        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_src_sig, __pyx_v_i, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 439, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_13 = PyObject_RichCompare(__pyx_t_1, __pyx_v_dst_type, Py_EQ); __Pyx_XGOTREF(__pyx_t_13); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 439, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_13); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 439, __pyx_L1_error)
-        __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
-        if (__pyx_t_2) {
-          __pyx_v_match_found = 1;
-          goto __pyx_L52;
-        }
-        /*else*/ {
-          __pyx_v_match_found = 0;
-          goto __pyx_L50_break;
-        }
-        __pyx_L52:;
-      }
-    }
-    __pyx_L50_break:;
-    __pyx_t_2 = (__pyx_v_match_found != 0);
-    if (__pyx_t_2) {
-      __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_candidates, __pyx_v_sig); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 439, __pyx_L1_error)
-    }
-  }
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_2 = (PyList_GET_SIZE(__pyx_v_candidates) != 0);
-  __pyx_t_3 = ((!__pyx_t_2) != 0);
-  if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_Raise(__pyx_t_6, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 439, __pyx_L1_error)
-  }
-  __pyx_t_9 = PyList_GET_SIZE(__pyx_v_candidates); if (unlikely(__pyx_t_9 == ((Py_ssize_t)-1))) __PYX_ERR(0, 439, __pyx_L1_error)
-  __pyx_t_3 = ((__pyx_t_9 > 1) != 0);
-  if (__pyx_t_3) {
-    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_Raise(__pyx_t_6, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 439, __pyx_L1_error)
-  }
-  /*else*/ {
-    __Pyx_XDECREF(__pyx_r);
-    if (unlikely(__pyx_v_signatures == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 439, __pyx_L1_error)
-    }
-    __pyx_t_6 = __Pyx_PyDict_GetItem(((PyObject*)__pyx_v_signatures), PyList_GET_ITEM(__pyx_v_candidates, 0)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 439, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_r = __pyx_t_6;
-    __pyx_t_6 = 0;
-    goto __pyx_L0;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_XDECREF(__pyx_t_13);
-  __Pyx_XDECREF(__pyx_t_14);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.__pyx_fused_cpdef", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_dest_sig);
-  __Pyx_XDECREF(__pyx_v_ndarray);
-  __Pyx_XDECREF(__pyx_v_arg);
-  __Pyx_XDECREF(__pyx_v_dtype);
-  __Pyx_XDECREF(__pyx_v_arg_base);
-  __Pyx_XDECREF(__pyx_v_candidates);
-  __Pyx_XDECREF(__pyx_v_sig);
-  __Pyx_XDECREF(__pyx_v_src_sig);
-  __Pyx_XDECREF(__pyx_v_dst_type);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* Python wrapper */
-static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_37boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_0__pyx_mdef_7dawdlib_8dijkstra_8colorful_37boolmat2int = {"__pyx_fuse_0boolmat2int", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_37boolmat2int, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_20boolmat2int};
-static PyObject *__pyx_fuse_0__pyx_pw_7dawdlib_8dijkstra_8colorful_37boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  __Pyx_memviewslice __pyx_v_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_result = { 0, 0, { 0 }, { 0 }, { 0 } };
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("boolmat2int (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_arr,&__pyx_n_s_result,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_arr)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("boolmat2int", 1, 2, 2, 1); __PYX_ERR(0, 439, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "boolmat2int") < 0)) __PYX_ERR(0, 439, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_arr = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn_uint8_t(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_arr.memview)) __PYX_ERR(0, 439, __pyx_L3_error)
-    __pyx_v_result = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint8_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_result.memview)) __PYX_ERR(0, 439, __pyx_L3_error)
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("boolmat2int", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 439, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.boolmat2int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_36boolmat2int(__pyx_self, __pyx_v_arr, __pyx_v_result);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_36boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_arr, __Pyx_memviewslice __pyx_v_result) {
-  Py_ssize_t __pyx_v_x_max;
-  Py_ssize_t __pyx_v_x;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  Py_ssize_t __pyx_t_1;
-  Py_ssize_t __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  Py_ssize_t __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  __Pyx_RefNannySetupContext("__pyx_fuse_0boolmat2int", 0);
-
-  /* "dawdlib/dijkstra/colorful.pyx":441
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]             # <<<<<<<<<<<<<<
- *         Py_ssize_t x
- * 
- */
-  __pyx_v_x_max = (__pyx_v_arr.shape[0]);
-
-  /* "dawdlib/dijkstra/colorful.pyx":444
- *         Py_ssize_t x
- * 
- *     for x in range(x_max):             # <<<<<<<<<<<<<<
- *         result[x] = bool2int(arr[x], &result[x])
- *     # return result
- */
-  __pyx_t_1 = __pyx_v_x_max;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_x = __pyx_t_3;
-
-    /* "dawdlib/dijkstra/colorful.pyx":445
- * 
- *     for x in range(x_max):
- *         result[x] = bool2int(arr[x], &result[x])             # <<<<<<<<<<<<<<
- *     # return result
- * 
- */
-    __pyx_t_4.data = __pyx_v_arr.data;
-    __pyx_t_4.memview = __pyx_v_arr.memview;
-    __PYX_INC_MEMVIEW(&__pyx_t_4, 0);
-    {
-    Py_ssize_t __pyx_tmp_idx = __pyx_v_x;
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_arr.strides[0];
-        if ((0)) __PYX_ERR(0, 445, __pyx_L1_error)
-        __pyx_t_4.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_4.shape[0] = __pyx_v_arr.shape[1];
-__pyx_t_4.strides[0] = __pyx_v_arr.strides[1];
-    __pyx_t_4.suboffsets[0] = -1;
-
-__pyx_t_5 = __pyx_v_x;
-    __pyx_t_6 = __pyx_v_x;
-    *((uint8_t *) ( /* dim=0 */ ((char *) (((uint8_t *) __pyx_v_result.data) + __pyx_t_6)) )) = __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__pyx_t_4, (&(*((uint8_t *) ( /* dim=0 */ ((char *) (((uint8_t *) __pyx_v_result.data) + __pyx_t_5)) )))));
-    __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
-    __pyx_t_4.memview = NULL;
-    __pyx_t_4.data = NULL;
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":439
- * 
- * @cython.embedsignature(True)
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):             # <<<<<<<<<<<<<<
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.boolmat2int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_arr, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* Python wrapper */
-static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_39boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_1__pyx_mdef_7dawdlib_8dijkstra_8colorful_39boolmat2int = {"__pyx_fuse_1boolmat2int", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_39boolmat2int, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_20boolmat2int};
-static PyObject *__pyx_fuse_1__pyx_pw_7dawdlib_8dijkstra_8colorful_39boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  __Pyx_memviewslice __pyx_v_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_result = { 0, 0, { 0 }, { 0 }, { 0 } };
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("boolmat2int (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_arr,&__pyx_n_s_result,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_arr)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("boolmat2int", 1, 2, 2, 1); __PYX_ERR(0, 439, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "boolmat2int") < 0)) __PYX_ERR(0, 439, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_arr = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn_uint8_t(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_arr.memview)) __PYX_ERR(0, 439, __pyx_L3_error)
-    __pyx_v_result = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint16_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_result.memview)) __PYX_ERR(0, 439, __pyx_L3_error)
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("boolmat2int", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 439, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.boolmat2int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_38boolmat2int(__pyx_self, __pyx_v_arr, __pyx_v_result);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_38boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_arr, __Pyx_memviewslice __pyx_v_result) {
-  Py_ssize_t __pyx_v_x_max;
-  Py_ssize_t __pyx_v_x;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  Py_ssize_t __pyx_t_1;
-  Py_ssize_t __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  Py_ssize_t __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  __Pyx_RefNannySetupContext("__pyx_fuse_1boolmat2int", 0);
-
-  /* "dawdlib/dijkstra/colorful.pyx":441
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]             # <<<<<<<<<<<<<<
- *         Py_ssize_t x
- * 
- */
-  __pyx_v_x_max = (__pyx_v_arr.shape[0]);
-
-  /* "dawdlib/dijkstra/colorful.pyx":444
- *         Py_ssize_t x
- * 
- *     for x in range(x_max):             # <<<<<<<<<<<<<<
- *         result[x] = bool2int(arr[x], &result[x])
- *     # return result
- */
-  __pyx_t_1 = __pyx_v_x_max;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_x = __pyx_t_3;
-
-    /* "dawdlib/dijkstra/colorful.pyx":445
- * 
- *     for x in range(x_max):
- *         result[x] = bool2int(arr[x], &result[x])             # <<<<<<<<<<<<<<
- *     # return result
- * 
- */
-    __pyx_t_4.data = __pyx_v_arr.data;
-    __pyx_t_4.memview = __pyx_v_arr.memview;
-    __PYX_INC_MEMVIEW(&__pyx_t_4, 0);
-    {
-    Py_ssize_t __pyx_tmp_idx = __pyx_v_x;
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_arr.strides[0];
-        if ((0)) __PYX_ERR(0, 445, __pyx_L1_error)
-        __pyx_t_4.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_4.shape[0] = __pyx_v_arr.shape[1];
-__pyx_t_4.strides[0] = __pyx_v_arr.strides[1];
-    __pyx_t_4.suboffsets[0] = -1;
-
-__pyx_t_5 = __pyx_v_x;
-    __pyx_t_6 = __pyx_v_x;
-    *((uint16_t *) ( /* dim=0 */ ((char *) (((uint16_t *) __pyx_v_result.data) + __pyx_t_6)) )) = __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__pyx_t_4, (&(*((uint16_t *) ( /* dim=0 */ ((char *) (((uint16_t *) __pyx_v_result.data) + __pyx_t_5)) )))));
-    __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
-    __pyx_t_4.memview = NULL;
-    __pyx_t_4.data = NULL;
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":439
- * 
- * @cython.embedsignature(True)
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):             # <<<<<<<<<<<<<<
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.boolmat2int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_arr, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* Python wrapper */
-static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_41boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_2__pyx_mdef_7dawdlib_8dijkstra_8colorful_41boolmat2int = {"__pyx_fuse_2boolmat2int", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_41boolmat2int, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_20boolmat2int};
-static PyObject *__pyx_fuse_2__pyx_pw_7dawdlib_8dijkstra_8colorful_41boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  __Pyx_memviewslice __pyx_v_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_result = { 0, 0, { 0 }, { 0 }, { 0 } };
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("boolmat2int (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_arr,&__pyx_n_s_result,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_arr)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("boolmat2int", 1, 2, 2, 1); __PYX_ERR(0, 439, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "boolmat2int") < 0)) __PYX_ERR(0, 439, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_arr = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn_uint8_t(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_arr.memview)) __PYX_ERR(0, 439, __pyx_L3_error)
-    __pyx_v_result = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint32_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_result.memview)) __PYX_ERR(0, 439, __pyx_L3_error)
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("boolmat2int", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 439, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.boolmat2int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_40boolmat2int(__pyx_self, __pyx_v_arr, __pyx_v_result);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_40boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_arr, __Pyx_memviewslice __pyx_v_result) {
-  Py_ssize_t __pyx_v_x_max;
-  Py_ssize_t __pyx_v_x;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  Py_ssize_t __pyx_t_1;
-  Py_ssize_t __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  Py_ssize_t __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  __Pyx_RefNannySetupContext("__pyx_fuse_2boolmat2int", 0);
-
-  /* "dawdlib/dijkstra/colorful.pyx":441
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]             # <<<<<<<<<<<<<<
- *         Py_ssize_t x
- * 
- */
-  __pyx_v_x_max = (__pyx_v_arr.shape[0]);
-
-  /* "dawdlib/dijkstra/colorful.pyx":444
- *         Py_ssize_t x
- * 
- *     for x in range(x_max):             # <<<<<<<<<<<<<<
- *         result[x] = bool2int(arr[x], &result[x])
- *     # return result
- */
-  __pyx_t_1 = __pyx_v_x_max;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_x = __pyx_t_3;
-
-    /* "dawdlib/dijkstra/colorful.pyx":445
- * 
- *     for x in range(x_max):
- *         result[x] = bool2int(arr[x], &result[x])             # <<<<<<<<<<<<<<
- *     # return result
- * 
- */
-    __pyx_t_4.data = __pyx_v_arr.data;
-    __pyx_t_4.memview = __pyx_v_arr.memview;
-    __PYX_INC_MEMVIEW(&__pyx_t_4, 0);
-    {
-    Py_ssize_t __pyx_tmp_idx = __pyx_v_x;
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_arr.strides[0];
-        if ((0)) __PYX_ERR(0, 445, __pyx_L1_error)
-        __pyx_t_4.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_4.shape[0] = __pyx_v_arr.shape[1];
-__pyx_t_4.strides[0] = __pyx_v_arr.strides[1];
-    __pyx_t_4.suboffsets[0] = -1;
-
-__pyx_t_5 = __pyx_v_x;
-    __pyx_t_6 = __pyx_v_x;
-    *((uint32_t *) ( /* dim=0 */ ((char *) (((uint32_t *) __pyx_v_result.data) + __pyx_t_6)) )) = __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__pyx_t_4, (&(*((uint32_t *) ( /* dim=0 */ ((char *) (((uint32_t *) __pyx_v_result.data) + __pyx_t_5)) )))));
-    __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
-    __pyx_t_4.memview = NULL;
-    __pyx_t_4.data = NULL;
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":439
- * 
- * @cython.embedsignature(True)
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):             # <<<<<<<<<<<<<<
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.boolmat2int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_arr, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* Python wrapper */
-static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_43boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_fuse_3__pyx_mdef_7dawdlib_8dijkstra_8colorful_43boolmat2int = {"__pyx_fuse_3boolmat2int", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_43boolmat2int, METH_VARARGS|METH_KEYWORDS, __pyx_doc_7dawdlib_8dijkstra_8colorful_20boolmat2int};
-static PyObject *__pyx_fuse_3__pyx_pw_7dawdlib_8dijkstra_8colorful_43boolmat2int(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  __Pyx_memviewslice __pyx_v_arr = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_result = { 0, 0, { 0 }, { 0 }, { 0 } };
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("boolmat2int (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_arr,&__pyx_n_s_result,0};
-    PyObject* values[2] = {0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_arr)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_result)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("boolmat2int", 1, 2, 2, 1); __PYX_ERR(0, 439, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "boolmat2int") < 0)) __PYX_ERR(0, 439, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-    }
-    __pyx_v_arr = __Pyx_PyObject_to_MemoryviewSlice_dsds_nn_uint8_t(values[0], PyBUF_WRITABLE); if (unlikely(!__pyx_v_arr.memview)) __PYX_ERR(0, 439, __pyx_L3_error)
-    __pyx_v_result = __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint64_t(values[1], PyBUF_WRITABLE); if (unlikely(!__pyx_v_result.memview)) __PYX_ERR(0, 439, __pyx_L3_error)
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("boolmat2int", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 439, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.boolmat2int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_42boolmat2int(__pyx_self, __pyx_v_arr, __pyx_v_result);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_42boolmat2int(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_arr, __Pyx_memviewslice __pyx_v_result) {
-  Py_ssize_t __pyx_v_x_max;
-  Py_ssize_t __pyx_v_x;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  Py_ssize_t __pyx_t_1;
-  Py_ssize_t __pyx_t_2;
-  Py_ssize_t __pyx_t_3;
-  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  Py_ssize_t __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  __Pyx_RefNannySetupContext("__pyx_fuse_3boolmat2int", 0);
-
-  /* "dawdlib/dijkstra/colorful.pyx":441
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]             # <<<<<<<<<<<<<<
- *         Py_ssize_t x
- * 
- */
-  __pyx_v_x_max = (__pyx_v_arr.shape[0]);
-
-  /* "dawdlib/dijkstra/colorful.pyx":444
- *         Py_ssize_t x
- * 
- *     for x in range(x_max):             # <<<<<<<<<<<<<<
- *         result[x] = bool2int(arr[x], &result[x])
- *     # return result
- */
-  __pyx_t_1 = __pyx_v_x_max;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_x = __pyx_t_3;
-
-    /* "dawdlib/dijkstra/colorful.pyx":445
- * 
- *     for x in range(x_max):
- *         result[x] = bool2int(arr[x], &result[x])             # <<<<<<<<<<<<<<
- *     # return result
- * 
- */
-    __pyx_t_4.data = __pyx_v_arr.data;
-    __pyx_t_4.memview = __pyx_v_arr.memview;
-    __PYX_INC_MEMVIEW(&__pyx_t_4, 0);
-    {
-    Py_ssize_t __pyx_tmp_idx = __pyx_v_x;
-    Py_ssize_t __pyx_tmp_stride = __pyx_v_arr.strides[0];
-        if ((0)) __PYX_ERR(0, 445, __pyx_L1_error)
-        __pyx_t_4.data += __pyx_tmp_idx * __pyx_tmp_stride;
-}
-
-__pyx_t_4.shape[0] = __pyx_v_arr.shape[1];
-__pyx_t_4.strides[0] = __pyx_v_arr.strides[1];
-    __pyx_t_4.suboffsets[0] = -1;
-
-__pyx_t_5 = __pyx_v_x;
-    __pyx_t_6 = __pyx_v_x;
-    *((uint64_t *) ( /* dim=0 */ ((char *) (((uint64_t *) __pyx_v_result.data) + __pyx_t_6)) )) = __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_bool2int(__pyx_t_4, (&(*((uint64_t *) ( /* dim=0 */ ((char *) (((uint64_t *) __pyx_v_result.data) + __pyx_t_5)) )))));
-    __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
-    __pyx_t_4.memview = NULL;
-    __pyx_t_4.data = NULL;
-  }
-
-  /* "dawdlib/dijkstra/colorful.pyx":439
- * 
- * @cython.embedsignature(True)
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):             # <<<<<<<<<<<<<<
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.boolmat2int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_arr, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_result, 1);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
 }
 
 /* "dawdlib/dijkstra/colorful.pyx":449
@@ -14019,15 +9131,15 @@ static void __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_boolmat2int_c(uint8
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_23graphdict2map(PyObject *__pyx_self, PyObject *__pyx_v_graph); /*proto*/
-static char __pyx_doc_7dawdlib_8dijkstra_8colorful_22graphdict2map[] = "graphdict2map(dict graph)";
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_23graphdict2map = {"graphdict2map", (PyCFunction)__pyx_pw_7dawdlib_8dijkstra_8colorful_23graphdict2map, METH_O, __pyx_doc_7dawdlib_8dijkstra_8colorful_22graphdict2map};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_23graphdict2map(PyObject *__pyx_self, PyObject *__pyx_v_graph) {
+static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_9graphdict2map(PyObject *__pyx_self, PyObject *__pyx_v_graph); /*proto*/
+static char __pyx_doc_7dawdlib_8dijkstra_8colorful_8graphdict2map[] = "graphdict2map(dict graph)";
+static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_9graphdict2map = {"graphdict2map", (PyCFunction)__pyx_pw_7dawdlib_8dijkstra_8colorful_9graphdict2map, METH_O, __pyx_doc_7dawdlib_8dijkstra_8colorful_8graphdict2map};
+static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_9graphdict2map(PyObject *__pyx_self, PyObject *__pyx_v_graph) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("graphdict2map (wrapper)", 0);
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_graph), (&PyDict_Type), 1, "graph", 1))) __PYX_ERR(0, 469, __pyx_L1_error)
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_22graphdict2map(__pyx_self, ((PyObject*)__pyx_v_graph));
+  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_8graphdict2map(__pyx_self, ((PyObject*)__pyx_v_graph));
 
   /* function exit code */
   goto __pyx_L0;
@@ -14038,7 +9150,7 @@ static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_23graphdict2map(PyObject 
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_22graphdict2map(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_graph) {
+static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_8graphdict2map(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_graph) {
   int __pyx_v_v;
   int __pyx_v_u;
   std::map<int,std::vector<int> >  *__pyx_v_cgraph_ref;
@@ -14218,152 +9330,6 @@ static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_22graphdict2map(CYTHON_UN
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_val);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "dawdlib/dijkstra/colorful.pyx":499
- * 
- * @cython.embedsignature(True)
- * def colorsdict2map(dict color_dict):             # <<<<<<<<<<<<<<
- *     cdef int v, val
- *     cdef map[int, int] *color_ref = new map[int, int]()
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_25colorsdict2map(PyObject *__pyx_self, PyObject *__pyx_v_color_dict); /*proto*/
-static char __pyx_doc_7dawdlib_8dijkstra_8colorful_24colorsdict2map[] = "colorsdict2map(dict color_dict)";
-static PyMethodDef __pyx_mdef_7dawdlib_8dijkstra_8colorful_25colorsdict2map = {"colorsdict2map", (PyCFunction)__pyx_pw_7dawdlib_8dijkstra_8colorful_25colorsdict2map, METH_O, __pyx_doc_7dawdlib_8dijkstra_8colorful_24colorsdict2map};
-static PyObject *__pyx_pw_7dawdlib_8dijkstra_8colorful_25colorsdict2map(PyObject *__pyx_self, PyObject *__pyx_v_color_dict) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("colorsdict2map (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_color_dict), (&PyDict_Type), 1, "color_dict", 1))) __PYX_ERR(0, 499, __pyx_L1_error)
-  __pyx_r = __pyx_pf_7dawdlib_8dijkstra_8colorful_24colorsdict2map(__pyx_self, ((PyObject*)__pyx_v_color_dict));
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_7dawdlib_8dijkstra_8colorful_24colorsdict2map(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_color_dict) {
-  int __pyx_v_v;
-  int __pyx_v_val;
-  std::map<int,int>  *__pyx_v_color_ref;
-  std::map<int,int>  __pyx_v_color;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  std::map<int,int>  *__pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
-  Py_ssize_t __pyx_t_3;
-  Py_ssize_t __pyx_t_4;
-  int __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
-  int __pyx_t_8;
-  int __pyx_t_9;
-  __Pyx_RefNannySetupContext("colorsdict2map", 0);
-
-  /* "dawdlib/dijkstra/colorful.pyx":501
- * def colorsdict2map(dict color_dict):
- *     cdef int v, val
- *     cdef map[int, int] *color_ref = new map[int, int]()             # <<<<<<<<<<<<<<
- *     cdef map[int, int] color = deref(color_ref)
- *     cdef Py_ssize_t vec_size
- */
-  try {
-    __pyx_t_1 = new std::map<int,int> ();
-  } catch(...) {
-    __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 501, __pyx_L1_error)
-  }
-  __pyx_v_color_ref = __pyx_t_1;
-
-  /* "dawdlib/dijkstra/colorful.pyx":502
- *     cdef int v, val
- *     cdef map[int, int] *color_ref = new map[int, int]()
- *     cdef map[int, int] color = deref(color_ref)             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t vec_size
- *     for v, val in color_dict.items():
- */
-  __pyx_v_color = (*__pyx_v_color_ref);
-
-  /* "dawdlib/dijkstra/colorful.pyx":504
- *     cdef map[int, int] color = deref(color_ref)
- *     cdef Py_ssize_t vec_size
- *     for v, val in color_dict.items():             # <<<<<<<<<<<<<<
- *         color[v] = val
- *     return color
- */
-  __pyx_t_3 = 0;
-  if (unlikely(__pyx_v_color_dict == Py_None)) {
-    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "items");
-    __PYX_ERR(0, 504, __pyx_L1_error)
-  }
-  __pyx_t_6 = __Pyx_dict_iterator(__pyx_v_color_dict, 1, __pyx_n_s_items, (&__pyx_t_4), (&__pyx_t_5)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 504, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_2);
-  __pyx_t_2 = __pyx_t_6;
-  __pyx_t_6 = 0;
-  while (1) {
-    __pyx_t_8 = __Pyx_dict_iter_next(__pyx_t_2, __pyx_t_4, &__pyx_t_3, &__pyx_t_6, &__pyx_t_7, NULL, __pyx_t_5);
-    if (unlikely(__pyx_t_8 == 0)) break;
-    if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 504, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_As_int(__pyx_t_6); if (unlikely((__pyx_t_8 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 504, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_7); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 504, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_v_v = __pyx_t_8;
-    __pyx_v_val = __pyx_t_9;
-
-    /* "dawdlib/dijkstra/colorful.pyx":505
- *     cdef Py_ssize_t vec_size
- *     for v, val in color_dict.items():
- *         color[v] = val             # <<<<<<<<<<<<<<
- *     return color
- * 
- */
-    (__pyx_v_color[__pyx_v_v]) = __pyx_v_val;
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":506
- *     for v, val in color_dict.items():
- *         color[v] = val
- *     return color             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_convert_map_to_py_int____int(__pyx_v_color); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 506, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
-  goto __pyx_L0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":499
- * 
- * @cython.embedsignature(True)
- * def colorsdict2map(dict color_dict):             # <<<<<<<<<<<<<<
- *     cdef int v, val
- *     cdef map[int, int] *color_ref = new map[int, int]()
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("dawdlib.dijkstra.colorful.colorsdict2map", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -14722,11 +9688,11 @@ static std::vector<uint64_t>  __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_v
  * # @cython.embedsignature(True)
  * cdef int _multisource(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
-static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color_map, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__12;
+static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color_map, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__10;
   Py_ssize_t __pyx_v_max_sources;
   uint8_t __pyx_v_vu_dist;
   uint8_t __pyx_v_d;
@@ -14775,6 +9741,10 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   size_t __pyx_t_29;
   size_t __pyx_t_30;
   size_t __pyx_t_31;
+  size_t __pyx_t_32;
+  size_t __pyx_t_33;
+  size_t __pyx_t_34;
+  size_t __pyx_t_35;
   __Pyx_RefNannySetupContext("__pyx_fuse_0_multisource", 0);
   if (__pyx_optional_args) {
     if (__pyx_optional_args->__pyx_n > 0) {
@@ -14782,16 +9752,16 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":531
+  /* "dawdlib/dijkstra/colorful.pyx":532
  *     int limit=0
  * ):
  *     max_sources = sources.shape[0]             # <<<<<<<<<<<<<<
- *     # fringe is heapq with 3-tuples (distance, color, node)
+ *     # fringe is heapq with 4-tuples (distance, length, color, node)
  *     cdef:
  */
   __pyx_v_max_sources = (__pyx_v_sources.shape[0]);
 
-  /* "dawdlib/dijkstra/colorful.pyx":535
+  /* "dawdlib/dijkstra/colorful.pyx":536
  *     cdef:
  *         umy_type vu_dist, d, source_color, source, v, v_col, vu_col, u_col, i, u, p_len
  *         int counter = 0             # <<<<<<<<<<<<<<
@@ -14800,7 +9770,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
   __pyx_v_counter = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":539
+  /* "dawdlib/dijkstra/colorful.pyx":540
  *         vector[umy_type] vec
  *         greater_priority_queue[vector[umy_type]] fringe
  *     for i in range(max_sources):             # <<<<<<<<<<<<<<
@@ -14812,7 +9782,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "dawdlib/dijkstra/colorful.pyx":540
+    /* "dawdlib/dijkstra/colorful.pyx":541
  *         greater_priority_queue[vector[umy_type]] fringe
  *     for i in range(max_sources):
  *         source = sources[i]             # <<<<<<<<<<<<<<
@@ -14822,7 +9792,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_4 = __pyx_v_i;
     __pyx_v_source = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_sources.data) + __pyx_t_4)) )));
 
-    /* "dawdlib/dijkstra/colorful.pyx":541
+    /* "dawdlib/dijkstra/colorful.pyx":542
  *     for i in range(max_sources):
  *         source = sources[i]
  *         source_color = color_map[source]             # <<<<<<<<<<<<<<
@@ -14832,7 +9802,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_5 = __pyx_v_source;
     __pyx_v_source_color = (*((uint8_t *) ( /* dim=0 */ ((char *) (((uint8_t *) __pyx_v_color_map.data) + __pyx_t_5)) )));
 
-    /* "dawdlib/dijkstra/colorful.pyx":542
+    /* "dawdlib/dijkstra/colorful.pyx":543
  *         source = sources[i]
  *         source_color = color_map[source]
  *         seen[source, source_color] = 0             # <<<<<<<<<<<<<<
@@ -14843,7 +9813,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_7 = __pyx_v_source_color;
     *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_6 * __pyx_v_seen.strides[0]) )) + __pyx_t_7)) )) = 0;
 
-    /* "dawdlib/dijkstra/colorful.pyx":543
+    /* "dawdlib/dijkstra/colorful.pyx":544
  *         source_color = color_map[source]
  *         seen[source, source_color] = 0
  *         vec = vectorize(0, 0, source_color, source)             # <<<<<<<<<<<<<<
@@ -14852,7 +9822,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_vec = __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(0, 0, __pyx_v_source_color, __pyx_v_source);
 
-    /* "dawdlib/dijkstra/colorful.pyx":544
+    /* "dawdlib/dijkstra/colorful.pyx":545
  *         seen[source, source_color] = 0
  *         vec = vectorize(0, 0, source_color, source)
  *         fringe.push(vec)             # <<<<<<<<<<<<<<
@@ -14862,7 +9832,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_v_fringe.push(__pyx_v_vec);
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":545
+  /* "dawdlib/dijkstra/colorful.pyx":546
  *         vec = vectorize(0, 0, source_color, source)
  *         fringe.push(vec)
  *     while fringe.size() != 0:             # <<<<<<<<<<<<<<
@@ -14873,7 +9843,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_8 = ((__pyx_v_fringe.size() != 0) != 0);
     if (!__pyx_t_8) break;
 
-    /* "dawdlib/dijkstra/colorful.pyx":546
+    /* "dawdlib/dijkstra/colorful.pyx":547
  *         fringe.push(vec)
  *     while fringe.size() != 0:
  *         counter += 1             # <<<<<<<<<<<<<<
@@ -14882,7 +9852,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_counter = (__pyx_v_counter + 1);
 
-    /* "dawdlib/dijkstra/colorful.pyx":547
+    /* "dawdlib/dijkstra/colorful.pyx":548
  *     while fringe.size() != 0:
  *         counter += 1
  *         vec = fringe.top()             # <<<<<<<<<<<<<<
@@ -14891,7 +9861,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_vec = __pyx_v_fringe.top();
 
-    /* "dawdlib/dijkstra/colorful.pyx":548
+    /* "dawdlib/dijkstra/colorful.pyx":549
  *         counter += 1
  *         vec = fringe.top()
  *         d = vec[0]             # <<<<<<<<<<<<<<
@@ -14900,7 +9870,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_d = (__pyx_v_vec[0]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":549
+    /* "dawdlib/dijkstra/colorful.pyx":550
  *         vec = fringe.top()
  *         d = vec[0]
  *         p_len = vec[1]             # <<<<<<<<<<<<<<
@@ -14909,7 +9879,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_p_len = (__pyx_v_vec[1]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":550
+    /* "dawdlib/dijkstra/colorful.pyx":551
  *         d = vec[0]
  *         p_len = vec[1]
  *         v_col = vec[2]             # <<<<<<<<<<<<<<
@@ -14918,7 +9888,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_v_col = (__pyx_v_vec[2]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":551
+    /* "dawdlib/dijkstra/colorful.pyx":552
  *         p_len = vec[1]
  *         v_col = vec[2]
  *         v = vec[3]             # <<<<<<<<<<<<<<
@@ -14927,7 +9897,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_v = (__pyx_v_vec[3]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":552
+    /* "dawdlib/dijkstra/colorful.pyx":553
  *         v_col = vec[2]
  *         v = vec[3]
  *         fringe.pop()             # <<<<<<<<<<<<<<
@@ -14936,7 +9906,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_fringe.pop();
 
-    /* "dawdlib/dijkstra/colorful.pyx":553
+    /* "dawdlib/dijkstra/colorful.pyx":554
  *         v = vec[3]
  *         fringe.pop()
  *         if 0 < limit < p_len:             # <<<<<<<<<<<<<<
@@ -14950,7 +9920,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_9 = (__pyx_t_8 != 0);
     if (__pyx_t_9) {
 
-      /* "dawdlib/dijkstra/colorful.pyx":554
+      /* "dawdlib/dijkstra/colorful.pyx":555
  *         fringe.pop()
  *         if 0 < limit < p_len:
  *             continue             # <<<<<<<<<<<<<<
@@ -14959,7 +9929,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       goto __pyx_L5_continue;
 
-      /* "dawdlib/dijkstra/colorful.pyx":553
+      /* "dawdlib/dijkstra/colorful.pyx":554
  *         v = vec[3]
  *         fringe.pop()
  *         if 0 < limit < p_len:             # <<<<<<<<<<<<<<
@@ -14968,7 +9938,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":555
+    /* "dawdlib/dijkstra/colorful.pyx":556
  *         if 0 < limit < p_len:
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:             # <<<<<<<<<<<<<<
@@ -14980,7 +9950,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_9 = ((std::numeric_limits<uint8_t> ::min() < (*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_10 * __pyx_v_dist.strides[0]) )) + __pyx_t_11)) )))) != 0);
     if (__pyx_t_9) {
 
-      /* "dawdlib/dijkstra/colorful.pyx":556
+      /* "dawdlib/dijkstra/colorful.pyx":557
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:
  *             continue             # <<<<<<<<<<<<<<
@@ -14989,7 +9959,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       goto __pyx_L5_continue;
 
-      /* "dawdlib/dijkstra/colorful.pyx":555
+      /* "dawdlib/dijkstra/colorful.pyx":556
  *         if 0 < limit < p_len:
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:             # <<<<<<<<<<<<<<
@@ -14998,7 +9968,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":557
+    /* "dawdlib/dijkstra/colorful.pyx":558
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:
  *             continue
  *         dist[v, v_col] = d             # <<<<<<<<<<<<<<
@@ -15009,7 +9979,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_13 = __pyx_v_v_col;
     *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_12 * __pyx_v_dist.strides[0]) )) + __pyx_t_13)) )) = __pyx_v_d;
 
-    /* "dawdlib/dijkstra/colorful.pyx":558
+    /* "dawdlib/dijkstra/colorful.pyx":559
  *             continue
  *         dist[v, v_col] = d
  *         for u in G[v]:             # <<<<<<<<<<<<<<
@@ -15024,7 +9994,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       ++__pyx_t_14;
       __pyx_v_u = __pyx_t_16;
 
-      /* "dawdlib/dijkstra/colorful.pyx":559
+      /* "dawdlib/dijkstra/colorful.pyx":560
  *         dist[v, v_col] = d
  *         for u in G[v]:
  *             u_col = color_map[u]             # <<<<<<<<<<<<<<
@@ -15034,7 +10004,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_17 = __pyx_v_u;
       __pyx_v_u_col = (*((uint8_t *) ( /* dim=0 */ ((char *) (((uint8_t *) __pyx_v_color_map.data) + __pyx_t_17)) )));
 
-      /* "dawdlib/dijkstra/colorful.pyx":560
+      /* "dawdlib/dijkstra/colorful.pyx":561
  *         for u in G[v]:
  *             u_col = color_map[u]
  *             if v_col & u_col:             # <<<<<<<<<<<<<<
@@ -15044,7 +10014,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_v_col & __pyx_v_u_col) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":561
+        /* "dawdlib/dijkstra/colorful.pyx":562
  *             u_col = color_map[u]
  *             if v_col & u_col:
  *                 continue             # <<<<<<<<<<<<<<
@@ -15053,7 +10023,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
         goto __pyx_L9_continue;
 
-        /* "dawdlib/dijkstra/colorful.pyx":560
+        /* "dawdlib/dijkstra/colorful.pyx":561
  *         for u in G[v]:
  *             u_col = color_map[u]
  *             if v_col & u_col:             # <<<<<<<<<<<<<<
@@ -15062,7 +10032,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":562
+      /* "dawdlib/dijkstra/colorful.pyx":563
  *             if v_col & u_col:
  *                 continue
  *             vu_col = v_col | u_col             # <<<<<<<<<<<<<<
@@ -15071,7 +10041,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       __pyx_v_vu_col = (__pyx_v_v_col | __pyx_v_u_col);
 
-      /* "dawdlib/dijkstra/colorful.pyx":563
+      /* "dawdlib/dijkstra/colorful.pyx":564
  *                 continue
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]             # <<<<<<<<<<<<<<
@@ -15080,9 +10050,9 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       __pyx_t_18 = __pyx_v_v;
       __pyx_t_19 = __pyx_v_u;
-      __pyx_v_vu_dist = (__pyx_v_d + (*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_weight.data + __pyx_t_18 * __pyx_v_weight.strides[0]) )) + __pyx_t_19)) ))));
+      __pyx_v_vu_dist = (__pyx_v_d + (*((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_weight.data + __pyx_t_18 * __pyx_v_weight.strides[0]) )) + __pyx_t_19)) ))));
 
-      /* "dawdlib/dijkstra/colorful.pyx":564
+      /* "dawdlib/dijkstra/colorful.pyx":565
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -15094,7 +10064,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_vu_dist < (*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_20 * __pyx_v_dist.strides[0]) )) + __pyx_t_21)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":565
+        /* "dawdlib/dijkstra/colorful.pyx":566
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter             # <<<<<<<<<<<<<<
@@ -15104,7 +10074,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         __pyx_r = (-__pyx_v_counter);
         goto __pyx_L0;
 
-        /* "dawdlib/dijkstra/colorful.pyx":564
+        /* "dawdlib/dijkstra/colorful.pyx":565
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -15113,7 +10083,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":566
+      /* "dawdlib/dijkstra/colorful.pyx":567
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -15125,7 +10095,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_vu_dist < (*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_22 * __pyx_v_seen.strides[0]) )) + __pyx_t_23)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":567
+        /* "dawdlib/dijkstra/colorful.pyx":568
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:
  *                 seen[u, vu_col] = vu_dist             # <<<<<<<<<<<<<<
@@ -15136,7 +10106,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         __pyx_t_25 = __pyx_v_vu_col;
         *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_24 * __pyx_v_seen.strides[0]) )) + __pyx_t_25)) )) = __pyx_v_vu_dist;
 
-        /* "dawdlib/dijkstra/colorful.pyx":568
+        /* "dawdlib/dijkstra/colorful.pyx":569
  *             if vu_dist < seen[u, vu_col]:
  *                 seen[u, vu_col] = vu_dist
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)             # <<<<<<<<<<<<<<
@@ -15145,27 +10115,38 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
         __pyx_v_vec = __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(__pyx_v_vu_dist, (__pyx_v_p_len + 1), __pyx_v_vu_col, __pyx_v_u);
 
-        /* "dawdlib/dijkstra/colorful.pyx":569
+        /* "dawdlib/dijkstra/colorful.pyx":570
  *                 seen[u, vu_col] = vu_dist
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)
  *                 fringe.push(vec)             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *             elif vu_dist == seen[u, vu_col]:
+ *                 s_pred[u, vu_col] = v
  */
         __pyx_v_fringe.push(__pyx_v_vec);
 
-        /* "dawdlib/dijkstra/colorful.pyx":570
+        /* "dawdlib/dijkstra/colorful.pyx":571
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)
  *                 fringe.push(vec)
  *                 pred[u, v] = 1             # <<<<<<<<<<<<<<
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:
- *                 pred[u, v] = 1
  */
         __pyx_t_26 = __pyx_v_u;
         __pyx_t_27 = __pyx_v_v;
         *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_26 * __pyx_v_pred.strides[0]) )) + __pyx_t_27)) )) = 1;
 
-        /* "dawdlib/dijkstra/colorful.pyx":566
+        /* "dawdlib/dijkstra/colorful.pyx":572
+ *                 fringe.push(vec)
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v             # <<<<<<<<<<<<<<
+ *             elif vu_dist == seen[u, vu_col]:
+ *                 pred[u, v] = 1
+ */
+        __pyx_t_28 = __pyx_v_u;
+        __pyx_t_29 = __pyx_v_vu_col;
+        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_s_pred.data + __pyx_t_28 * __pyx_v_s_pred.strides[0]) )) + __pyx_t_29)) )) = __pyx_v_v;
+
+        /* "dawdlib/dijkstra/colorful.pyx":567
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -15175,40 +10156,51 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         goto __pyx_L13;
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":571
- *                 fringe.push(vec)
+      /* "dawdlib/dijkstra/colorful.pyx":573
  *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *     # The optional predecessor and path dictionaries can be accessed
+ *                 s_pred[u, vu_col] = v
  */
-      __pyx_t_28 = __pyx_v_u;
-      __pyx_t_29 = __pyx_v_vu_col;
-      __pyx_t_9 = ((__pyx_v_vu_dist == (*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_28 * __pyx_v_seen.strides[0]) )) + __pyx_t_29)) )))) != 0);
+      __pyx_t_30 = __pyx_v_u;
+      __pyx_t_31 = __pyx_v_vu_col;
+      __pyx_t_9 = ((__pyx_v_vu_dist == (*((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_30 * __pyx_v_seen.strides[0]) )) + __pyx_t_31)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":572
- *                 pred[u, v] = 1
+        /* "dawdlib/dijkstra/colorful.pyx":574
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:
  *                 pred[u, v] = 1             # <<<<<<<<<<<<<<
- *     # The optional predecessor and path dictionaries can be accessed
- *     # by the caller via the pred and paths objects passed as arguments.
+ *                 s_pred[u, vu_col] = v
+ *     return counter
  */
-        __pyx_t_30 = __pyx_v_u;
-        __pyx_t_31 = __pyx_v_v;
-        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_30 * __pyx_v_pred.strides[0]) )) + __pyx_t_31)) )) = 1;
+        __pyx_t_32 = __pyx_v_u;
+        __pyx_t_33 = __pyx_v_v;
+        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_32 * __pyx_v_pred.strides[0]) )) + __pyx_t_33)) )) = 1;
 
-        /* "dawdlib/dijkstra/colorful.pyx":571
- *                 fringe.push(vec)
+        /* "dawdlib/dijkstra/colorful.pyx":575
+ *             elif vu_dist == seen[u, vu_col]:
  *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v             # <<<<<<<<<<<<<<
+ *     return counter
+ * 
+ */
+        __pyx_t_34 = __pyx_v_u;
+        __pyx_t_35 = __pyx_v_vu_col;
+        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_s_pred.data + __pyx_t_34 * __pyx_v_s_pred.strides[0]) )) + __pyx_t_35)) )) = __pyx_v_v;
+
+        /* "dawdlib/dijkstra/colorful.pyx":573
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *     # The optional predecessor and path dictionaries can be accessed
+ *                 s_pred[u, vu_col] = v
  */
       }
       __pyx_L13:;
 
-      /* "dawdlib/dijkstra/colorful.pyx":558
+      /* "dawdlib/dijkstra/colorful.pyx":559
  *             continue
  *         dist[v, v_col] = d
  *         for u in G[v]:             # <<<<<<<<<<<<<<
@@ -15220,9 +10212,9 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_L5_continue:;
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":575
- *     # The optional predecessor and path dictionaries can be accessed
- *     # by the caller via the pred and paths objects passed as arguments.
+  /* "dawdlib/dijkstra/colorful.pyx":576
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *     return counter             # <<<<<<<<<<<<<<
  * 
  * 
@@ -15235,7 +10227,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  * # @cython.embedsignature(True)
  * cdef int _multisource(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -15244,8 +10236,8 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   return __pyx_r;
 }
 
-static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color_map, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__13;
+static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color_map, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__11;
   Py_ssize_t __pyx_v_max_sources;
   uint16_t __pyx_v_vu_dist;
   uint16_t __pyx_v_d;
@@ -15294,6 +10286,10 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   size_t __pyx_t_29;
   size_t __pyx_t_30;
   size_t __pyx_t_31;
+  size_t __pyx_t_32;
+  size_t __pyx_t_33;
+  size_t __pyx_t_34;
+  size_t __pyx_t_35;
   __Pyx_RefNannySetupContext("__pyx_fuse_1_multisource", 0);
   if (__pyx_optional_args) {
     if (__pyx_optional_args->__pyx_n > 0) {
@@ -15301,16 +10297,16 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":531
+  /* "dawdlib/dijkstra/colorful.pyx":532
  *     int limit=0
  * ):
  *     max_sources = sources.shape[0]             # <<<<<<<<<<<<<<
- *     # fringe is heapq with 3-tuples (distance, color, node)
+ *     # fringe is heapq with 4-tuples (distance, length, color, node)
  *     cdef:
  */
   __pyx_v_max_sources = (__pyx_v_sources.shape[0]);
 
-  /* "dawdlib/dijkstra/colorful.pyx":535
+  /* "dawdlib/dijkstra/colorful.pyx":536
  *     cdef:
  *         umy_type vu_dist, d, source_color, source, v, v_col, vu_col, u_col, i, u, p_len
  *         int counter = 0             # <<<<<<<<<<<<<<
@@ -15319,7 +10315,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
   __pyx_v_counter = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":539
+  /* "dawdlib/dijkstra/colorful.pyx":540
  *         vector[umy_type] vec
  *         greater_priority_queue[vector[umy_type]] fringe
  *     for i in range(max_sources):             # <<<<<<<<<<<<<<
@@ -15331,7 +10327,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "dawdlib/dijkstra/colorful.pyx":540
+    /* "dawdlib/dijkstra/colorful.pyx":541
  *         greater_priority_queue[vector[umy_type]] fringe
  *     for i in range(max_sources):
  *         source = sources[i]             # <<<<<<<<<<<<<<
@@ -15341,7 +10337,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_4 = __pyx_v_i;
     __pyx_v_source = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_sources.data) + __pyx_t_4)) )));
 
-    /* "dawdlib/dijkstra/colorful.pyx":541
+    /* "dawdlib/dijkstra/colorful.pyx":542
  *     for i in range(max_sources):
  *         source = sources[i]
  *         source_color = color_map[source]             # <<<<<<<<<<<<<<
@@ -15351,7 +10347,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_5 = __pyx_v_source;
     __pyx_v_source_color = (*((uint16_t *) ( /* dim=0 */ ((char *) (((uint16_t *) __pyx_v_color_map.data) + __pyx_t_5)) )));
 
-    /* "dawdlib/dijkstra/colorful.pyx":542
+    /* "dawdlib/dijkstra/colorful.pyx":543
  *         source = sources[i]
  *         source_color = color_map[source]
  *         seen[source, source_color] = 0             # <<<<<<<<<<<<<<
@@ -15362,7 +10358,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_7 = __pyx_v_source_color;
     *((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_6 * __pyx_v_seen.strides[0]) )) + __pyx_t_7)) )) = 0;
 
-    /* "dawdlib/dijkstra/colorful.pyx":543
+    /* "dawdlib/dijkstra/colorful.pyx":544
  *         source_color = color_map[source]
  *         seen[source, source_color] = 0
  *         vec = vectorize(0, 0, source_color, source)             # <<<<<<<<<<<<<<
@@ -15371,7 +10367,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_vec = __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(0, 0, __pyx_v_source_color, __pyx_v_source);
 
-    /* "dawdlib/dijkstra/colorful.pyx":544
+    /* "dawdlib/dijkstra/colorful.pyx":545
  *         seen[source, source_color] = 0
  *         vec = vectorize(0, 0, source_color, source)
  *         fringe.push(vec)             # <<<<<<<<<<<<<<
@@ -15381,7 +10377,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_v_fringe.push(__pyx_v_vec);
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":545
+  /* "dawdlib/dijkstra/colorful.pyx":546
  *         vec = vectorize(0, 0, source_color, source)
  *         fringe.push(vec)
  *     while fringe.size() != 0:             # <<<<<<<<<<<<<<
@@ -15392,7 +10388,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_8 = ((__pyx_v_fringe.size() != 0) != 0);
     if (!__pyx_t_8) break;
 
-    /* "dawdlib/dijkstra/colorful.pyx":546
+    /* "dawdlib/dijkstra/colorful.pyx":547
  *         fringe.push(vec)
  *     while fringe.size() != 0:
  *         counter += 1             # <<<<<<<<<<<<<<
@@ -15401,7 +10397,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_counter = (__pyx_v_counter + 1);
 
-    /* "dawdlib/dijkstra/colorful.pyx":547
+    /* "dawdlib/dijkstra/colorful.pyx":548
  *     while fringe.size() != 0:
  *         counter += 1
  *         vec = fringe.top()             # <<<<<<<<<<<<<<
@@ -15410,7 +10406,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_vec = __pyx_v_fringe.top();
 
-    /* "dawdlib/dijkstra/colorful.pyx":548
+    /* "dawdlib/dijkstra/colorful.pyx":549
  *         counter += 1
  *         vec = fringe.top()
  *         d = vec[0]             # <<<<<<<<<<<<<<
@@ -15419,7 +10415,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_d = (__pyx_v_vec[0]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":549
+    /* "dawdlib/dijkstra/colorful.pyx":550
  *         vec = fringe.top()
  *         d = vec[0]
  *         p_len = vec[1]             # <<<<<<<<<<<<<<
@@ -15428,7 +10424,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_p_len = (__pyx_v_vec[1]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":550
+    /* "dawdlib/dijkstra/colorful.pyx":551
  *         d = vec[0]
  *         p_len = vec[1]
  *         v_col = vec[2]             # <<<<<<<<<<<<<<
@@ -15437,7 +10433,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_v_col = (__pyx_v_vec[2]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":551
+    /* "dawdlib/dijkstra/colorful.pyx":552
  *         p_len = vec[1]
  *         v_col = vec[2]
  *         v = vec[3]             # <<<<<<<<<<<<<<
@@ -15446,7 +10442,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_v = (__pyx_v_vec[3]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":552
+    /* "dawdlib/dijkstra/colorful.pyx":553
  *         v_col = vec[2]
  *         v = vec[3]
  *         fringe.pop()             # <<<<<<<<<<<<<<
@@ -15455,7 +10451,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_fringe.pop();
 
-    /* "dawdlib/dijkstra/colorful.pyx":553
+    /* "dawdlib/dijkstra/colorful.pyx":554
  *         v = vec[3]
  *         fringe.pop()
  *         if 0 < limit < p_len:             # <<<<<<<<<<<<<<
@@ -15469,7 +10465,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_9 = (__pyx_t_8 != 0);
     if (__pyx_t_9) {
 
-      /* "dawdlib/dijkstra/colorful.pyx":554
+      /* "dawdlib/dijkstra/colorful.pyx":555
  *         fringe.pop()
  *         if 0 < limit < p_len:
  *             continue             # <<<<<<<<<<<<<<
@@ -15478,7 +10474,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       goto __pyx_L5_continue;
 
-      /* "dawdlib/dijkstra/colorful.pyx":553
+      /* "dawdlib/dijkstra/colorful.pyx":554
  *         v = vec[3]
  *         fringe.pop()
  *         if 0 < limit < p_len:             # <<<<<<<<<<<<<<
@@ -15487,7 +10483,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":555
+    /* "dawdlib/dijkstra/colorful.pyx":556
  *         if 0 < limit < p_len:
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:             # <<<<<<<<<<<<<<
@@ -15499,7 +10495,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_9 = ((std::numeric_limits<uint16_t> ::min() < (*((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_10 * __pyx_v_dist.strides[0]) )) + __pyx_t_11)) )))) != 0);
     if (__pyx_t_9) {
 
-      /* "dawdlib/dijkstra/colorful.pyx":556
+      /* "dawdlib/dijkstra/colorful.pyx":557
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:
  *             continue             # <<<<<<<<<<<<<<
@@ -15508,7 +10504,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       goto __pyx_L5_continue;
 
-      /* "dawdlib/dijkstra/colorful.pyx":555
+      /* "dawdlib/dijkstra/colorful.pyx":556
  *         if 0 < limit < p_len:
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:             # <<<<<<<<<<<<<<
@@ -15517,7 +10513,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":557
+    /* "dawdlib/dijkstra/colorful.pyx":558
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:
  *             continue
  *         dist[v, v_col] = d             # <<<<<<<<<<<<<<
@@ -15528,7 +10524,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_13 = __pyx_v_v_col;
     *((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_12 * __pyx_v_dist.strides[0]) )) + __pyx_t_13)) )) = __pyx_v_d;
 
-    /* "dawdlib/dijkstra/colorful.pyx":558
+    /* "dawdlib/dijkstra/colorful.pyx":559
  *             continue
  *         dist[v, v_col] = d
  *         for u in G[v]:             # <<<<<<<<<<<<<<
@@ -15543,7 +10539,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       ++__pyx_t_14;
       __pyx_v_u = __pyx_t_16;
 
-      /* "dawdlib/dijkstra/colorful.pyx":559
+      /* "dawdlib/dijkstra/colorful.pyx":560
  *         dist[v, v_col] = d
  *         for u in G[v]:
  *             u_col = color_map[u]             # <<<<<<<<<<<<<<
@@ -15553,7 +10549,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_17 = __pyx_v_u;
       __pyx_v_u_col = (*((uint16_t *) ( /* dim=0 */ ((char *) (((uint16_t *) __pyx_v_color_map.data) + __pyx_t_17)) )));
 
-      /* "dawdlib/dijkstra/colorful.pyx":560
+      /* "dawdlib/dijkstra/colorful.pyx":561
  *         for u in G[v]:
  *             u_col = color_map[u]
  *             if v_col & u_col:             # <<<<<<<<<<<<<<
@@ -15563,7 +10559,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_v_col & __pyx_v_u_col) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":561
+        /* "dawdlib/dijkstra/colorful.pyx":562
  *             u_col = color_map[u]
  *             if v_col & u_col:
  *                 continue             # <<<<<<<<<<<<<<
@@ -15572,7 +10568,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
         goto __pyx_L9_continue;
 
-        /* "dawdlib/dijkstra/colorful.pyx":560
+        /* "dawdlib/dijkstra/colorful.pyx":561
  *         for u in G[v]:
  *             u_col = color_map[u]
  *             if v_col & u_col:             # <<<<<<<<<<<<<<
@@ -15581,7 +10577,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":562
+      /* "dawdlib/dijkstra/colorful.pyx":563
  *             if v_col & u_col:
  *                 continue
  *             vu_col = v_col | u_col             # <<<<<<<<<<<<<<
@@ -15590,7 +10586,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       __pyx_v_vu_col = (__pyx_v_v_col | __pyx_v_u_col);
 
-      /* "dawdlib/dijkstra/colorful.pyx":563
+      /* "dawdlib/dijkstra/colorful.pyx":564
  *                 continue
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]             # <<<<<<<<<<<<<<
@@ -15601,7 +10597,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_19 = __pyx_v_u;
       __pyx_v_vu_dist = (__pyx_v_d + (*((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_weight.data + __pyx_t_18 * __pyx_v_weight.strides[0]) )) + __pyx_t_19)) ))));
 
-      /* "dawdlib/dijkstra/colorful.pyx":564
+      /* "dawdlib/dijkstra/colorful.pyx":565
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -15613,7 +10609,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_vu_dist < (*((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_20 * __pyx_v_dist.strides[0]) )) + __pyx_t_21)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":565
+        /* "dawdlib/dijkstra/colorful.pyx":566
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter             # <<<<<<<<<<<<<<
@@ -15623,7 +10619,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         __pyx_r = (-__pyx_v_counter);
         goto __pyx_L0;
 
-        /* "dawdlib/dijkstra/colorful.pyx":564
+        /* "dawdlib/dijkstra/colorful.pyx":565
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -15632,7 +10628,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":566
+      /* "dawdlib/dijkstra/colorful.pyx":567
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -15644,7 +10640,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_vu_dist < (*((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_22 * __pyx_v_seen.strides[0]) )) + __pyx_t_23)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":567
+        /* "dawdlib/dijkstra/colorful.pyx":568
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:
  *                 seen[u, vu_col] = vu_dist             # <<<<<<<<<<<<<<
@@ -15655,7 +10651,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         __pyx_t_25 = __pyx_v_vu_col;
         *((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_24 * __pyx_v_seen.strides[0]) )) + __pyx_t_25)) )) = __pyx_v_vu_dist;
 
-        /* "dawdlib/dijkstra/colorful.pyx":568
+        /* "dawdlib/dijkstra/colorful.pyx":569
  *             if vu_dist < seen[u, vu_col]:
  *                 seen[u, vu_col] = vu_dist
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)             # <<<<<<<<<<<<<<
@@ -15664,27 +10660,38 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
         __pyx_v_vec = __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(__pyx_v_vu_dist, (__pyx_v_p_len + 1), __pyx_v_vu_col, __pyx_v_u);
 
-        /* "dawdlib/dijkstra/colorful.pyx":569
+        /* "dawdlib/dijkstra/colorful.pyx":570
  *                 seen[u, vu_col] = vu_dist
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)
  *                 fringe.push(vec)             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *             elif vu_dist == seen[u, vu_col]:
+ *                 s_pred[u, vu_col] = v
  */
         __pyx_v_fringe.push(__pyx_v_vec);
 
-        /* "dawdlib/dijkstra/colorful.pyx":570
+        /* "dawdlib/dijkstra/colorful.pyx":571
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)
  *                 fringe.push(vec)
  *                 pred[u, v] = 1             # <<<<<<<<<<<<<<
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:
- *                 pred[u, v] = 1
  */
         __pyx_t_26 = __pyx_v_u;
         __pyx_t_27 = __pyx_v_v;
         *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_26 * __pyx_v_pred.strides[0]) )) + __pyx_t_27)) )) = 1;
 
-        /* "dawdlib/dijkstra/colorful.pyx":566
+        /* "dawdlib/dijkstra/colorful.pyx":572
+ *                 fringe.push(vec)
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v             # <<<<<<<<<<<<<<
+ *             elif vu_dist == seen[u, vu_col]:
+ *                 pred[u, v] = 1
+ */
+        __pyx_t_28 = __pyx_v_u;
+        __pyx_t_29 = __pyx_v_vu_col;
+        *((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_s_pred.data + __pyx_t_28 * __pyx_v_s_pred.strides[0]) )) + __pyx_t_29)) )) = __pyx_v_v;
+
+        /* "dawdlib/dijkstra/colorful.pyx":567
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -15694,40 +10701,51 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         goto __pyx_L13;
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":571
- *                 fringe.push(vec)
+      /* "dawdlib/dijkstra/colorful.pyx":573
  *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *     # The optional predecessor and path dictionaries can be accessed
+ *                 s_pred[u, vu_col] = v
  */
-      __pyx_t_28 = __pyx_v_u;
-      __pyx_t_29 = __pyx_v_vu_col;
-      __pyx_t_9 = ((__pyx_v_vu_dist == (*((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_28 * __pyx_v_seen.strides[0]) )) + __pyx_t_29)) )))) != 0);
+      __pyx_t_30 = __pyx_v_u;
+      __pyx_t_31 = __pyx_v_vu_col;
+      __pyx_t_9 = ((__pyx_v_vu_dist == (*((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_30 * __pyx_v_seen.strides[0]) )) + __pyx_t_31)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":572
- *                 pred[u, v] = 1
+        /* "dawdlib/dijkstra/colorful.pyx":574
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:
  *                 pred[u, v] = 1             # <<<<<<<<<<<<<<
- *     # The optional predecessor and path dictionaries can be accessed
- *     # by the caller via the pred and paths objects passed as arguments.
+ *                 s_pred[u, vu_col] = v
+ *     return counter
  */
-        __pyx_t_30 = __pyx_v_u;
-        __pyx_t_31 = __pyx_v_v;
-        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_30 * __pyx_v_pred.strides[0]) )) + __pyx_t_31)) )) = 1;
+        __pyx_t_32 = __pyx_v_u;
+        __pyx_t_33 = __pyx_v_v;
+        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_32 * __pyx_v_pred.strides[0]) )) + __pyx_t_33)) )) = 1;
 
-        /* "dawdlib/dijkstra/colorful.pyx":571
- *                 fringe.push(vec)
+        /* "dawdlib/dijkstra/colorful.pyx":575
+ *             elif vu_dist == seen[u, vu_col]:
  *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v             # <<<<<<<<<<<<<<
+ *     return counter
+ * 
+ */
+        __pyx_t_34 = __pyx_v_u;
+        __pyx_t_35 = __pyx_v_vu_col;
+        *((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_s_pred.data + __pyx_t_34 * __pyx_v_s_pred.strides[0]) )) + __pyx_t_35)) )) = __pyx_v_v;
+
+        /* "dawdlib/dijkstra/colorful.pyx":573
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *     # The optional predecessor and path dictionaries can be accessed
+ *                 s_pred[u, vu_col] = v
  */
       }
       __pyx_L13:;
 
-      /* "dawdlib/dijkstra/colorful.pyx":558
+      /* "dawdlib/dijkstra/colorful.pyx":559
  *             continue
  *         dist[v, v_col] = d
  *         for u in G[v]:             # <<<<<<<<<<<<<<
@@ -15739,9 +10757,9 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_L5_continue:;
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":575
- *     # The optional predecessor and path dictionaries can be accessed
- *     # by the caller via the pred and paths objects passed as arguments.
+  /* "dawdlib/dijkstra/colorful.pyx":576
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *     return counter             # <<<<<<<<<<<<<<
  * 
  * 
@@ -15754,7 +10772,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  * # @cython.embedsignature(True)
  * cdef int _multisource(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -15763,8 +10781,8 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   return __pyx_r;
 }
 
-static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color_map, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__14;
+static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color_map, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__12;
   Py_ssize_t __pyx_v_max_sources;
   uint32_t __pyx_v_vu_dist;
   uint32_t __pyx_v_d;
@@ -15813,6 +10831,10 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   size_t __pyx_t_29;
   size_t __pyx_t_30;
   size_t __pyx_t_31;
+  size_t __pyx_t_32;
+  size_t __pyx_t_33;
+  size_t __pyx_t_34;
+  size_t __pyx_t_35;
   __Pyx_RefNannySetupContext("__pyx_fuse_2_multisource", 0);
   if (__pyx_optional_args) {
     if (__pyx_optional_args->__pyx_n > 0) {
@@ -15820,16 +10842,16 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":531
+  /* "dawdlib/dijkstra/colorful.pyx":532
  *     int limit=0
  * ):
  *     max_sources = sources.shape[0]             # <<<<<<<<<<<<<<
- *     # fringe is heapq with 3-tuples (distance, color, node)
+ *     # fringe is heapq with 4-tuples (distance, length, color, node)
  *     cdef:
  */
   __pyx_v_max_sources = (__pyx_v_sources.shape[0]);
 
-  /* "dawdlib/dijkstra/colorful.pyx":535
+  /* "dawdlib/dijkstra/colorful.pyx":536
  *     cdef:
  *         umy_type vu_dist, d, source_color, source, v, v_col, vu_col, u_col, i, u, p_len
  *         int counter = 0             # <<<<<<<<<<<<<<
@@ -15838,7 +10860,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
   __pyx_v_counter = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":539
+  /* "dawdlib/dijkstra/colorful.pyx":540
  *         vector[umy_type] vec
  *         greater_priority_queue[vector[umy_type]] fringe
  *     for i in range(max_sources):             # <<<<<<<<<<<<<<
@@ -15850,7 +10872,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "dawdlib/dijkstra/colorful.pyx":540
+    /* "dawdlib/dijkstra/colorful.pyx":541
  *         greater_priority_queue[vector[umy_type]] fringe
  *     for i in range(max_sources):
  *         source = sources[i]             # <<<<<<<<<<<<<<
@@ -15860,7 +10882,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_4 = __pyx_v_i;
     __pyx_v_source = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_sources.data) + __pyx_t_4)) )));
 
-    /* "dawdlib/dijkstra/colorful.pyx":541
+    /* "dawdlib/dijkstra/colorful.pyx":542
  *     for i in range(max_sources):
  *         source = sources[i]
  *         source_color = color_map[source]             # <<<<<<<<<<<<<<
@@ -15870,7 +10892,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_5 = __pyx_v_source;
     __pyx_v_source_color = (*((uint32_t *) ( /* dim=0 */ ((char *) (((uint32_t *) __pyx_v_color_map.data) + __pyx_t_5)) )));
 
-    /* "dawdlib/dijkstra/colorful.pyx":542
+    /* "dawdlib/dijkstra/colorful.pyx":543
  *         source = sources[i]
  *         source_color = color_map[source]
  *         seen[source, source_color] = 0             # <<<<<<<<<<<<<<
@@ -15881,7 +10903,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_7 = __pyx_v_source_color;
     *((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_6 * __pyx_v_seen.strides[0]) )) + __pyx_t_7)) )) = 0;
 
-    /* "dawdlib/dijkstra/colorful.pyx":543
+    /* "dawdlib/dijkstra/colorful.pyx":544
  *         source_color = color_map[source]
  *         seen[source, source_color] = 0
  *         vec = vectorize(0, 0, source_color, source)             # <<<<<<<<<<<<<<
@@ -15890,7 +10912,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_vec = __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(0, 0, __pyx_v_source_color, __pyx_v_source);
 
-    /* "dawdlib/dijkstra/colorful.pyx":544
+    /* "dawdlib/dijkstra/colorful.pyx":545
  *         seen[source, source_color] = 0
  *         vec = vectorize(0, 0, source_color, source)
  *         fringe.push(vec)             # <<<<<<<<<<<<<<
@@ -15900,7 +10922,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_v_fringe.push(__pyx_v_vec);
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":545
+  /* "dawdlib/dijkstra/colorful.pyx":546
  *         vec = vectorize(0, 0, source_color, source)
  *         fringe.push(vec)
  *     while fringe.size() != 0:             # <<<<<<<<<<<<<<
@@ -15911,7 +10933,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_8 = ((__pyx_v_fringe.size() != 0) != 0);
     if (!__pyx_t_8) break;
 
-    /* "dawdlib/dijkstra/colorful.pyx":546
+    /* "dawdlib/dijkstra/colorful.pyx":547
  *         fringe.push(vec)
  *     while fringe.size() != 0:
  *         counter += 1             # <<<<<<<<<<<<<<
@@ -15920,7 +10942,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_counter = (__pyx_v_counter + 1);
 
-    /* "dawdlib/dijkstra/colorful.pyx":547
+    /* "dawdlib/dijkstra/colorful.pyx":548
  *     while fringe.size() != 0:
  *         counter += 1
  *         vec = fringe.top()             # <<<<<<<<<<<<<<
@@ -15929,7 +10951,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_vec = __pyx_v_fringe.top();
 
-    /* "dawdlib/dijkstra/colorful.pyx":548
+    /* "dawdlib/dijkstra/colorful.pyx":549
  *         counter += 1
  *         vec = fringe.top()
  *         d = vec[0]             # <<<<<<<<<<<<<<
@@ -15938,7 +10960,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_d = (__pyx_v_vec[0]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":549
+    /* "dawdlib/dijkstra/colorful.pyx":550
  *         vec = fringe.top()
  *         d = vec[0]
  *         p_len = vec[1]             # <<<<<<<<<<<<<<
@@ -15947,7 +10969,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_p_len = (__pyx_v_vec[1]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":550
+    /* "dawdlib/dijkstra/colorful.pyx":551
  *         d = vec[0]
  *         p_len = vec[1]
  *         v_col = vec[2]             # <<<<<<<<<<<<<<
@@ -15956,7 +10978,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_v_col = (__pyx_v_vec[2]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":551
+    /* "dawdlib/dijkstra/colorful.pyx":552
  *         p_len = vec[1]
  *         v_col = vec[2]
  *         v = vec[3]             # <<<<<<<<<<<<<<
@@ -15965,7 +10987,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_v = (__pyx_v_vec[3]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":552
+    /* "dawdlib/dijkstra/colorful.pyx":553
  *         v_col = vec[2]
  *         v = vec[3]
  *         fringe.pop()             # <<<<<<<<<<<<<<
@@ -15974,7 +10996,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_fringe.pop();
 
-    /* "dawdlib/dijkstra/colorful.pyx":553
+    /* "dawdlib/dijkstra/colorful.pyx":554
  *         v = vec[3]
  *         fringe.pop()
  *         if 0 < limit < p_len:             # <<<<<<<<<<<<<<
@@ -15988,7 +11010,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_9 = (__pyx_t_8 != 0);
     if (__pyx_t_9) {
 
-      /* "dawdlib/dijkstra/colorful.pyx":554
+      /* "dawdlib/dijkstra/colorful.pyx":555
  *         fringe.pop()
  *         if 0 < limit < p_len:
  *             continue             # <<<<<<<<<<<<<<
@@ -15997,7 +11019,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       goto __pyx_L5_continue;
 
-      /* "dawdlib/dijkstra/colorful.pyx":553
+      /* "dawdlib/dijkstra/colorful.pyx":554
  *         v = vec[3]
  *         fringe.pop()
  *         if 0 < limit < p_len:             # <<<<<<<<<<<<<<
@@ -16006,7 +11028,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":555
+    /* "dawdlib/dijkstra/colorful.pyx":556
  *         if 0 < limit < p_len:
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:             # <<<<<<<<<<<<<<
@@ -16018,7 +11040,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_9 = ((std::numeric_limits<uint32_t> ::min() < (*((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_10 * __pyx_v_dist.strides[0]) )) + __pyx_t_11)) )))) != 0);
     if (__pyx_t_9) {
 
-      /* "dawdlib/dijkstra/colorful.pyx":556
+      /* "dawdlib/dijkstra/colorful.pyx":557
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:
  *             continue             # <<<<<<<<<<<<<<
@@ -16027,7 +11049,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       goto __pyx_L5_continue;
 
-      /* "dawdlib/dijkstra/colorful.pyx":555
+      /* "dawdlib/dijkstra/colorful.pyx":556
  *         if 0 < limit < p_len:
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:             # <<<<<<<<<<<<<<
@@ -16036,7 +11058,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":557
+    /* "dawdlib/dijkstra/colorful.pyx":558
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:
  *             continue
  *         dist[v, v_col] = d             # <<<<<<<<<<<<<<
@@ -16047,7 +11069,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_13 = __pyx_v_v_col;
     *((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_12 * __pyx_v_dist.strides[0]) )) + __pyx_t_13)) )) = __pyx_v_d;
 
-    /* "dawdlib/dijkstra/colorful.pyx":558
+    /* "dawdlib/dijkstra/colorful.pyx":559
  *             continue
  *         dist[v, v_col] = d
  *         for u in G[v]:             # <<<<<<<<<<<<<<
@@ -16062,7 +11084,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       ++__pyx_t_14;
       __pyx_v_u = __pyx_t_16;
 
-      /* "dawdlib/dijkstra/colorful.pyx":559
+      /* "dawdlib/dijkstra/colorful.pyx":560
  *         dist[v, v_col] = d
  *         for u in G[v]:
  *             u_col = color_map[u]             # <<<<<<<<<<<<<<
@@ -16072,7 +11094,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_17 = __pyx_v_u;
       __pyx_v_u_col = (*((uint32_t *) ( /* dim=0 */ ((char *) (((uint32_t *) __pyx_v_color_map.data) + __pyx_t_17)) )));
 
-      /* "dawdlib/dijkstra/colorful.pyx":560
+      /* "dawdlib/dijkstra/colorful.pyx":561
  *         for u in G[v]:
  *             u_col = color_map[u]
  *             if v_col & u_col:             # <<<<<<<<<<<<<<
@@ -16082,7 +11104,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_v_col & __pyx_v_u_col) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":561
+        /* "dawdlib/dijkstra/colorful.pyx":562
  *             u_col = color_map[u]
  *             if v_col & u_col:
  *                 continue             # <<<<<<<<<<<<<<
@@ -16091,7 +11113,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
         goto __pyx_L9_continue;
 
-        /* "dawdlib/dijkstra/colorful.pyx":560
+        /* "dawdlib/dijkstra/colorful.pyx":561
  *         for u in G[v]:
  *             u_col = color_map[u]
  *             if v_col & u_col:             # <<<<<<<<<<<<<<
@@ -16100,7 +11122,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":562
+      /* "dawdlib/dijkstra/colorful.pyx":563
  *             if v_col & u_col:
  *                 continue
  *             vu_col = v_col | u_col             # <<<<<<<<<<<<<<
@@ -16109,7 +11131,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       __pyx_v_vu_col = (__pyx_v_v_col | __pyx_v_u_col);
 
-      /* "dawdlib/dijkstra/colorful.pyx":563
+      /* "dawdlib/dijkstra/colorful.pyx":564
  *                 continue
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]             # <<<<<<<<<<<<<<
@@ -16118,9 +11140,9 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       __pyx_t_18 = __pyx_v_v;
       __pyx_t_19 = __pyx_v_u;
-      __pyx_v_vu_dist = (__pyx_v_d + (*((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_weight.data + __pyx_t_18 * __pyx_v_weight.strides[0]) )) + __pyx_t_19)) ))));
+      __pyx_v_vu_dist = (__pyx_v_d + (*((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_weight.data + __pyx_t_18 * __pyx_v_weight.strides[0]) )) + __pyx_t_19)) ))));
 
-      /* "dawdlib/dijkstra/colorful.pyx":564
+      /* "dawdlib/dijkstra/colorful.pyx":565
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -16132,7 +11154,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_vu_dist < (*((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_20 * __pyx_v_dist.strides[0]) )) + __pyx_t_21)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":565
+        /* "dawdlib/dijkstra/colorful.pyx":566
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter             # <<<<<<<<<<<<<<
@@ -16142,7 +11164,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         __pyx_r = (-__pyx_v_counter);
         goto __pyx_L0;
 
-        /* "dawdlib/dijkstra/colorful.pyx":564
+        /* "dawdlib/dijkstra/colorful.pyx":565
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -16151,7 +11173,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":566
+      /* "dawdlib/dijkstra/colorful.pyx":567
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -16163,7 +11185,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_vu_dist < (*((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_22 * __pyx_v_seen.strides[0]) )) + __pyx_t_23)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":567
+        /* "dawdlib/dijkstra/colorful.pyx":568
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:
  *                 seen[u, vu_col] = vu_dist             # <<<<<<<<<<<<<<
@@ -16174,7 +11196,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         __pyx_t_25 = __pyx_v_vu_col;
         *((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_24 * __pyx_v_seen.strides[0]) )) + __pyx_t_25)) )) = __pyx_v_vu_dist;
 
-        /* "dawdlib/dijkstra/colorful.pyx":568
+        /* "dawdlib/dijkstra/colorful.pyx":569
  *             if vu_dist < seen[u, vu_col]:
  *                 seen[u, vu_col] = vu_dist
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)             # <<<<<<<<<<<<<<
@@ -16183,27 +11205,38 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
         __pyx_v_vec = __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(__pyx_v_vu_dist, (__pyx_v_p_len + 1), __pyx_v_vu_col, __pyx_v_u);
 
-        /* "dawdlib/dijkstra/colorful.pyx":569
+        /* "dawdlib/dijkstra/colorful.pyx":570
  *                 seen[u, vu_col] = vu_dist
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)
  *                 fringe.push(vec)             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *             elif vu_dist == seen[u, vu_col]:
+ *                 s_pred[u, vu_col] = v
  */
         __pyx_v_fringe.push(__pyx_v_vec);
 
-        /* "dawdlib/dijkstra/colorful.pyx":570
+        /* "dawdlib/dijkstra/colorful.pyx":571
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)
  *                 fringe.push(vec)
  *                 pred[u, v] = 1             # <<<<<<<<<<<<<<
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:
- *                 pred[u, v] = 1
  */
         __pyx_t_26 = __pyx_v_u;
         __pyx_t_27 = __pyx_v_v;
         *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_26 * __pyx_v_pred.strides[0]) )) + __pyx_t_27)) )) = 1;
 
-        /* "dawdlib/dijkstra/colorful.pyx":566
+        /* "dawdlib/dijkstra/colorful.pyx":572
+ *                 fringe.push(vec)
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v             # <<<<<<<<<<<<<<
+ *             elif vu_dist == seen[u, vu_col]:
+ *                 pred[u, v] = 1
+ */
+        __pyx_t_28 = __pyx_v_u;
+        __pyx_t_29 = __pyx_v_vu_col;
+        *((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_s_pred.data + __pyx_t_28 * __pyx_v_s_pred.strides[0]) )) + __pyx_t_29)) )) = __pyx_v_v;
+
+        /* "dawdlib/dijkstra/colorful.pyx":567
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -16213,40 +11246,51 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         goto __pyx_L13;
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":571
- *                 fringe.push(vec)
+      /* "dawdlib/dijkstra/colorful.pyx":573
  *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *     # The optional predecessor and path dictionaries can be accessed
+ *                 s_pred[u, vu_col] = v
  */
-      __pyx_t_28 = __pyx_v_u;
-      __pyx_t_29 = __pyx_v_vu_col;
-      __pyx_t_9 = ((__pyx_v_vu_dist == (*((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_28 * __pyx_v_seen.strides[0]) )) + __pyx_t_29)) )))) != 0);
+      __pyx_t_30 = __pyx_v_u;
+      __pyx_t_31 = __pyx_v_vu_col;
+      __pyx_t_9 = ((__pyx_v_vu_dist == (*((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_30 * __pyx_v_seen.strides[0]) )) + __pyx_t_31)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":572
- *                 pred[u, v] = 1
+        /* "dawdlib/dijkstra/colorful.pyx":574
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:
  *                 pred[u, v] = 1             # <<<<<<<<<<<<<<
- *     # The optional predecessor and path dictionaries can be accessed
- *     # by the caller via the pred and paths objects passed as arguments.
+ *                 s_pred[u, vu_col] = v
+ *     return counter
  */
-        __pyx_t_30 = __pyx_v_u;
-        __pyx_t_31 = __pyx_v_v;
-        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_30 * __pyx_v_pred.strides[0]) )) + __pyx_t_31)) )) = 1;
+        __pyx_t_32 = __pyx_v_u;
+        __pyx_t_33 = __pyx_v_v;
+        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_32 * __pyx_v_pred.strides[0]) )) + __pyx_t_33)) )) = 1;
 
-        /* "dawdlib/dijkstra/colorful.pyx":571
- *                 fringe.push(vec)
+        /* "dawdlib/dijkstra/colorful.pyx":575
+ *             elif vu_dist == seen[u, vu_col]:
  *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v             # <<<<<<<<<<<<<<
+ *     return counter
+ * 
+ */
+        __pyx_t_34 = __pyx_v_u;
+        __pyx_t_35 = __pyx_v_vu_col;
+        *((uint32_t *) ( /* dim=1 */ ((char *) (((uint32_t *) ( /* dim=0 */ (__pyx_v_s_pred.data + __pyx_t_34 * __pyx_v_s_pred.strides[0]) )) + __pyx_t_35)) )) = __pyx_v_v;
+
+        /* "dawdlib/dijkstra/colorful.pyx":573
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *     # The optional predecessor and path dictionaries can be accessed
+ *                 s_pred[u, vu_col] = v
  */
       }
       __pyx_L13:;
 
-      /* "dawdlib/dijkstra/colorful.pyx":558
+      /* "dawdlib/dijkstra/colorful.pyx":559
  *             continue
  *         dist[v, v_col] = d
  *         for u in G[v]:             # <<<<<<<<<<<<<<
@@ -16258,9 +11302,9 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_L5_continue:;
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":575
- *     # The optional predecessor and path dictionaries can be accessed
- *     # by the caller via the pred and paths objects passed as arguments.
+  /* "dawdlib/dijkstra/colorful.pyx":576
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *     return counter             # <<<<<<<<<<<<<<
  * 
  * 
@@ -16273,7 +11317,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  * # @cython.embedsignature(True)
  * cdef int _multisource(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -16282,8 +11326,8 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   return __pyx_r;
 }
 
-static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color_map, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__15;
+static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color_map, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful__multisource *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__13;
   Py_ssize_t __pyx_v_max_sources;
   uint64_t __pyx_v_vu_dist;
   uint64_t __pyx_v_d;
@@ -16331,6 +11375,10 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   uint64_t __pyx_t_28;
   uint64_t __pyx_t_29;
   uint64_t __pyx_t_30;
+  uint64_t __pyx_t_31;
+  uint64_t __pyx_t_32;
+  uint64_t __pyx_t_33;
+  uint64_t __pyx_t_34;
   __Pyx_RefNannySetupContext("__pyx_fuse_3_multisource", 0);
   if (__pyx_optional_args) {
     if (__pyx_optional_args->__pyx_n > 0) {
@@ -16338,16 +11386,16 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":531
+  /* "dawdlib/dijkstra/colorful.pyx":532
  *     int limit=0
  * ):
  *     max_sources = sources.shape[0]             # <<<<<<<<<<<<<<
- *     # fringe is heapq with 3-tuples (distance, color, node)
+ *     # fringe is heapq with 4-tuples (distance, length, color, node)
  *     cdef:
  */
   __pyx_v_max_sources = (__pyx_v_sources.shape[0]);
 
-  /* "dawdlib/dijkstra/colorful.pyx":535
+  /* "dawdlib/dijkstra/colorful.pyx":536
  *     cdef:
  *         umy_type vu_dist, d, source_color, source, v, v_col, vu_col, u_col, i, u, p_len
  *         int counter = 0             # <<<<<<<<<<<<<<
@@ -16356,7 +11404,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
   __pyx_v_counter = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":539
+  /* "dawdlib/dijkstra/colorful.pyx":540
  *         vector[umy_type] vec
  *         greater_priority_queue[vector[umy_type]] fringe
  *     for i in range(max_sources):             # <<<<<<<<<<<<<<
@@ -16368,7 +11416,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "dawdlib/dijkstra/colorful.pyx":540
+    /* "dawdlib/dijkstra/colorful.pyx":541
  *         greater_priority_queue[vector[umy_type]] fringe
  *     for i in range(max_sources):
  *         source = sources[i]             # <<<<<<<<<<<<<<
@@ -16378,7 +11426,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_4 = __pyx_v_i;
     __pyx_v_source = (*((int *) ( /* dim=0 */ ((char *) (((int *) __pyx_v_sources.data) + __pyx_t_4)) )));
 
-    /* "dawdlib/dijkstra/colorful.pyx":541
+    /* "dawdlib/dijkstra/colorful.pyx":542
  *     for i in range(max_sources):
  *         source = sources[i]
  *         source_color = color_map[source]             # <<<<<<<<<<<<<<
@@ -16388,7 +11436,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_5 = __pyx_v_source;
     __pyx_v_source_color = (*((uint64_t *) ( /* dim=0 */ ((char *) (((uint64_t *) __pyx_v_color_map.data) + __pyx_t_5)) )));
 
-    /* "dawdlib/dijkstra/colorful.pyx":542
+    /* "dawdlib/dijkstra/colorful.pyx":543
  *         source = sources[i]
  *         source_color = color_map[source]
  *         seen[source, source_color] = 0             # <<<<<<<<<<<<<<
@@ -16399,7 +11447,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_7 = __pyx_v_source_color;
     *((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_6 * __pyx_v_seen.strides[0]) )) + __pyx_t_7)) )) = 0;
 
-    /* "dawdlib/dijkstra/colorful.pyx":543
+    /* "dawdlib/dijkstra/colorful.pyx":544
  *         source_color = color_map[source]
  *         seen[source, source_color] = 0
  *         vec = vectorize(0, 0, source_color, source)             # <<<<<<<<<<<<<<
@@ -16408,7 +11456,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_vec = __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(0, 0, __pyx_v_source_color, __pyx_v_source);
 
-    /* "dawdlib/dijkstra/colorful.pyx":544
+    /* "dawdlib/dijkstra/colorful.pyx":545
  *         seen[source, source_color] = 0
  *         vec = vectorize(0, 0, source_color, source)
  *         fringe.push(vec)             # <<<<<<<<<<<<<<
@@ -16418,7 +11466,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_v_fringe.push(__pyx_v_vec);
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":545
+  /* "dawdlib/dijkstra/colorful.pyx":546
  *         vec = vectorize(0, 0, source_color, source)
  *         fringe.push(vec)
  *     while fringe.size() != 0:             # <<<<<<<<<<<<<<
@@ -16429,7 +11477,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_8 = ((__pyx_v_fringe.size() != 0) != 0);
     if (!__pyx_t_8) break;
 
-    /* "dawdlib/dijkstra/colorful.pyx":546
+    /* "dawdlib/dijkstra/colorful.pyx":547
  *         fringe.push(vec)
  *     while fringe.size() != 0:
  *         counter += 1             # <<<<<<<<<<<<<<
@@ -16438,7 +11486,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_counter = (__pyx_v_counter + 1);
 
-    /* "dawdlib/dijkstra/colorful.pyx":547
+    /* "dawdlib/dijkstra/colorful.pyx":548
  *     while fringe.size() != 0:
  *         counter += 1
  *         vec = fringe.top()             # <<<<<<<<<<<<<<
@@ -16447,7 +11495,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_vec = __pyx_v_fringe.top();
 
-    /* "dawdlib/dijkstra/colorful.pyx":548
+    /* "dawdlib/dijkstra/colorful.pyx":549
  *         counter += 1
  *         vec = fringe.top()
  *         d = vec[0]             # <<<<<<<<<<<<<<
@@ -16456,7 +11504,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_d = (__pyx_v_vec[0]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":549
+    /* "dawdlib/dijkstra/colorful.pyx":550
  *         vec = fringe.top()
  *         d = vec[0]
  *         p_len = vec[1]             # <<<<<<<<<<<<<<
@@ -16465,7 +11513,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_p_len = (__pyx_v_vec[1]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":550
+    /* "dawdlib/dijkstra/colorful.pyx":551
  *         d = vec[0]
  *         p_len = vec[1]
  *         v_col = vec[2]             # <<<<<<<<<<<<<<
@@ -16474,7 +11522,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_v_col = (__pyx_v_vec[2]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":551
+    /* "dawdlib/dijkstra/colorful.pyx":552
  *         p_len = vec[1]
  *         v_col = vec[2]
  *         v = vec[3]             # <<<<<<<<<<<<<<
@@ -16483,7 +11531,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_v = (__pyx_v_vec[3]);
 
-    /* "dawdlib/dijkstra/colorful.pyx":552
+    /* "dawdlib/dijkstra/colorful.pyx":553
  *         v_col = vec[2]
  *         v = vec[3]
  *         fringe.pop()             # <<<<<<<<<<<<<<
@@ -16492,7 +11540,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     __pyx_v_fringe.pop();
 
-    /* "dawdlib/dijkstra/colorful.pyx":553
+    /* "dawdlib/dijkstra/colorful.pyx":554
  *         v = vec[3]
  *         fringe.pop()
  *         if 0 < limit < p_len:             # <<<<<<<<<<<<<<
@@ -16506,7 +11554,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_9 = (__pyx_t_8 != 0);
     if (__pyx_t_9) {
 
-      /* "dawdlib/dijkstra/colorful.pyx":554
+      /* "dawdlib/dijkstra/colorful.pyx":555
  *         fringe.pop()
  *         if 0 < limit < p_len:
  *             continue             # <<<<<<<<<<<<<<
@@ -16515,7 +11563,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       goto __pyx_L5_continue;
 
-      /* "dawdlib/dijkstra/colorful.pyx":553
+      /* "dawdlib/dijkstra/colorful.pyx":554
  *         v = vec[3]
  *         fringe.pop()
  *         if 0 < limit < p_len:             # <<<<<<<<<<<<<<
@@ -16524,7 +11572,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":555
+    /* "dawdlib/dijkstra/colorful.pyx":556
  *         if 0 < limit < p_len:
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:             # <<<<<<<<<<<<<<
@@ -16536,7 +11584,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_9 = ((std::numeric_limits<uint64_t> ::min() < (*((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_3 * __pyx_v_dist.strides[0]) )) + __pyx_t_10)) )))) != 0);
     if (__pyx_t_9) {
 
-      /* "dawdlib/dijkstra/colorful.pyx":556
+      /* "dawdlib/dijkstra/colorful.pyx":557
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:
  *             continue             # <<<<<<<<<<<<<<
@@ -16545,7 +11593,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       goto __pyx_L5_continue;
 
-      /* "dawdlib/dijkstra/colorful.pyx":555
+      /* "dawdlib/dijkstra/colorful.pyx":556
  *         if 0 < limit < p_len:
  *             continue
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:             # <<<<<<<<<<<<<<
@@ -16554,7 +11602,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
     }
 
-    /* "dawdlib/dijkstra/colorful.pyx":557
+    /* "dawdlib/dijkstra/colorful.pyx":558
  *         if numeric_limits[umy_type].min() < dist[v, v_col]:
  *             continue
  *         dist[v, v_col] = d             # <<<<<<<<<<<<<<
@@ -16565,7 +11613,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_t_12 = __pyx_v_v_col;
     *((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_11 * __pyx_v_dist.strides[0]) )) + __pyx_t_12)) )) = __pyx_v_d;
 
-    /* "dawdlib/dijkstra/colorful.pyx":558
+    /* "dawdlib/dijkstra/colorful.pyx":559
  *             continue
  *         dist[v, v_col] = d
  *         for u in G[v]:             # <<<<<<<<<<<<<<
@@ -16580,7 +11628,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       ++__pyx_t_13;
       __pyx_v_u = __pyx_t_15;
 
-      /* "dawdlib/dijkstra/colorful.pyx":559
+      /* "dawdlib/dijkstra/colorful.pyx":560
  *         dist[v, v_col] = d
  *         for u in G[v]:
  *             u_col = color_map[u]             # <<<<<<<<<<<<<<
@@ -16590,7 +11638,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_16 = __pyx_v_u;
       __pyx_v_u_col = (*((uint64_t *) ( /* dim=0 */ ((char *) (((uint64_t *) __pyx_v_color_map.data) + __pyx_t_16)) )));
 
-      /* "dawdlib/dijkstra/colorful.pyx":560
+      /* "dawdlib/dijkstra/colorful.pyx":561
  *         for u in G[v]:
  *             u_col = color_map[u]
  *             if v_col & u_col:             # <<<<<<<<<<<<<<
@@ -16600,7 +11648,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_v_col & __pyx_v_u_col) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":561
+        /* "dawdlib/dijkstra/colorful.pyx":562
  *             u_col = color_map[u]
  *             if v_col & u_col:
  *                 continue             # <<<<<<<<<<<<<<
@@ -16609,7 +11657,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
         goto __pyx_L9_continue;
 
-        /* "dawdlib/dijkstra/colorful.pyx":560
+        /* "dawdlib/dijkstra/colorful.pyx":561
  *         for u in G[v]:
  *             u_col = color_map[u]
  *             if v_col & u_col:             # <<<<<<<<<<<<<<
@@ -16618,7 +11666,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":562
+      /* "dawdlib/dijkstra/colorful.pyx":563
  *             if v_col & u_col:
  *                 continue
  *             vu_col = v_col | u_col             # <<<<<<<<<<<<<<
@@ -16627,7 +11675,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       __pyx_v_vu_col = (__pyx_v_v_col | __pyx_v_u_col);
 
-      /* "dawdlib/dijkstra/colorful.pyx":563
+      /* "dawdlib/dijkstra/colorful.pyx":564
  *                 continue
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]             # <<<<<<<<<<<<<<
@@ -16636,9 +11684,9 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       __pyx_t_17 = __pyx_v_v;
       __pyx_t_18 = __pyx_v_u;
-      __pyx_v_vu_dist = (__pyx_v_d + (*((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_weight.data + __pyx_t_17 * __pyx_v_weight.strides[0]) )) + __pyx_t_18)) ))));
+      __pyx_v_vu_dist = (__pyx_v_d + (*((uint16_t *) ( /* dim=1 */ ((char *) (((uint16_t *) ( /* dim=0 */ (__pyx_v_weight.data + __pyx_t_17 * __pyx_v_weight.strides[0]) )) + __pyx_t_18)) ))));
 
-      /* "dawdlib/dijkstra/colorful.pyx":564
+      /* "dawdlib/dijkstra/colorful.pyx":565
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -16650,7 +11698,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_vu_dist < (*((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_dist.data + __pyx_t_19 * __pyx_v_dist.strides[0]) )) + __pyx_t_20)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":565
+        /* "dawdlib/dijkstra/colorful.pyx":566
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter             # <<<<<<<<<<<<<<
@@ -16660,7 +11708,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         __pyx_r = (-__pyx_v_counter);
         goto __pyx_L0;
 
-        /* "dawdlib/dijkstra/colorful.pyx":564
+        /* "dawdlib/dijkstra/colorful.pyx":565
  *             vu_col = v_col | u_col
  *             vu_dist = d + weight[v, u]
  *             if vu_dist < dist[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -16669,7 +11717,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":566
+      /* "dawdlib/dijkstra/colorful.pyx":567
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -16681,7 +11729,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
       __pyx_t_9 = ((__pyx_v_vu_dist < (*((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_21 * __pyx_v_seen.strides[0]) )) + __pyx_t_22)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":567
+        /* "dawdlib/dijkstra/colorful.pyx":568
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:
  *                 seen[u, vu_col] = vu_dist             # <<<<<<<<<<<<<<
@@ -16692,7 +11740,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         __pyx_t_24 = __pyx_v_vu_col;
         *((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_23 * __pyx_v_seen.strides[0]) )) + __pyx_t_24)) )) = __pyx_v_vu_dist;
 
-        /* "dawdlib/dijkstra/colorful.pyx":568
+        /* "dawdlib/dijkstra/colorful.pyx":569
  *             if vu_dist < seen[u, vu_col]:
  *                 seen[u, vu_col] = vu_dist
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)             # <<<<<<<<<<<<<<
@@ -16701,27 +11749,38 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  */
         __pyx_v_vec = __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_vectorize(__pyx_v_vu_dist, (__pyx_v_p_len + 1), __pyx_v_vu_col, __pyx_v_u);
 
-        /* "dawdlib/dijkstra/colorful.pyx":569
+        /* "dawdlib/dijkstra/colorful.pyx":570
  *                 seen[u, vu_col] = vu_dist
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)
  *                 fringe.push(vec)             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *             elif vu_dist == seen[u, vu_col]:
+ *                 s_pred[u, vu_col] = v
  */
         __pyx_v_fringe.push(__pyx_v_vec);
 
-        /* "dawdlib/dijkstra/colorful.pyx":570
+        /* "dawdlib/dijkstra/colorful.pyx":571
  *                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)
  *                 fringe.push(vec)
  *                 pred[u, v] = 1             # <<<<<<<<<<<<<<
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:
- *                 pred[u, v] = 1
  */
         __pyx_t_25 = __pyx_v_u;
         __pyx_t_26 = __pyx_v_v;
         *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_25 * __pyx_v_pred.strides[0]) )) + __pyx_t_26)) )) = 1;
 
-        /* "dawdlib/dijkstra/colorful.pyx":566
+        /* "dawdlib/dijkstra/colorful.pyx":572
+ *                 fringe.push(vec)
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v             # <<<<<<<<<<<<<<
+ *             elif vu_dist == seen[u, vu_col]:
+ *                 pred[u, v] = 1
+ */
+        __pyx_t_27 = __pyx_v_u;
+        __pyx_t_28 = __pyx_v_vu_col;
+        *((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_s_pred.data + __pyx_t_27 * __pyx_v_s_pred.strides[0]) )) + __pyx_t_28)) )) = __pyx_v_v;
+
+        /* "dawdlib/dijkstra/colorful.pyx":567
  *             if vu_dist < dist[u, vu_col]:
  *                 return -counter
  *             if vu_dist < seen[u, vu_col]:             # <<<<<<<<<<<<<<
@@ -16731,40 +11790,51 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
         goto __pyx_L13;
       }
 
-      /* "dawdlib/dijkstra/colorful.pyx":571
- *                 fringe.push(vec)
+      /* "dawdlib/dijkstra/colorful.pyx":573
  *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *     # The optional predecessor and path dictionaries can be accessed
+ *                 s_pred[u, vu_col] = v
  */
-      __pyx_t_27 = __pyx_v_u;
-      __pyx_t_28 = __pyx_v_vu_col;
-      __pyx_t_9 = ((__pyx_v_vu_dist == (*((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_27 * __pyx_v_seen.strides[0]) )) + __pyx_t_28)) )))) != 0);
+      __pyx_t_29 = __pyx_v_u;
+      __pyx_t_30 = __pyx_v_vu_col;
+      __pyx_t_9 = ((__pyx_v_vu_dist == (*((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_seen.data + __pyx_t_29 * __pyx_v_seen.strides[0]) )) + __pyx_t_30)) )))) != 0);
       if (__pyx_t_9) {
 
-        /* "dawdlib/dijkstra/colorful.pyx":572
- *                 pred[u, v] = 1
+        /* "dawdlib/dijkstra/colorful.pyx":574
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:
  *                 pred[u, v] = 1             # <<<<<<<<<<<<<<
- *     # The optional predecessor and path dictionaries can be accessed
- *     # by the caller via the pred and paths objects passed as arguments.
+ *                 s_pred[u, vu_col] = v
+ *     return counter
  */
-        __pyx_t_29 = __pyx_v_u;
-        __pyx_t_30 = __pyx_v_v;
-        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_29 * __pyx_v_pred.strides[0]) )) + __pyx_t_30)) )) = 1;
+        __pyx_t_31 = __pyx_v_u;
+        __pyx_t_32 = __pyx_v_v;
+        *((uint8_t *) ( /* dim=1 */ ((char *) (((uint8_t *) ( /* dim=0 */ (__pyx_v_pred.data + __pyx_t_31 * __pyx_v_pred.strides[0]) )) + __pyx_t_32)) )) = 1;
 
-        /* "dawdlib/dijkstra/colorful.pyx":571
- *                 fringe.push(vec)
+        /* "dawdlib/dijkstra/colorful.pyx":575
+ *             elif vu_dist == seen[u, vu_col]:
  *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v             # <<<<<<<<<<<<<<
+ *     return counter
+ * 
+ */
+        __pyx_t_33 = __pyx_v_u;
+        __pyx_t_34 = __pyx_v_vu_col;
+        *((uint64_t *) ( /* dim=1 */ ((char *) (((uint64_t *) ( /* dim=0 */ (__pyx_v_s_pred.data + __pyx_t_33 * __pyx_v_s_pred.strides[0]) )) + __pyx_t_34)) )) = __pyx_v_v;
+
+        /* "dawdlib/dijkstra/colorful.pyx":573
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *             elif vu_dist == seen[u, vu_col]:             # <<<<<<<<<<<<<<
  *                 pred[u, v] = 1
- *     # The optional predecessor and path dictionaries can be accessed
+ *                 s_pred[u, vu_col] = v
  */
       }
       __pyx_L13:;
 
-      /* "dawdlib/dijkstra/colorful.pyx":558
+      /* "dawdlib/dijkstra/colorful.pyx":559
  *             continue
  *         dist[v, v_col] = d
  *         for u in G[v]:             # <<<<<<<<<<<<<<
@@ -16776,9 +11846,9 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
     __pyx_L5_continue:;
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":575
- *     # The optional predecessor and path dictionaries can be accessed
- *     # by the caller via the pred and paths objects passed as arguments.
+  /* "dawdlib/dijkstra/colorful.pyx":576
+ *                 pred[u, v] = 1
+ *                 s_pred[u, vu_col] = v
  *     return counter             # <<<<<<<<<<<<<<
  * 
  * 
@@ -16791,7 +11861,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
  * # @cython.embedsignature(True)
  * cdef int _multisource(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -16800,16 +11870,16 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(std::ma
   return __pyx_r;
 }
 
-/* "dawdlib/dijkstra/colorful.pyx":579
+/* "dawdlib/dijkstra/colorful.pyx":580
  * 
  * # @cython.embedsignature(True)
  * cdef int predecessor_and_distance(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
-static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__16;
+static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_0__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__14;
   int __pyx_v_res;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -16822,7 +11892,7 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":592
+  /* "dawdlib/dijkstra/colorful.pyx":594
  *         int res
  * 
  *     dist[:] = numeric_limits[umy_type].min()             # <<<<<<<<<<<<<<
@@ -16842,12 +11912,12 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
       }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":593
+  /* "dawdlib/dijkstra/colorful.pyx":595
  * 
  *     dist[:] = numeric_limits[umy_type].min()
  *     seen[:] = numeric_limits[umy_type].max()             # <<<<<<<<<<<<<<
  *     res  = _multisource(
- *             G, weight, sources, color, pred, dist, seen, limit
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  */
   {
       uint8_t __pyx_temp_scalar = std::numeric_limits<uint8_t> ::max();
@@ -16862,20 +11932,20 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
       }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":594
+  /* "dawdlib/dijkstra/colorful.pyx":596
  *     dist[:] = numeric_limits[umy_type].min()
  *     seen[:] = numeric_limits[umy_type].max()
  *     res  = _multisource(             # <<<<<<<<<<<<<<
- *             G, weight, sources, color, pred, dist, seen, limit
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  *     )
  */
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.limit = __pyx_v_limit;
-  __pyx_t_1 = __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
+  __pyx_t_1 = __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
   __pyx_v_res = __pyx_t_1;
 
-  /* "dawdlib/dijkstra/colorful.pyx":597
- *             G, weight, sources, color, pred, dist, seen, limit
+  /* "dawdlib/dijkstra/colorful.pyx":599
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  *     )
  *     return res             # <<<<<<<<<<<<<<
  * 
@@ -16884,12 +11954,12 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
   __pyx_r = __pyx_v_res;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":579
+  /* "dawdlib/dijkstra/colorful.pyx":580
  * 
  * # @cython.embedsignature(True)
  * cdef int predecessor_and_distance(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -16898,8 +11968,8 @@ static int __pyx_fuse_0__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
   return __pyx_r;
 }
 
-static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__17;
+static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_1__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__15;
   int __pyx_v_res;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -16912,7 +11982,7 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":592
+  /* "dawdlib/dijkstra/colorful.pyx":594
  *         int res
  * 
  *     dist[:] = numeric_limits[umy_type].min()             # <<<<<<<<<<<<<<
@@ -16932,12 +12002,12 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
       }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":593
+  /* "dawdlib/dijkstra/colorful.pyx":595
  * 
  *     dist[:] = numeric_limits[umy_type].min()
  *     seen[:] = numeric_limits[umy_type].max()             # <<<<<<<<<<<<<<
  *     res  = _multisource(
- *             G, weight, sources, color, pred, dist, seen, limit
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  */
   {
       uint16_t __pyx_temp_scalar = std::numeric_limits<uint16_t> ::max();
@@ -16952,20 +12022,20 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
       }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":594
+  /* "dawdlib/dijkstra/colorful.pyx":596
  *     dist[:] = numeric_limits[umy_type].min()
  *     seen[:] = numeric_limits[umy_type].max()
  *     res  = _multisource(             # <<<<<<<<<<<<<<
- *             G, weight, sources, color, pred, dist, seen, limit
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  *     )
  */
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.limit = __pyx_v_limit;
-  __pyx_t_1 = __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
+  __pyx_t_1 = __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
   __pyx_v_res = __pyx_t_1;
 
-  /* "dawdlib/dijkstra/colorful.pyx":597
- *             G, weight, sources, color, pred, dist, seen, limit
+  /* "dawdlib/dijkstra/colorful.pyx":599
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  *     )
  *     return res             # <<<<<<<<<<<<<<
  * 
@@ -16974,12 +12044,12 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
   __pyx_r = __pyx_v_res;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":579
+  /* "dawdlib/dijkstra/colorful.pyx":580
  * 
  * # @cython.embedsignature(True)
  * cdef int predecessor_and_distance(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -16988,8 +12058,8 @@ static int __pyx_fuse_1__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
   return __pyx_r;
 }
 
-static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__18;
+static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_2__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__16;
   int __pyx_v_res;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -17002,7 +12072,7 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":592
+  /* "dawdlib/dijkstra/colorful.pyx":594
  *         int res
  * 
  *     dist[:] = numeric_limits[umy_type].min()             # <<<<<<<<<<<<<<
@@ -17022,12 +12092,12 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
       }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":593
+  /* "dawdlib/dijkstra/colorful.pyx":595
  * 
  *     dist[:] = numeric_limits[umy_type].min()
  *     seen[:] = numeric_limits[umy_type].max()             # <<<<<<<<<<<<<<
  *     res  = _multisource(
- *             G, weight, sources, color, pred, dist, seen, limit
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  */
   {
       uint32_t __pyx_temp_scalar = std::numeric_limits<uint32_t> ::max();
@@ -17042,20 +12112,20 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
       }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":594
+  /* "dawdlib/dijkstra/colorful.pyx":596
  *     dist[:] = numeric_limits[umy_type].min()
  *     seen[:] = numeric_limits[umy_type].max()
  *     res  = _multisource(             # <<<<<<<<<<<<<<
- *             G, weight, sources, color, pred, dist, seen, limit
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  *     )
  */
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.limit = __pyx_v_limit;
-  __pyx_t_1 = __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
+  __pyx_t_1 = __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
   __pyx_v_res = __pyx_t_1;
 
-  /* "dawdlib/dijkstra/colorful.pyx":597
- *             G, weight, sources, color, pred, dist, seen, limit
+  /* "dawdlib/dijkstra/colorful.pyx":599
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  *     )
  *     return res             # <<<<<<<<<<<<<<
  * 
@@ -17064,12 +12134,12 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
   __pyx_r = __pyx_v_res;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":579
+  /* "dawdlib/dijkstra/colorful.pyx":580
  * 
  * # @cython.embedsignature(True)
  * cdef int predecessor_and_distance(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -17078,8 +12148,8 @@ static int __pyx_fuse_2__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
   return __pyx_r;
 }
 
-static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args) {
-  int __pyx_v_limit = __pyx_k__19;
+static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_distance(std::map<int,std::vector<int> >  __pyx_v_G, __Pyx_memviewslice __pyx_v_weight, __Pyx_memviewslice __pyx_v_sources, __Pyx_memviewslice __pyx_v_color, __Pyx_memviewslice __pyx_v_pred, __Pyx_memviewslice __pyx_v_s_pred, __Pyx_memviewslice __pyx_v_dist, __Pyx_memviewslice __pyx_v_seen, struct __pyx_fuse_3__pyx_opt_args_7dawdlib_8dijkstra_8colorful_predecessor_and_distance *__pyx_optional_args) {
+  int __pyx_v_limit = __pyx_k__17;
   int __pyx_v_res;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -17092,7 +12162,7 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
     }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":592
+  /* "dawdlib/dijkstra/colorful.pyx":594
  *         int res
  * 
  *     dist[:] = numeric_limits[umy_type].min()             # <<<<<<<<<<<<<<
@@ -17112,12 +12182,12 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
       }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":593
+  /* "dawdlib/dijkstra/colorful.pyx":595
  * 
  *     dist[:] = numeric_limits[umy_type].min()
  *     seen[:] = numeric_limits[umy_type].max()             # <<<<<<<<<<<<<<
  *     res  = _multisource(
- *             G, weight, sources, color, pred, dist, seen, limit
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  */
   {
       uint64_t __pyx_temp_scalar = std::numeric_limits<uint64_t> ::max();
@@ -17132,20 +12202,20 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
       }
   }
 
-  /* "dawdlib/dijkstra/colorful.pyx":594
+  /* "dawdlib/dijkstra/colorful.pyx":596
  *     dist[:] = numeric_limits[umy_type].min()
  *     seen[:] = numeric_limits[umy_type].max()
  *     res  = _multisource(             # <<<<<<<<<<<<<<
- *             G, weight, sources, color, pred, dist, seen, limit
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  *     )
  */
   __pyx_t_2.__pyx_n = 1;
   __pyx_t_2.limit = __pyx_v_limit;
-  __pyx_t_1 = __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color, __pyx_v_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
+  __pyx_t_1 = __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful__multisource(__pyx_v_G, __pyx_v_weight, __pyx_v_sources, __pyx_v_color, __pyx_v_pred, __pyx_v_s_pred, __pyx_v_dist, __pyx_v_seen, &__pyx_t_2); 
   __pyx_v_res = __pyx_t_1;
 
-  /* "dawdlib/dijkstra/colorful.pyx":597
- *             G, weight, sources, color, pred, dist, seen, limit
+  /* "dawdlib/dijkstra/colorful.pyx":599
+ *             G, weight, sources, color, pred, s_pred, dist, seen, limit
  *     )
  *     return res             # <<<<<<<<<<<<<<
  * 
@@ -17154,12 +12224,12 @@ static int __pyx_fuse_3__pyx_f_7dawdlib_8dijkstra_8colorful_predecessor_and_dist
   __pyx_r = __pyx_v_res;
   goto __pyx_L0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":579
+  /* "dawdlib/dijkstra/colorful.pyx":580
  * 
  * # @cython.embedsignature(True)
  * cdef int predecessor_and_distance(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
 
   /* function exit code */
@@ -17285,7 +12355,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 272, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 272, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -17341,7 +12411,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  * 
  *             info.buf = PyArray_DATA(self)
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 276, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -17599,7 +12669,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 306, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 306, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -18479,7 +13549,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  * 
  *         if ((child.byteorder == c'>' and little_endian) or
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 856, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 856, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -18547,7 +13617,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  *             # One could encode it in the format string and have Cython
  *             # complain instead, BUT: < and > in format strings also imply
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 860, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 860, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -18656,7 +13726,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  * 
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  */
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 880, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 880, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_Raise(__pyx_t_4, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -19284,7 +14354,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1038, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1038, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -19413,7 +14483,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1044, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1044, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -19539,7 +14609,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  *     except Exception:
  *         raise ImportError("numpy.core.umath failed to import")             # <<<<<<<<<<<<<<
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1050, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1050, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -19997,116 +15067,6 @@ static PyObject *__pyx_convert_map_to_py_int____std_3a__3a_vector_3c_int_3e___(s
   return __pyx_r;
 }
 
-static PyObject *__pyx_convert_map_to_py_int____int(std::map<int,int>  const &__pyx_v_s) {
-  PyObject *__pyx_v_o = NULL;
-  std::map<int,int> ::value_type const *__pyx_v_key_value;
-  std::map<int,int> ::const_iterator __pyx_v_iter;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("__pyx_convert_map_to_py_int____int", 0);
-
-  /* "map.to_py":202
- * @cname("__pyx_convert_map_to_py_int____int")
- * cdef object __pyx_convert_map_to_py_int____int(const map[X,Y]& s):
- *     o = {}             # <<<<<<<<<<<<<<
- *     cdef const map[X,Y].value_type *key_value
- *     cdef map[X,Y].const_iterator iter = s.begin()
- */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 202, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_o = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "map.to_py":204
- *     o = {}
- *     cdef const map[X,Y].value_type *key_value
- *     cdef map[X,Y].const_iterator iter = s.begin()             # <<<<<<<<<<<<<<
- *     while iter != s.end():
- *         key_value = &cython.operator.dereference(iter)
- */
-  __pyx_v_iter = __pyx_v_s.begin();
-
-  /* "map.to_py":205
- *     cdef const map[X,Y].value_type *key_value
- *     cdef map[X,Y].const_iterator iter = s.begin()
- *     while iter != s.end():             # <<<<<<<<<<<<<<
- *         key_value = &cython.operator.dereference(iter)
- *         o[key_value.first] = key_value.second
- */
-  while (1) {
-    __pyx_t_2 = ((__pyx_v_iter != __pyx_v_s.end()) != 0);
-    if (!__pyx_t_2) break;
-
-    /* "map.to_py":206
- *     cdef map[X,Y].const_iterator iter = s.begin()
- *     while iter != s.end():
- *         key_value = &cython.operator.dereference(iter)             # <<<<<<<<<<<<<<
- *         o[key_value.first] = key_value.second
- *         cython.operator.preincrement(iter)
- */
-    __pyx_v_key_value = (&(*__pyx_v_iter));
-
-    /* "map.to_py":207
- *     while iter != s.end():
- *         key_value = &cython.operator.dereference(iter)
- *         o[key_value.first] = key_value.second             # <<<<<<<<<<<<<<
- *         cython.operator.preincrement(iter)
- *     return o
- */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_key_value->second); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 207, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_key_value->first); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 207, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    if (unlikely(PyDict_SetItem(__pyx_v_o, __pyx_t_3, __pyx_t_1) < 0)) __PYX_ERR(2, 207, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-    /* "map.to_py":208
- *         key_value = &cython.operator.dereference(iter)
- *         o[key_value.first] = key_value.second
- *         cython.operator.preincrement(iter)             # <<<<<<<<<<<<<<
- *     return o
- * 
- */
-    (void)((++__pyx_v_iter));
-  }
-
-  /* "map.to_py":209
- *         o[key_value.first] = key_value.second
- *         cython.operator.preincrement(iter)
- *     return o             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_o);
-  __pyx_r = __pyx_v_o;
-  goto __pyx_L0;
-
-  /* "map.to_py":201
- * 
- * @cname("__pyx_convert_map_to_py_int____int")
- * cdef object __pyx_convert_map_to_py_int____int(const map[X,Y]& s):             # <<<<<<<<<<<<<<
- *     o = {}
- *     cdef const map[X,Y].value_type *key_value
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("map.to_py.__pyx_convert_map_to_py_int____int", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_o);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
 /* "View.MemoryView":122
  *         cdef bint dtype_is_object
  * 
@@ -20304,7 +15264,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *         if itemsize <= 0:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 133, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 133, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -20336,7 +15296,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *         if not isinstance(format, bytes):
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__28, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 136, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -20463,7 +15423,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__29, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 148, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -20737,7 +15697,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *             if self.dtype_is_object:
  */
-      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__30, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 176, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__28, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 176, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_Raise(__pyx_t_10, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -20978,7 +15938,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(stru
  *         info.buf = self.data
  *         info.len = self.len
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 192, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__29, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 192, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -21694,7 +16654,7 @@ static PyObject *__pyx_pf___pyx_array___reduce_cython__(CYTHON_UNUSED struct __p
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__30, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -21747,7 +16707,7 @@ static PyObject *__pyx_pf___pyx_array_2__setstate_cython__(CYTHON_UNUSED struct 
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__33, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -23430,7 +18390,7 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
  * 
  *         have_slices, index = _unellipsify(index, self.view.ndim)
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 418, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 418, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -24463,7 +19423,7 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
  *         else:
  *             if len(self.view.format) == 1:
  */
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 495, __pyx_L5_except_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__33, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 495, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -24819,7 +19779,7 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
  * 
  *         if flags & PyBUF_ND:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__36, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 520, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 520, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -25359,7 +20319,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
  * 
  *         return tuple([stride for stride in self.view.strides[:self.view.ndim]])
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__37, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 570, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 570, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -25473,7 +20433,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 577, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyNumber_Multiply(__pyx_tuple__38, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 577, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Multiply(__pyx_tuple__36, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 577, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_r = __pyx_t_3;
@@ -26478,7 +21438,7 @@ static PyObject *__pyx_pf___pyx_memoryview___reduce_cython__(CYTHON_UNUSED struc
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__39, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__37, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -26531,7 +21491,7 @@ static PyObject *__pyx_pf___pyx_memoryview_2__setstate_cython__(CYTHON_UNUSED st
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__40, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__38, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -26882,9 +21842,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
         __Pyx_GOTREF(__pyx_t_7);
         { Py_ssize_t __pyx_temp;
           for (__pyx_temp=0; __pyx_temp < ((__pyx_v_ndim - __pyx_t_8) + 1); __pyx_temp++) {
-            __Pyx_INCREF(__pyx_slice__41);
-            __Pyx_GIVEREF(__pyx_slice__41);
-            PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_slice__41);
+            __Pyx_INCREF(__pyx_slice__39);
+            __Pyx_GIVEREF(__pyx_slice__39);
+            PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_slice__39);
           }
         }
         __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_7); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 682, __pyx_L1_error)
@@ -26917,7 +21877,7 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
  *         else:
  */
       /*else*/ {
-        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__41); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 685, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__39); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 685, __pyx_L1_error)
       }
       __pyx_L7:;
 
@@ -27057,9 +22017,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     __Pyx_GOTREF(__pyx_t_3);
     { Py_ssize_t __pyx_temp;
       for (__pyx_temp=0; __pyx_temp < __pyx_v_nslices; __pyx_temp++) {
-        __Pyx_INCREF(__pyx_slice__41);
-        __Pyx_GIVEREF(__pyx_slice__41);
-        PyList_SET_ITEM(__pyx_t_3, __pyx_temp, __pyx_slice__41);
+        __Pyx_INCREF(__pyx_slice__39);
+        __Pyx_GIVEREF(__pyx_slice__39);
+        PyList_SET_ITEM(__pyx_t_3, __pyx_temp, __pyx_slice__39);
       }
     }
     __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 696, __pyx_L1_error)
@@ -27183,7 +22143,7 @@ static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __
  * 
  * 
  */
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__42, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 703, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__40, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 703, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -29346,7 +24306,7 @@ static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED 
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__43, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__41, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -29399,7 +24359,7 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__44, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__42, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -32950,10 +27910,10 @@ static PyObject *__pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__a
 static void __pyx_tp_dealloc_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths(PyObject *o) {
   struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths *p = (struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths *)o;
   PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_color_map);
-  Py_CLEAR(p->__pyx_v_dist);
+  Py_CLEAR(p->__pyx_v_limit);
   Py_CLEAR(p->__pyx_v_nodes);
-  Py_CLEAR(p->__pyx_v_pred);
+  Py_CLEAR(p->__pyx_v_s_pred);
+  Py_CLEAR(p->__pyx_v_seen);
   Py_CLEAR(p->__pyx_v_sources);
   Py_CLEAR(p->__pyx_v_target);
   if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths)))) {
@@ -32966,17 +27926,17 @@ static void __pyx_tp_dealloc_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__al
 static int __pyx_tp_traverse_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths(PyObject *o, visitproc v, void *a) {
   int e;
   struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths *p = (struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths *)o;
-  if (p->__pyx_v_color_map) {
-    e = (*v)(((PyObject *)p->__pyx_v_color_map), a); if (e) return e;
-  }
-  if (p->__pyx_v_dist) {
-    e = (*v)(((PyObject *)p->__pyx_v_dist), a); if (e) return e;
+  if (p->__pyx_v_limit) {
+    e = (*v)(p->__pyx_v_limit, a); if (e) return e;
   }
   if (p->__pyx_v_nodes) {
     e = (*v)(p->__pyx_v_nodes, a); if (e) return e;
   }
-  if (p->__pyx_v_pred) {
-    e = (*v)(((PyObject *)p->__pyx_v_pred), a); if (e) return e;
+  if (p->__pyx_v_s_pred) {
+    e = (*v)(((PyObject *)p->__pyx_v_s_pred), a); if (e) return e;
+  }
+  if (p->__pyx_v_seen) {
+    e = (*v)(((PyObject *)p->__pyx_v_seen), a); if (e) return e;
   }
   if (p->__pyx_v_sources) {
     e = (*v)(((PyObject *)p->__pyx_v_sources), a); if (e) return e;
@@ -32990,17 +27950,17 @@ static int __pyx_tp_traverse_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__al
 static int __pyx_tp_clear_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths(PyObject *o) {
   PyObject* tmp;
   struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths *p = (struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths *)o;
-  tmp = ((PyObject*)p->__pyx_v_color_map);
-  p->__pyx_v_color_map = ((PyArrayObject *)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_dist);
-  p->__pyx_v_dist = ((PyArrayObject *)Py_None); Py_INCREF(Py_None);
+  tmp = ((PyObject*)p->__pyx_v_limit);
+  p->__pyx_v_limit = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->__pyx_v_nodes);
   p->__pyx_v_nodes = Py_None; Py_INCREF(Py_None);
   Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_pred);
-  p->__pyx_v_pred = ((PyArrayObject *)Py_None); Py_INCREF(Py_None);
+  tmp = ((PyObject*)p->__pyx_v_s_pred);
+  p->__pyx_v_s_pred = ((PyArrayObject *)Py_None); Py_INCREF(Py_None);
+  Py_XDECREF(tmp);
+  tmp = ((PyObject*)p->__pyx_v_seen);
+  p->__pyx_v_seen = ((PyArrayObject *)Py_None); Py_INCREF(Py_None);
   Py_XDECREF(tmp);
   tmp = ((PyObject*)p->__pyx_v_sources);
   p->__pyx_v_sources = ((PyArrayObject *)Py_None); Py_INCREF(Py_None);
@@ -33174,350 +28134,6 @@ static PyTypeObject __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1
   0, /*tp_init*/
   0, /*tp_alloc*/
   __pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b1
-  0, /*tp_vectorcall*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
-  0, /*tp_print*/
-  #endif
-};
-
-static struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *__pyx_freelist_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path[8];
-static int __pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path = 0;
-
-static PyObject *__pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path)))) {
-    o = (PyObject*)__pyx_freelist_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path[--__pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path];
-    memset(o, 0, sizeof(struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path(PyObject *o) {
-  struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *p = (struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_G);
-  Py_CLEAR(p->__pyx_v_color_map);
-  Py_CLEAR(p->__pyx_v_colors);
-  Py_CLEAR(p->__pyx_v_dist);
-  Py_CLEAR(p->__pyx_v_found);
-  Py_CLEAR(p->__pyx_v_limit);
-  Py_CLEAR(p->__pyx_v_no_colors);
-  Py_CLEAR(p->__pyx_v_nodes);
-  Py_CLEAR(p->__pyx_v_pred);
-  Py_CLEAR(p->__pyx_v_repetitions);
-  Py_CLEAR(p->__pyx_v_res);
-  Py_CLEAR(p->__pyx_v_seen);
-  Py_CLEAR(p->__pyx_v_sources);
-  Py_CLEAR(p->__pyx_v_src);
-  Py_CLEAR(p->__pyx_v_target);
-  Py_CLEAR(p->__pyx_v_weight);
-  Py_CLEAR(p->__pyx_t_0);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path)))) {
-    __pyx_freelist_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path[__pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path++] = ((struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *p = (struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path *)o;
-  if (p->__pyx_v_G) {
-    e = (*v)(p->__pyx_v_G, a); if (e) return e;
-  }
-  if (p->__pyx_v_color_map) {
-    e = (*v)(((PyObject *)p->__pyx_v_color_map), a); if (e) return e;
-  }
-  if (p->__pyx_v_colors) {
-    e = (*v)(((PyObject *)p->__pyx_v_colors), a); if (e) return e;
-  }
-  if (p->__pyx_v_dist) {
-    e = (*v)(((PyObject *)p->__pyx_v_dist), a); if (e) return e;
-  }
-  if (p->__pyx_v_found) {
-    e = (*v)(p->__pyx_v_found, a); if (e) return e;
-  }
-  if (p->__pyx_v_limit) {
-    e = (*v)(p->__pyx_v_limit, a); if (e) return e;
-  }
-  if (p->__pyx_v_no_colors) {
-    e = (*v)(p->__pyx_v_no_colors, a); if (e) return e;
-  }
-  if (p->__pyx_v_nodes) {
-    e = (*v)(p->__pyx_v_nodes, a); if (e) return e;
-  }
-  if (p->__pyx_v_pred) {
-    e = (*v)(((PyObject *)p->__pyx_v_pred), a); if (e) return e;
-  }
-  if (p->__pyx_v_repetitions) {
-    e = (*v)(p->__pyx_v_repetitions, a); if (e) return e;
-  }
-  if (p->__pyx_v_res) {
-    e = (*v)(p->__pyx_v_res, a); if (e) return e;
-  }
-  if (p->__pyx_v_seen) {
-    e = (*v)(((PyObject *)p->__pyx_v_seen), a); if (e) return e;
-  }
-  if (p->__pyx_v_sources) {
-    e = (*v)(((PyObject *)p->__pyx_v_sources), a); if (e) return e;
-  }
-  if (p->__pyx_v_src) {
-    e = (*v)(p->__pyx_v_src, a); if (e) return e;
-  }
-  if (p->__pyx_v_target) {
-    e = (*v)(p->__pyx_v_target, a); if (e) return e;
-  }
-  if (p->__pyx_v_weight) {
-    e = (*v)(((PyObject *)p->__pyx_v_weight), a); if (e) return e;
-  }
-  if (p->__pyx_t_0) {
-    e = (*v)(p->__pyx_t_0, a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "dawdlib.dijkstra.colorful.__pyx_scope_struct_2_colorful_shortest_path", /*tp_name*/
-  sizeof(struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path, /*tp_dealloc*/
-  #if PY_VERSION_HEX < 0x030800b4
-  0, /*tp_print*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4
-  0, /*tp_vectorcall_offset*/
-  #endif
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b1
-  0, /*tp_vectorcall*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
-  0, /*tp_print*/
-  #endif
-};
-
-static struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *__pyx_freelist_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths[8];
-static int __pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths = 0;
-
-static PyObject *__pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths)))) {
-    o = (PyObject*)__pyx_freelist_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths[--__pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths];
-    memset(o, 0, sizeof(struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths(PyObject *o) {
-  struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *p = (struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_8genexpr2__pyx_v_c);
-  Py_CLEAR(p->__pyx_v_color);
-  Py_CLEAR(p->__pyx_v_dist);
-  Py_CLEAR(p->__pyx_v_i);
-  Py_CLEAR(p->__pyx_v_key);
-  Py_CLEAR(p->__pyx_8genexpr2__pyx_v_n);
-  Py_CLEAR(p->__pyx_v_node);
-  Py_CLEAR(p->__pyx_v_node_colors);
-  Py_CLEAR(p->__pyx_v_nodes);
-  Py_CLEAR(p->__pyx_8genexpr2__pyx_v_p);
-  Py_CLEAR(p->__pyx_v_pred);
-  Py_CLEAR(p->__pyx_v_pred_dict);
-  Py_CLEAR(p->__pyx_v_src);
-  Py_CLEAR(p->__pyx_v_stack);
-  Py_CLEAR(p->__pyx_v_top);
-  Py_CLEAR(p->__pyx_v_trgt);
-  Py_CLEAR(p->__pyx_8genexpr1__pyx_v_tup);
-  Py_CLEAR(p->__pyx_v_val);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths)))) {
-    __pyx_freelist_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths[__pyx_freecount_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths++] = ((struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *p = (struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths *)o;
-  if (p->__pyx_8genexpr2__pyx_v_c) {
-    e = (*v)(p->__pyx_8genexpr2__pyx_v_c, a); if (e) return e;
-  }
-  if (p->__pyx_v_color) {
-    e = (*v)(p->__pyx_v_color, a); if (e) return e;
-  }
-  if (p->__pyx_v_dist) {
-    e = (*v)(p->__pyx_v_dist, a); if (e) return e;
-  }
-  if (p->__pyx_v_i) {
-    e = (*v)(p->__pyx_v_i, a); if (e) return e;
-  }
-  if (p->__pyx_v_key) {
-    e = (*v)(p->__pyx_v_key, a); if (e) return e;
-  }
-  if (p->__pyx_8genexpr2__pyx_v_n) {
-    e = (*v)(p->__pyx_8genexpr2__pyx_v_n, a); if (e) return e;
-  }
-  if (p->__pyx_v_node) {
-    e = (*v)(p->__pyx_v_node, a); if (e) return e;
-  }
-  if (p->__pyx_v_node_colors) {
-    e = (*v)(p->__pyx_v_node_colors, a); if (e) return e;
-  }
-  if (p->__pyx_v_nodes) {
-    e = (*v)(p->__pyx_v_nodes, a); if (e) return e;
-  }
-  if (p->__pyx_8genexpr2__pyx_v_p) {
-    e = (*v)(p->__pyx_8genexpr2__pyx_v_p, a); if (e) return e;
-  }
-  if (p->__pyx_v_pred) {
-    e = (*v)(p->__pyx_v_pred, a); if (e) return e;
-  }
-  if (p->__pyx_v_pred_dict) {
-    e = (*v)(p->__pyx_v_pred_dict, a); if (e) return e;
-  }
-  if (p->__pyx_v_src) {
-    e = (*v)(p->__pyx_v_src, a); if (e) return e;
-  }
-  if (p->__pyx_v_stack) {
-    e = (*v)(p->__pyx_v_stack, a); if (e) return e;
-  }
-  if (p->__pyx_v_top) {
-    e = (*v)(p->__pyx_v_top, a); if (e) return e;
-  }
-  if (p->__pyx_v_trgt) {
-    e = (*v)(p->__pyx_v_trgt, a); if (e) return e;
-  }
-  if (p->__pyx_8genexpr1__pyx_v_tup) {
-    e = (*v)(p->__pyx_8genexpr1__pyx_v_tup, a); if (e) return e;
-  }
-  if (p->__pyx_v_val) {
-    e = (*v)(p->__pyx_v_val, a); if (e) return e;
-  }
-  return 0;
-}
-
-static PyTypeObject __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "dawdlib.dijkstra.colorful.__pyx_scope_struct_3_yield_colorful_shortest_paths", /*tp_name*/
-  sizeof(struct __pyx_obj_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths, /*tp_dealloc*/
-  #if PY_VERSION_HEX < 0x030800b4
-  0, /*tp_print*/
-  #endif
-  #if PY_VERSION_HEX >= 0x030800b4
-  0, /*tp_vectorcall_offset*/
-  #endif
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths, /*tp_new*/
   0, /*tp_free*/
   0, /*tp_is_gc*/
   0, /*tp_bases*/
@@ -34336,20 +28952,14 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_View_MemoryView, __pyx_k_View_MemoryView, sizeof(__pyx_k_View_MemoryView), 0, 0, 1, 1},
   {&__pyx_kp_u_Warning_number_of_colors_require, __pyx_k_Warning_number_of_colors_require, sizeof(__pyx_k_Warning_number_of_colors_require), 0, 1, 0, 0},
+  {&__pyx_kp_s__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 0, 1, 0},
   {&__pyx_kp_s__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 1, 0},
-  {&__pyx_kp_s__4, __pyx_k__4, sizeof(__pyx_k__4), 0, 0, 1, 0},
   {&__pyx_n_s_all_colorful_shortest_paths, __pyx_k_all_colorful_shortest_paths, sizeof(__pyx_k_all_colorful_shortest_paths), 0, 0, 1, 1},
   {&__pyx_n_s_all_colorful_shortest_paths_loca, __pyx_k_all_colorful_shortest_paths_loca, sizeof(__pyx_k_all_colorful_shortest_paths_loca), 0, 0, 1, 1},
   {&__pyx_n_s_all_shortest_paths, __pyx_k_all_shortest_paths, sizeof(__pyx_k_all_shortest_paths), 0, 0, 1, 1},
   {&__pyx_n_s_allocate_buffer, __pyx_k_allocate_buffer, sizeof(__pyx_k_allocate_buffer), 0, 0, 1, 1},
-  {&__pyx_n_s_append, __pyx_k_append, sizeof(__pyx_k_append), 0, 0, 1, 1},
-  {&__pyx_n_s_arange, __pyx_k_arange, sizeof(__pyx_k_arange), 0, 0, 1, 1},
-  {&__pyx_n_s_argmin, __pyx_k_argmin, sizeof(__pyx_k_argmin), 0, 0, 1, 1},
   {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
-  {&__pyx_n_s_argwhere, __pyx_k_argwhere, sizeof(__pyx_k_argwhere), 0, 0, 1, 1},
-  {&__pyx_n_s_arr, __pyx_k_arr, sizeof(__pyx_k_arr), 0, 0, 1, 1},
   {&__pyx_n_s_base, __pyx_k_base, sizeof(__pyx_k_base), 0, 0, 1, 1},
-  {&__pyx_n_s_boolmat2int, __pyx_k_boolmat2int, sizeof(__pyx_k_boolmat2int), 0, 0, 1, 1},
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
   {&__pyx_n_s_cgraph, __pyx_k_cgraph, sizeof(__pyx_k_cgraph), 0, 0, 1, 1},
@@ -34358,31 +28968,20 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
-  {&__pyx_n_s_collections, __pyx_k_collections, sizeof(__pyx_k_collections), 0, 0, 1, 1},
-  {&__pyx_n_s_color, __pyx_k_color, sizeof(__pyx_k_color), 0, 0, 1, 1},
   {&__pyx_n_s_color_arr, __pyx_k_color_arr, sizeof(__pyx_k_color_arr), 0, 0, 1, 1},
-  {&__pyx_n_s_color_dict, __pyx_k_color_dict, sizeof(__pyx_k_color_dict), 0, 0, 1, 1},
   {&__pyx_n_s_color_gates, __pyx_k_color_gates, sizeof(__pyx_k_color_gates), 0, 0, 1, 1},
   {&__pyx_n_s_color_map, __pyx_k_color_map, sizeof(__pyx_k_color_map), 0, 0, 1, 1},
-  {&__pyx_n_s_color_ref, __pyx_k_color_ref, sizeof(__pyx_k_color_ref), 0, 0, 1, 1},
-  {&__pyx_n_s_colorful_shortest_path, __pyx_k_colorful_shortest_path, sizeof(__pyx_k_colorful_shortest_path), 0, 0, 1, 1},
-  {&__pyx_n_s_colorful_utils, __pyx_k_colorful_utils, sizeof(__pyx_k_colorful_utils), 0, 0, 1, 1},
   {&__pyx_n_s_colors, __pyx_k_colors, sizeof(__pyx_k_colors), 0, 0, 1, 1},
-  {&__pyx_n_s_colorsdict2map, __pyx_k_colorsdict2map, sizeof(__pyx_k_colorsdict2map), 0, 0, 1, 1},
   {&__pyx_kp_s_contiguous_and_direct, __pyx_k_contiguous_and_direct, sizeof(__pyx_k_contiguous_and_direct), 0, 0, 1, 0},
   {&__pyx_kp_s_contiguous_and_indirect, __pyx_k_contiguous_and_indirect, sizeof(__pyx_k_contiguous_and_indirect), 0, 0, 1, 0},
-  {&__pyx_n_s_copy, __pyx_k_copy, sizeof(__pyx_k_copy), 0, 0, 1, 1},
-  {&__pyx_n_s_cshape, __pyx_k_cshape, sizeof(__pyx_k_cshape), 0, 0, 1, 1},
-  {&__pyx_n_s_current, __pyx_k_current, sizeof(__pyx_k_current), 0, 0, 1, 1},
   {&__pyx_n_s_dawdlib_dijkstra_colorful, __pyx_k_dawdlib_dijkstra_colorful, sizeof(__pyx_k_dawdlib_dijkstra_colorful), 0, 0, 1, 1},
   {&__pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_k_dawdlib_dijkstra_colorful_pyx, sizeof(__pyx_k_dawdlib_dijkstra_colorful_pyx), 0, 0, 1, 0},
+  {&__pyx_n_s_dawdlib_dijkstra_colorful_utils, __pyx_k_dawdlib_dijkstra_colorful_utils, sizeof(__pyx_k_dawdlib_dijkstra_colorful_utils), 0, 0, 1, 1},
   {&__pyx_n_s_dawdlib_golden_gate_gate_data, __pyx_k_dawdlib_golden_gate_gate_data, sizeof(__pyx_k_dawdlib_golden_gate_gate_data), 0, 0, 1, 1},
-  {&__pyx_n_s_defaultdict, __pyx_k_defaultdict, sizeof(__pyx_k_defaultdict), 0, 0, 1, 1},
   {&__pyx_n_s_defaults, __pyx_k_defaults, sizeof(__pyx_k_defaults), 0, 0, 1, 1},
   {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
   {&__pyx_n_u_dijkstra, __pyx_k_dijkstra, sizeof(__pyx_k_dijkstra), 0, 1, 0, 1},
   {&__pyx_n_s_dist, __pyx_k_dist, sizeof(__pyx_k_dist), 0, 0, 1, 1},
-  {&__pyx_n_s_dist_cp, __pyx_k_dist_cp, sizeof(__pyx_k_dist_cp), 0, 0, 1, 1},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
   {&__pyx_n_s_dtype_is_object, __pyx_k_dtype_is_object, sizeof(__pyx_k_dtype_is_object), 0, 0, 1, 1},
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
@@ -34404,7 +29003,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_graphdict2map, __pyx_k_graphdict2map, sizeof(__pyx_k_graphdict2map), 0, 0, 1, 1},
   {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
   {&__pyx_n_s_id, __pyx_k_id, sizeof(__pyx_k_id), 0, 0, 1, 1},
-  {&__pyx_n_s_iinfo, __pyx_k_iinfo, sizeof(__pyx_k_iinfo), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_kp_u_is_larger_than_recommended, __pyx_k_is_larger_than_recommended, sizeof(__pyx_k_is_larger_than_recommended), 0, 1, 0, 0},
   {&__pyx_n_s_items, __pyx_k_items, sizeof(__pyx_k_items), 0, 0, 1, 1},
@@ -34413,20 +29011,15 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_iteritems, __pyx_k_iteritems, sizeof(__pyx_k_iteritems), 0, 0, 1, 1},
   {&__pyx_n_s_itertools, __pyx_k_itertools, sizeof(__pyx_k_itertools), 0, 0, 1, 1},
   {&__pyx_n_s_j, __pyx_k_j, sizeof(__pyx_k_j), 0, 0, 1, 1},
-  {&__pyx_n_s_key, __pyx_k_key, sizeof(__pyx_k_key), 0, 0, 1, 1},
   {&__pyx_n_s_kind, __pyx_k_kind, sizeof(__pyx_k_kind), 0, 0, 1, 1},
   {&__pyx_n_s_kwargs, __pyx_k_kwargs, sizeof(__pyx_k_kwargs), 0, 0, 1, 1},
   {&__pyx_n_s_len_cutoff, __pyx_k_len_cutoff, sizeof(__pyx_k_len_cutoff), 0, 0, 1, 1},
   {&__pyx_n_s_limit, __pyx_k_limit, sizeof(__pyx_k_limit), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_s_matmul, __pyx_k_matmul, sizeof(__pyx_k_matmul), 0, 0, 1, 1},
-  {&__pyx_n_s_max, __pyx_k_max, sizeof(__pyx_k_max), 0, 0, 1, 1},
-  {&__pyx_n_s_max_val, __pyx_k_max_val, sizeof(__pyx_k_max_val), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
   {&__pyx_n_s_method, __pyx_k_method, sizeof(__pyx_k_method), 0, 0, 1, 1},
   {&__pyx_kp_u_method_not_supported, __pyx_k_method_not_supported, sizeof(__pyx_k_method_not_supported), 0, 1, 0, 0},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
-  {&__pyx_n_s_n, __pyx_k_n, sizeof(__pyx_k_n), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
   {&__pyx_kp_u_ndarray_is_not_C_contiguous, __pyx_k_ndarray_is_not_C_contiguous, sizeof(__pyx_k_ndarray_is_not_C_contiguous), 0, 1, 0, 0},
@@ -34437,8 +29030,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_new_color, __pyx_k_new_color, sizeof(__pyx_k_new_color), 0, 0, 1, 1},
   {&__pyx_n_s_no_colors, __pyx_k_no_colors, sizeof(__pyx_k_no_colors), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
-  {&__pyx_n_s_node, __pyx_k_node, sizeof(__pyx_k_node), 0, 0, 1, 1},
-  {&__pyx_n_s_node_colors, __pyx_k_node_colors, sizeof(__pyx_k_node_colors), 0, 0, 1, 1},
   {&__pyx_n_s_nodes, __pyx_k_nodes, sizeof(__pyx_k_nodes), 0, 0, 1, 1},
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
   {&__pyx_n_s_num_of_colors, __pyx_k_num_of_colors, sizeof(__pyx_k_num_of_colors), 0, 0, 1, 1},
@@ -34448,12 +29039,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_nx, __pyx_k_nx, sizeof(__pyx_k_nx), 0, 0, 1, 1},
   {&__pyx_n_s_nxtonumpy, __pyx_k_nxtonumpy, sizeof(__pyx_k_nxtonumpy), 0, 0, 1, 1},
   {&__pyx_n_s_obj, __pyx_k_obj, sizeof(__pyx_k_obj), 0, 0, 1, 1},
-  {&__pyx_n_s_p, __pyx_k_p, sizeof(__pyx_k_p), 0, 0, 1, 1},
   {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
-  {&__pyx_n_s_path, __pyx_k_path, sizeof(__pyx_k_path), 0, 0, 1, 1},
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
   {&__pyx_n_s_pred, __pyx_k_pred, sizeof(__pyx_k_pred), 0, 0, 1, 1},
-  {&__pyx_n_s_pred_dict, __pyx_k_pred_dict, sizeof(__pyx_k_pred_dict), 0, 0, 1, 1},
   {&__pyx_n_s_prep_data, __pyx_k_prep_data, sizeof(__pyx_k_prep_data), 0, 0, 1, 1},
   {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_PickleError, __pyx_k_pyx_PickleError, sizeof(__pyx_k_pyx_PickleError), 0, 0, 1, 1},
@@ -34465,36 +29053,26 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_pyx_unpickle_Enum, __pyx_k_pyx_unpickle_Enum, sizeof(__pyx_k_pyx_unpickle_Enum), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_r_graph, __pyx_k_r_graph, sizeof(__pyx_k_r_graph), 0, 0, 1, 1},
-  {&__pyx_n_s_rand_colors, __pyx_k_rand_colors, sizeof(__pyx_k_rand_colors), 0, 0, 1, 1},
-  {&__pyx_n_s_randint, __pyx_k_randint, sizeof(__pyx_k_randint), 0, 0, 1, 1},
-  {&__pyx_n_s_random, __pyx_k_random, sizeof(__pyx_k_random), 0, 0, 1, 1},
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
-  {&__pyx_n_s_recolor, __pyx_k_recolor, sizeof(__pyx_k_recolor), 0, 0, 1, 1},
-  {&__pyx_n_s_recolor_arr, __pyx_k_recolor_arr, sizeof(__pyx_k_recolor_arr), 0, 0, 1, 1},
   {&__pyx_n_s_reduce, __pyx_k_reduce, sizeof(__pyx_k_reduce), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_cython, __pyx_k_reduce_cython, sizeof(__pyx_k_reduce_cython), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_ex, __pyx_k_reduce_ex, sizeof(__pyx_k_reduce_ex), 0, 0, 1, 1},
   {&__pyx_n_s_repetitions, __pyx_k_repetitions, sizeof(__pyx_k_repetitions), 0, 0, 1, 1},
   {&__pyx_n_s_res, __pyx_k_res, sizeof(__pyx_k_res), 0, 0, 1, 1},
   {&__pyx_n_s_res_graph, __pyx_k_res_graph, sizeof(__pyx_k_res_graph), 0, 0, 1, 1},
-  {&__pyx_n_s_result, __pyx_k_result, sizeof(__pyx_k_result), 0, 0, 1, 1},
   {&__pyx_n_s_retries, __pyx_k_retries, sizeof(__pyx_k_retries), 0, 0, 1, 1},
-  {&__pyx_n_s_reversed, __pyx_k_reversed, sizeof(__pyx_k_reversed), 0, 0, 1, 1},
   {&__pyx_n_s_s, __pyx_k_s, sizeof(__pyx_k_s), 0, 0, 1, 1},
+  {&__pyx_n_s_s_pred, __pyx_k_s_pred, sizeof(__pyx_k_s_pred), 0, 0, 1, 1},
   {&__pyx_n_s_seen, __pyx_k_seen, sizeof(__pyx_k_seen), 0, 0, 1, 1},
   {&__pyx_n_s_send, __pyx_k_send, sizeof(__pyx_k_send), 0, 0, 1, 1},
   {&__pyx_n_s_setstate, __pyx_k_setstate, sizeof(__pyx_k_setstate), 0, 0, 1, 1},
   {&__pyx_n_s_setstate_cython, __pyx_k_setstate_cython, sizeof(__pyx_k_setstate_cython), 0, 0, 1, 1},
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
-  {&__pyx_n_s_shortest_path, __pyx_k_shortest_path, sizeof(__pyx_k_shortest_path), 0, 0, 1, 1},
   {&__pyx_n_s_signatures, __pyx_k_signatures, sizeof(__pyx_k_signatures), 0, 0, 1, 1},
   {&__pyx_n_s_size, __pyx_k_size, sizeof(__pyx_k_size), 0, 0, 1, 1},
-  {&__pyx_n_s_sorted, __pyx_k_sorted, sizeof(__pyx_k_sorted), 0, 0, 1, 1},
   {&__pyx_n_s_source, __pyx_k_source, sizeof(__pyx_k_source), 0, 0, 1, 1},
   {&__pyx_n_s_sources, __pyx_k_sources, sizeof(__pyx_k_sources), 0, 0, 1, 1},
   {&__pyx_n_s_split, __pyx_k_split, sizeof(__pyx_k_split), 0, 0, 1, 1},
-  {&__pyx_n_s_src, __pyx_k_src, sizeof(__pyx_k_src), 0, 0, 1, 1},
-  {&__pyx_n_s_stack, __pyx_k_stack, sizeof(__pyx_k_stack), 0, 0, 1, 1},
   {&__pyx_n_s_start, __pyx_k_start, sizeof(__pyx_k_start), 0, 0, 1, 1},
   {&__pyx_n_s_step, __pyx_k_step, sizeof(__pyx_k_step), 0, 0, 1, 1},
   {&__pyx_n_s_stop, __pyx_k_stop, sizeof(__pyx_k_stop), 0, 0, 1, 1},
@@ -34508,14 +29086,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_target, __pyx_k_target, sizeof(__pyx_k_target), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
-  {&__pyx_n_s_tolist, __pyx_k_tolist, sizeof(__pyx_k_tolist), 0, 0, 1, 1},
-  {&__pyx_n_s_top, __pyx_k_top, sizeof(__pyx_k_top), 0, 0, 1, 1},
   {&__pyx_n_s_tp, __pyx_k_tp, sizeof(__pyx_k_tp), 0, 0, 1, 1},
   {&__pyx_n_s_trgt, __pyx_k_trgt, sizeof(__pyx_k_trgt), 0, 0, 1, 1},
-  {&__pyx_n_s_tup, __pyx_k_tup, sizeof(__pyx_k_tup), 0, 0, 1, 1},
   {&__pyx_n_s_typing, __pyx_k_typing, sizeof(__pyx_k_typing), 0, 0, 1, 1},
   {&__pyx_n_s_u, __pyx_k_u, sizeof(__pyx_k_u), 0, 0, 1, 1},
-  {&__pyx_n_s_ubyte, __pyx_k_ubyte, sizeof(__pyx_k_ubyte), 0, 0, 1, 1},
   {&__pyx_n_s_uint16_t, __pyx_k_uint16_t, sizeof(__pyx_k_uint16_t), 0, 0, 1, 1},
   {&__pyx_n_s_uint32_t, __pyx_k_uint32_t, sizeof(__pyx_k_uint32_t), 0, 0, 1, 1},
   {&__pyx_n_s_uint64_t, __pyx_k_uint64_t, sizeof(__pyx_k_uint64_t), 0, 0, 1, 1},
@@ -34532,21 +29106,15 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_vec_size, __pyx_k_vec_size, sizeof(__pyx_k_vec_size), 0, 0, 1, 1},
   {&__pyx_n_s_weight, __pyx_k_weight, sizeof(__pyx_k_weight), 0, 0, 1, 1},
   {&__pyx_n_s_weight_arr, __pyx_k_weight_arr, sizeof(__pyx_k_weight_arr), 0, 0, 1, 1},
-  {&__pyx_n_s_x, __pyx_k_x, sizeof(__pyx_k_x), 0, 0, 1, 1},
-  {&__pyx_n_s_x_max, __pyx_k_x_max, sizeof(__pyx_k_x_max), 0, 0, 1, 1},
   {&__pyx_n_s_yield_colorful_shortest_paths, __pyx_k_yield_colorful_shortest_paths, sizeof(__pyx_k_yield_colorful_shortest_paths), 0, 0, 1, 1},
-  {&__pyx_n_s_yield_colorful_shortest_paths_lo, __pyx_k_yield_colorful_shortest_paths_lo, sizeof(__pyx_k_yield_colorful_shortest_paths_lo), 0, 0, 1, 1},
-  {&__pyx_n_s_zeros, __pyx_k_zeros, sizeof(__pyx_k_zeros), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 197, __pyx_L1_error)
-  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 203, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 205, __pyx_L1_error)
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 290, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 290, __pyx_L1_error)
-  __pyx_builtin_sorted = __Pyx_GetBuiltinName(__pyx_n_s_sorted); if (!__pyx_builtin_sorted) __PYX_ERR(0, 322, __pyx_L1_error)
-  __pyx_builtin_reversed = __Pyx_GetBuiltinName(__pyx_n_s_reversed); if (!__pyx_builtin_reversed) __PYX_ERR(0, 328, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_builtin_sum = __Pyx_GetBuiltinName(__pyx_n_s_sum); if (!__pyx_builtin_sum) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 295, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 295, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 387, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(1, 856, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(1, 1038, __pyx_L1_error)
@@ -34563,30 +29131,30 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "dawdlib/dijkstra/colorful.pyx":199
+  /* "dawdlib/dijkstra/colorful.pyx":203
  *         raise ValueError("method not supported: {}".format(method))
  *     if not no_colors and not len_cutoff:
  *         raise ValueError("Either no_colors or len_cutoff are required.")             # <<<<<<<<<<<<<<
  * 
  *     gate_colors, num_of_colors = color_gates(G, GGData(), r_graph=res_graph)
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Either_no_colors_or_len_cutoff_a); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Either_no_colors_or_len_cutoff_a); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 203, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "dawdlib/dijkstra/colorful.pyx":290
+  /* "dawdlib/dijkstra/colorful.pyx":295
  * 
  * 
  * def find_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_No_matching_signature_found); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_No_matching_signature_found); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__4);
+  __Pyx_GIVEREF(__pyx_tuple__4);
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_Function_call_with_ambiguous_arg); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_s_Function_call_with_ambiguous_arg); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__6);
-  __Pyx_GIVEREF(__pyx_tuple__6);
 
   /* "../../opt/miniconda3/envs/dawdlib/lib/python3.7/site-packages/Cython/Includes/numpy/__init__.pxd":272
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
@@ -34595,9 +29163,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_C_contiguous); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(1, 272, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_C_contiguous); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(1, 272, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__18);
+  __Pyx_GIVEREF(__pyx_tuple__18);
 
   /* "../../opt/miniconda3/envs/dawdlib/lib/python3.7/site-packages/Cython/Includes/numpy/__init__.pxd":276
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
@@ -34606,9 +29174,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *             info.buf = PyArray_DATA(self)
  */
-  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_Fortran_contiguou); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(1, 276, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__21);
-  __Pyx_GIVEREF(__pyx_tuple__21);
+  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_Fortran_contiguou); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(1, 276, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__19);
+  __Pyx_GIVEREF(__pyx_tuple__19);
 
   /* "../../opt/miniconda3/envs/dawdlib/lib/python3.7/site-packages/Cython/Includes/numpy/__init__.pxd":306
  *                 if ((descr.byteorder == c'>' and little_endian) or
@@ -34617,9 +29185,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"
  */
-  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(1, 306, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(1, 306, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
 
   /* "../../opt/miniconda3/envs/dawdlib/lib/python3.7/site-packages/Cython/Includes/numpy/__init__.pxd":856
  * 
@@ -34628,9 +29196,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if ((child.byteorder == c'>' and little_endian) or
  */
-  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(1, 856, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__23);
-  __Pyx_GIVEREF(__pyx_tuple__23);
+  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(1, 856, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__21);
+  __Pyx_GIVEREF(__pyx_tuple__21);
 
   /* "../../opt/miniconda3/envs/dawdlib/lib/python3.7/site-packages/Cython/Includes/numpy/__init__.pxd":880
  *             t = child.type_num
@@ -34639,9 +29207,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  */
-  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(1, 880, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__24);
-  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(1, 880, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
 
   /* "../../opt/miniconda3/envs/dawdlib/lib/python3.7/site-packages/Cython/Includes/numpy/__init__.pxd":1038
  *         _import_array()
@@ -34650,9 +29218,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(1, 1038, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__25);
-  __Pyx_GIVEREF(__pyx_tuple__25);
+  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(1, 1038, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__23);
+  __Pyx_GIVEREF(__pyx_tuple__23);
 
   /* "../../opt/miniconda3/envs/dawdlib/lib/python3.7/site-packages/Cython/Includes/numpy/__init__.pxd":1044
  *         _import_umath()
@@ -34661,9 +29229,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(1, 1044, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__26);
-  __Pyx_GIVEREF(__pyx_tuple__26);
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(1, 1044, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
 
   /* "View.MemoryView":133
  * 
@@ -34672,9 +29240,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if itemsize <= 0:
  */
-  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(2, 133, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__27);
-  __Pyx_GIVEREF(__pyx_tuple__27);
+  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(2, 133, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__25);
+  __Pyx_GIVEREF(__pyx_tuple__25);
 
   /* "View.MemoryView":136
  * 
@@ -34683,9 +29251,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if not isinstance(format, bytes):
  */
-  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(2, 136, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__28);
-  __Pyx_GIVEREF(__pyx_tuple__28);
+  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(2, 136, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
 
   /* "View.MemoryView":148
  * 
@@ -34694,9 +29262,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(2, 148, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__29);
-  __Pyx_GIVEREF(__pyx_tuple__29);
+  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(2, 148, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__27);
+  __Pyx_GIVEREF(__pyx_tuple__27);
 
   /* "View.MemoryView":176
  *             self.data = <char *>malloc(self.len)
@@ -34705,9 +29273,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *             if self.dtype_is_object:
  */
-  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(2, 176, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__30);
-  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(2, 176, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__28);
+  __Pyx_GIVEREF(__pyx_tuple__28);
 
   /* "View.MemoryView":192
  *             bufmode = PyBUF_F_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS
@@ -34716,9 +29284,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         info.buf = self.data
  *         info.len = self.len
  */
-  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(2, 192, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__31);
-  __Pyx_GIVEREF(__pyx_tuple__31);
+  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(2, 192, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__29);
+  __Pyx_GIVEREF(__pyx_tuple__29);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -34726,18 +29294,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(2, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__32);
-  __Pyx_GIVEREF(__pyx_tuple__32);
+  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__30);
+  __Pyx_GIVEREF(__pyx_tuple__30);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__33 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__33);
-  __Pyx_GIVEREF(__pyx_tuple__33);
+  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__31);
+  __Pyx_GIVEREF(__pyx_tuple__31);
 
   /* "View.MemoryView":418
  *     def __setitem__(memoryview self, object index, object value):
@@ -34746,9 +29314,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         have_slices, index = _unellipsify(index, self.view.ndim)
  */
-  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(2, 418, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__34);
-  __Pyx_GIVEREF(__pyx_tuple__34);
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(2, 418, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__32);
+  __Pyx_GIVEREF(__pyx_tuple__32);
 
   /* "View.MemoryView":495
  *             result = struct.unpack(self.view.format, bytesitem)
@@ -34757,9 +29325,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         else:
  *             if len(self.view.format) == 1:
  */
-  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(2, 495, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__35);
-  __Pyx_GIVEREF(__pyx_tuple__35);
+  __pyx_tuple__33 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(2, 495, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__33);
+  __Pyx_GIVEREF(__pyx_tuple__33);
 
   /* "View.MemoryView":520
  *     def __getbuffer__(self, Py_buffer *info, int flags):
@@ -34768,9 +29336,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if flags & PyBUF_ND:
  */
-  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(2, 520, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__36);
-  __Pyx_GIVEREF(__pyx_tuple__36);
+  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(2, 520, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__34);
+  __Pyx_GIVEREF(__pyx_tuple__34);
 
   /* "View.MemoryView":570
  *         if self.view.strides == NULL:
@@ -34779,9 +29347,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         return tuple([stride for stride in self.view.strides[:self.view.ndim]])
  */
-  __pyx_tuple__37 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(2, 570, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__37);
-  __Pyx_GIVEREF(__pyx_tuple__37);
+  __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(2, 570, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__35);
+  __Pyx_GIVEREF(__pyx_tuple__35);
 
   /* "View.MemoryView":577
  *     def suboffsets(self):
@@ -34790,12 +29358,12 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         return tuple([suboffset for suboffset in self.view.suboffsets[:self.view.ndim]])
  */
-  __pyx_tuple__38 = PyTuple_New(1); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(2, 577, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__38);
+  __pyx_tuple__36 = PyTuple_New(1); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(2, 577, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_INCREF(__pyx_int_neg_1);
   __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyTuple_SET_ITEM(__pyx_tuple__38, 0, __pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_tuple__38);
+  PyTuple_SET_ITEM(__pyx_tuple__36, 0, __pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_tuple__36);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -34803,18 +29371,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__39 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__39)) __PYX_ERR(2, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__39);
-  __Pyx_GIVEREF(__pyx_tuple__39);
+  __pyx_tuple__37 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__37);
+  __Pyx_GIVEREF(__pyx_tuple__37);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__40 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__40);
-  __Pyx_GIVEREF(__pyx_tuple__40);
+  __pyx_tuple__38 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__38);
+  __Pyx_GIVEREF(__pyx_tuple__38);
 
   /* "View.MemoryView":682
  *         if item is Ellipsis:
@@ -34823,9 +29391,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *                 seen_ellipsis = True
  *             else:
  */
-  __pyx_slice__41 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__41)) __PYX_ERR(2, 682, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_slice__41);
-  __Pyx_GIVEREF(__pyx_slice__41);
+  __pyx_slice__39 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__39)) __PYX_ERR(2, 682, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_slice__39);
+  __Pyx_GIVEREF(__pyx_slice__39);
 
   /* "View.MemoryView":703
  *     for suboffset in suboffsets[:ndim]:
@@ -34834,9 +29402,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__42 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(2, 703, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__42);
-  __Pyx_GIVEREF(__pyx_tuple__42);
+  __pyx_tuple__40 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(2, 703, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__40);
+  __Pyx_GIVEREF(__pyx_tuple__40);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -34844,138 +29412,66 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__43 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(2, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__43);
-  __Pyx_GIVEREF(__pyx_tuple__43);
+  __pyx_tuple__41 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__41)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__41);
+  __Pyx_GIVEREF(__pyx_tuple__41);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__44 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__44);
-  __Pyx_GIVEREF(__pyx_tuple__44);
+  __pyx_tuple__42 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__42);
+  __Pyx_GIVEREF(__pyx_tuple__42);
 
-  /* "dawdlib/dijkstra/colorful.pyx":60
+  /* "dawdlib/dijkstra/colorful.pyx":64
  * 
  * @cython.embedsignature(True)
  * def all_shortest_paths(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
  *     """Compute all shortest paths in the graph.
  * 
  */
-  __pyx_tuple__45 = PyTuple_Pack(19, __pyx_n_s_G, __pyx_n_s_source, __pyx_n_s_target, __pyx_n_s_no_colors, __pyx_n_s_len_cutoff, __pyx_n_s_weight, __pyx_n_s_method, __pyx_n_s_retries, __pyx_n_s_res_graph, __pyx_n_s_nodes, __pyx_n_s_cgraph, __pyx_n_s_weight_arr, __pyx_n_s_sources, __pyx_n_s_trgt, __pyx_n_s_color_arr, __pyx_n_s_new_color, __pyx_n_s_pred, __pyx_n_s_dist, __pyx_n_s_seen); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 60, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__45);
-  __Pyx_GIVEREF(__pyx_tuple__45);
-  __pyx_codeobj__46 = (PyObject*)__Pyx_PyCode_New(9, 0, 19, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__45, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_all_shortest_paths, 60, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__46)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_tuple__43 = PyTuple_Pack(20, __pyx_n_s_G, __pyx_n_s_source, __pyx_n_s_target, __pyx_n_s_no_colors, __pyx_n_s_len_cutoff, __pyx_n_s_weight, __pyx_n_s_method, __pyx_n_s_retries, __pyx_n_s_res_graph, __pyx_n_s_nodes, __pyx_n_s_cgraph, __pyx_n_s_weight_arr, __pyx_n_s_sources, __pyx_n_s_trgt, __pyx_n_s_color_arr, __pyx_n_s_new_color, __pyx_n_s_pred, __pyx_n_s_s_pred, __pyx_n_s_dist, __pyx_n_s_seen); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__43);
+  __Pyx_GIVEREF(__pyx_tuple__43);
+  __pyx_codeobj__44 = (PyObject*)__Pyx_PyCode_New(9, 0, 20, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__43, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_all_shortest_paths, 64, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__44)) __PYX_ERR(0, 64, __pyx_L1_error)
 
-  /* "dawdlib/dijkstra/colorful.pyx":128
- * 
- * @cython.embedsignature(True)
- * def shortest_path(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
- *     """Compute all shortest paths in the graph.
- * 
- */
-  __pyx_tuple__47 = PyTuple_Pack(19, __pyx_n_s_G, __pyx_n_s_source, __pyx_n_s_target, __pyx_n_s_no_colors, __pyx_n_s_len_cutoff, __pyx_n_s_weight, __pyx_n_s_method, __pyx_n_s_retries, __pyx_n_s_res_graph, __pyx_n_s_nodes, __pyx_n_s_cgraph, __pyx_n_s_weight_arr, __pyx_n_s_sources, __pyx_n_s_trgt, __pyx_n_s_color_arr, __pyx_n_s_new_color, __pyx_n_s_pred, __pyx_n_s_dist, __pyx_n_s_seen); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 128, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__47);
-  __Pyx_GIVEREF(__pyx_tuple__47);
-  __pyx_codeobj__48 = (PyObject*)__Pyx_PyCode_New(9, 0, 19, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__47, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_shortest_path, 128, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__48)) __PYX_ERR(0, 128, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":195
+  /* "dawdlib/dijkstra/colorful.pyx":199
  * 
  * 
  * def _prep_data(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
  *     if method != 'dijkstra':
  *         raise ValueError("method not supported: {}".format(method))
  */
-  __pyx_tuple__49 = PyTuple_Pack(11, __pyx_n_s_G, __pyx_n_s_source, __pyx_n_s_target, __pyx_n_s_no_colors, __pyx_n_s_len_cutoff, __pyx_n_s_weight, __pyx_n_s_method, __pyx_n_s_retries, __pyx_n_s_res_graph, __pyx_n_s_gate_colors, __pyx_n_s_num_of_colors); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(0, 195, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__49);
-  __Pyx_GIVEREF(__pyx_tuple__49);
-  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(9, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_prep_data, 195, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) __PYX_ERR(0, 195, __pyx_L1_error)
+  __pyx_tuple__45 = PyTuple_Pack(11, __pyx_n_s_G, __pyx_n_s_source, __pyx_n_s_target, __pyx_n_s_no_colors, __pyx_n_s_len_cutoff, __pyx_n_s_weight, __pyx_n_s_method, __pyx_n_s_retries, __pyx_n_s_res_graph, __pyx_n_s_gate_colors, __pyx_n_s_num_of_colors); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__45);
+  __Pyx_GIVEREF(__pyx_tuple__45);
+  __pyx_codeobj__46 = (PyObject*)__Pyx_PyCode_New(9, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__45, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_prep_data, 199, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__46)) __PYX_ERR(0, 199, __pyx_L1_error)
 
-  /* "dawdlib/dijkstra/colorful.pyx":210
+  /* "dawdlib/dijkstra/colorful.pyx":214
  * 
  * @cython.embedsignature(True)
  * def all_colorful_shortest_paths(             # <<<<<<<<<<<<<<
  *     nodes: tp.List[int, tp.Any],
  *     G: tp.Dict[int, tp.FrozenSet[int]],
  */
-  __pyx_tuple__51 = PyTuple_Pack(17, __pyx_n_s_nodes, __pyx_n_s_G, __pyx_n_s_weight, __pyx_n_s_sources, __pyx_n_s_target, __pyx_n_s_colors, __pyx_n_s_color_map, __pyx_n_s_no_colors, __pyx_n_s_pred, __pyx_n_s_dist, __pyx_n_s_seen, __pyx_n_s_limit, __pyx_n_s_repetitions, __pyx_n_s_found, __pyx_n_s_res, __pyx_n_s_genexpr, __pyx_n_s_genexpr); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(0, 210, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__51);
-  __Pyx_GIVEREF(__pyx_tuple__51);
-  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(13, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_all_colorful_shortest_paths, 210, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_tuple__47 = PyTuple_Pack(18, __pyx_n_s_nodes, __pyx_n_s_G, __pyx_n_s_weight, __pyx_n_s_sources, __pyx_n_s_target, __pyx_n_s_colors, __pyx_n_s_color_map, __pyx_n_s_no_colors, __pyx_n_s_pred, __pyx_n_s_s_pred, __pyx_n_s_dist, __pyx_n_s_seen, __pyx_n_s_limit, __pyx_n_s_repetitions, __pyx_n_s_found, __pyx_n_s_res, __pyx_n_s_genexpr, __pyx_n_s_genexpr); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__47);
+  __Pyx_GIVEREF(__pyx_tuple__47);
+  __pyx_codeobj__48 = (PyObject*)__Pyx_PyCode_New(14, 0, 18, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__47, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_all_colorful_shortest_paths, 214, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__48)) __PYX_ERR(0, 214, __pyx_L1_error)
 
-  /* "dawdlib/dijkstra/colorful.pyx":250
- * 
- * @cython.embedsignature(True)
- * def colorful_shortest_path(             # <<<<<<<<<<<<<<
- *     nodes: tp.List[int, tp.Any],
- *     G: tp.Dict[int, tp.FrozenSet[int]],
- */
-  __pyx_tuple__53 = PyTuple_Pack(16, __pyx_n_s_nodes, __pyx_n_s_G, __pyx_n_s_weight, __pyx_n_s_sources, __pyx_n_s_target, __pyx_n_s_colors, __pyx_n_s_color_map, __pyx_n_s_no_colors, __pyx_n_s_pred, __pyx_n_s_dist, __pyx_n_s_seen, __pyx_n_s_limit, __pyx_n_s_repetitions, __pyx_n_s_found, __pyx_n_s_res, __pyx_n_s_src); if (unlikely(!__pyx_tuple__53)) __PYX_ERR(0, 250, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__53);
-  __Pyx_GIVEREF(__pyx_tuple__53);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(13, 0, 16, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__53, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_colorful_shortest_path, 250, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 250, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":290
+  /* "dawdlib/dijkstra/colorful.pyx":295
  * 
  * 
  * def find_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
-  __pyx_tuple__54 = PyTuple_Pack(14, __pyx_n_s_G, __pyx_n_s_weight, __pyx_n_s_sources, __pyx_n_s_colors, __pyx_n_s_color_map, __pyx_n_s_no_colors, __pyx_n_s_pred, __pyx_n_s_dist, __pyx_n_s_seen, __pyx_n_s_limit, __pyx_n_s_repetitions, __pyx_n_s_j, __pyx_n_s_i, __pyx_n_s_res); if (unlikely(!__pyx_tuple__54)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__54);
-  __Pyx_GIVEREF(__pyx_tuple__54);
-  __pyx_codeobj__55 = (PyObject*)__Pyx_PyCode_New(11, 0, 14, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__54, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_find_shortest_paths, 290, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__55)) __PYX_ERR(0, 290, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":317
- * 
- * 
- * def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):             # <<<<<<<<<<<<<<
- *     pred_dict = defaultdict(list)
- *     for key, val in np.argwhere(pred).tolist():
- */
-  __pyx_tuple__56 = PyTuple_Pack(18, __pyx_n_s_nodes, __pyx_n_s_src, __pyx_n_s_trgt, __pyx_n_s_node_colors, __pyx_n_s_pred, __pyx_n_s_dist, __pyx_n_s_pred_dict, __pyx_n_s_key, __pyx_n_s_val, __pyx_n_s_stack, __pyx_n_s_top, __pyx_n_s_node, __pyx_n_s_i, __pyx_n_s_color, __pyx_n_s_tup, __pyx_n_s_p, __pyx_n_s_n, __pyx_n_s_c); if (unlikely(!__pyx_tuple__56)) __PYX_ERR(0, 317, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__56);
-  __Pyx_GIVEREF(__pyx_tuple__56);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(6, 0, 18, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__56, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_yield_colorful_shortest_paths, 317, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 317, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":343
- * 
- * 
- * def colorful_shortest_path(nodes, src, trgt, node_colors, dist):             # <<<<<<<<<<<<<<
- *     current = trgt
- *     dist_cp = dist.copy()
- */
-  __pyx_tuple__57 = PyTuple_Pack(11, __pyx_n_s_nodes, __pyx_n_s_src, __pyx_n_s_trgt, __pyx_n_s_node_colors, __pyx_n_s_dist, __pyx_n_s_current, __pyx_n_s_dist_cp, __pyx_n_s_max_val, __pyx_n_s_pred, __pyx_n_s_path, __pyx_n_s_p); if (unlikely(!__pyx_tuple__57)) __PYX_ERR(0, 343, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__57);
-  __Pyx_GIVEREF(__pyx_tuple__57);
-  __pyx_codeobj__58 = (PyObject*)__Pyx_PyCode_New(5, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__57, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_colorful_shortest_path, 343, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__58)) __PYX_ERR(0, 343, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":397
- * 
- * @cython.embedsignature(True)
- * def recolor(color_arr, no_colors):             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t cshape = color_arr.shape[1]
- *     recolor_arr = np.zeros((cshape, no_colors), np.ubyte)
- */
-  __pyx_tuple__59 = PyTuple_Pack(5, __pyx_n_s_color_arr, __pyx_n_s_no_colors, __pyx_n_s_cshape, __pyx_n_s_recolor_arr, __pyx_n_s_rand_colors); if (unlikely(!__pyx_tuple__59)) __PYX_ERR(0, 397, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__59);
-  __Pyx_GIVEREF(__pyx_tuple__59);
-  __pyx_codeobj__60 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__59, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_recolor, 397, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__60)) __PYX_ERR(0, 397, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":439
- * 
- * @cython.embedsignature(True)
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):             # <<<<<<<<<<<<<<
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]
- */
-  __pyx_tuple__61 = PyTuple_Pack(4, __pyx_n_s_arr, __pyx_n_s_result, __pyx_n_s_x_max, __pyx_n_s_x); if (unlikely(!__pyx_tuple__61)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__61);
-  __Pyx_GIVEREF(__pyx_tuple__61);
-  __pyx_codeobj__62 = (PyObject*)__Pyx_PyCode_New(2, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__61, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_boolmat2int, 439, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__62)) __PYX_ERR(0, 439, __pyx_L1_error)
+  __pyx_tuple__49 = PyTuple_Pack(15, __pyx_n_s_G, __pyx_n_s_weight, __pyx_n_s_sources, __pyx_n_s_colors, __pyx_n_s_color_map, __pyx_n_s_no_colors, __pyx_n_s_pred, __pyx_n_s_s_pred, __pyx_n_s_dist, __pyx_n_s_seen, __pyx_n_s_limit, __pyx_n_s_repetitions, __pyx_n_s_j, __pyx_n_s_i, __pyx_n_s_res); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__49);
+  __Pyx_GIVEREF(__pyx_tuple__49);
+  __pyx_codeobj__50 = (PyObject*)__Pyx_PyCode_New(12, 0, 15, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__49, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_find_shortest_paths, 295, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__50)) __PYX_ERR(0, 295, __pyx_L1_error)
 
   /* "dawdlib/dijkstra/colorful.pyx":469
  * 
@@ -34984,22 +29480,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cdef int v, u
  *     cdef map[int, vector[int]] *cgraph_ref = new map[int, vector[int]]()
  */
-  __pyx_tuple__63 = PyTuple_Pack(9, __pyx_n_s_graph, __pyx_n_s_v, __pyx_n_s_u, __pyx_n_s_cgraph_ref, __pyx_n_s_cgraph, __pyx_n_s_vec_ref, __pyx_n_s_vec, __pyx_n_s_vec_size, __pyx_n_s_val); if (unlikely(!__pyx_tuple__63)) __PYX_ERR(0, 469, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__63);
-  __Pyx_GIVEREF(__pyx_tuple__63);
-  __pyx_codeobj__64 = (PyObject*)__Pyx_PyCode_New(1, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__63, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_graphdict2map, 469, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__64)) __PYX_ERR(0, 469, __pyx_L1_error)
-
-  /* "dawdlib/dijkstra/colorful.pyx":499
- * 
- * @cython.embedsignature(True)
- * def colorsdict2map(dict color_dict):             # <<<<<<<<<<<<<<
- *     cdef int v, val
- *     cdef map[int, int] *color_ref = new map[int, int]()
- */
-  __pyx_tuple__65 = PyTuple_Pack(6, __pyx_n_s_color_dict, __pyx_n_s_v, __pyx_n_s_val, __pyx_n_s_color_ref, __pyx_n_s_color, __pyx_n_s_vec_size); if (unlikely(!__pyx_tuple__65)) __PYX_ERR(0, 499, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__65);
-  __Pyx_GIVEREF(__pyx_tuple__65);
-  __pyx_codeobj__66 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__65, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_colorsdict2map, 499, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__66)) __PYX_ERR(0, 499, __pyx_L1_error)
+  __pyx_tuple__51 = PyTuple_Pack(9, __pyx_n_s_graph, __pyx_n_s_v, __pyx_n_s_u, __pyx_n_s_cgraph_ref, __pyx_n_s_cgraph, __pyx_n_s_vec_ref, __pyx_n_s_vec, __pyx_n_s_vec_size, __pyx_n_s_val); if (unlikely(!__pyx_tuple__51)) __PYX_ERR(0, 469, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__51);
+  __Pyx_GIVEREF(__pyx_tuple__51);
+  __pyx_codeobj__52 = (PyObject*)__Pyx_PyCode_New(1, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__51, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_dawdlib_dijkstra_colorful_pyx, __pyx_n_s_graphdict2map, 469, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__52)) __PYX_ERR(0, 469, __pyx_L1_error)
 
   /* "View.MemoryView":286
  *         return self.name
@@ -35008,9 +29492,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_tuple__67 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__67)) __PYX_ERR(2, 286, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__67);
-  __Pyx_GIVEREF(__pyx_tuple__67);
+  __pyx_tuple__53 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__53)) __PYX_ERR(2, 286, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__53);
+  __Pyx_GIVEREF(__pyx_tuple__53);
 
   /* "View.MemoryView":287
  * 
@@ -35019,9 +29503,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_tuple__68 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__68)) __PYX_ERR(2, 287, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__68);
-  __Pyx_GIVEREF(__pyx_tuple__68);
+  __pyx_tuple__54 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__54)) __PYX_ERR(2, 287, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__54);
+  __Pyx_GIVEREF(__pyx_tuple__54);
 
   /* "View.MemoryView":288
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -35030,9 +29514,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__69 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__69)) __PYX_ERR(2, 288, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__69);
-  __Pyx_GIVEREF(__pyx_tuple__69);
+  __pyx_tuple__55 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__55)) __PYX_ERR(2, 288, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__55);
+  __Pyx_GIVEREF(__pyx_tuple__55);
 
   /* "View.MemoryView":291
  * 
@@ -35041,9 +29525,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_tuple__70 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__70)) __PYX_ERR(2, 291, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__70);
-  __Pyx_GIVEREF(__pyx_tuple__70);
+  __pyx_tuple__56 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__56)) __PYX_ERR(2, 291, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__56);
+  __Pyx_GIVEREF(__pyx_tuple__56);
 
   /* "View.MemoryView":292
  * 
@@ -35052,19 +29536,19 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__71 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__71)) __PYX_ERR(2, 292, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__71);
-  __Pyx_GIVEREF(__pyx_tuple__71);
+  __pyx_tuple__57 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__57)) __PYX_ERR(2, 292, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__57);
+  __Pyx_GIVEREF(__pyx_tuple__57);
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Enum(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_tuple__72 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__72)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__72);
-  __Pyx_GIVEREF(__pyx_tuple__72);
-  __pyx_codeobj__73 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__72, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__73)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_tuple__58 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__58)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__58);
+  __Pyx_GIVEREF(__pyx_tuple__58);
+  __pyx_codeobj__59 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__58, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__59)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -35076,8 +29560,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_9 = PyInt_FromLong(9); if (unlikely(!__pyx_int_9)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_int_10 = PyInt_FromLong(10); if (unlikely(!__pyx_int_10)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_18 = PyInt_FromLong(18); if (unlikely(!__pyx_int_18)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_184977713 = PyInt_FromLong(184977713L); if (unlikely(!__pyx_int_184977713)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_neg_1 = PyInt_FromLong(-1); if (unlikely(!__pyx_int_neg_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -35127,7 +29610,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths) < 0) __PYX_ERR(0, 214, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths.tp_print = 0;
   #endif
@@ -35135,7 +29618,7 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths = &__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct__all_colorful_shortest_paths;
-  if (PyType_Ready(&__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 244, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr) < 0) __PYX_ERR(0, 249, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr.tp_print = 0;
   #endif
@@ -35143,22 +29626,6 @@ static int __Pyx_modinit_type_init_code(void) {
     __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
   }
   __pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr = &__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_1_genexpr;
-  if (PyType_Ready(&__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path) < 0) __PYX_ERR(0, 250, __pyx_L1_error)
-  #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path.tp_print = 0;
-  #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path.tp_dictoffset && __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
-  }
-  __pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path = &__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_2_colorful_shortest_path;
-  if (PyType_Ready(&__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths) < 0) __PYX_ERR(0, 317, __pyx_L1_error)
-  #if PY_VERSION_HEX < 0x030800B1
-  __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths.tp_print = 0;
-  #endif
-  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths.tp_dictoffset && __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths.tp_getattro == PyObject_GenericGetAttr)) {
-    __pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths.tp_getattro = __Pyx_PyObject_GenericGetAttrNoDict;
-  }
-  __pyx_ptype_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths = &__pyx_type_7dawdlib_8dijkstra_8colorful___pyx_scope_struct_3_yield_colorful_shortest_paths;
   __pyx_vtabptr_array = &__pyx_vtable_array;
   __pyx_vtable_array.get_memview = (PyObject *(*)(struct __pyx_array_obj *))__pyx_array_get_memview;
   if (PyType_Ready(&__pyx_type___pyx_array) < 0) __PYX_ERR(2, 105, __pyx_L1_error)
@@ -35366,9 +29833,7 @@ static CYTHON_SMALL_CODE int __pyx_pymod_exec_colorful(PyObject *__pyx_pyinit_mo
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  PyObject *__pyx_t_6 = NULL;
-  static PyThread_type_lock __pyx_t_7[8];
+  static PyThread_type_lock __pyx_t_5[8];
   __Pyx_RefNannyDeclarations
   #if CYTHON_PEP489_MULTI_PHASE_INIT
   if (__pyx_m) {
@@ -35473,359 +29938,248 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "dawdlib/dijkstra/colorful.pyx":15
+  /* "dawdlib/dijkstra/colorful.pyx":14
  * # distutils: define_macros=CYTHON_TRACE_NOGIL=1
  * '''
  * import numpy as np             # <<<<<<<<<<<<<<
  * import typing as tp
- * from collections import defaultdict
+ * from itertools import chain
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 14, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":16
+  /* "dawdlib/dijkstra/colorful.pyx":15
  * '''
  * import numpy as np
  * import typing as tp             # <<<<<<<<<<<<<<
- * from collections import defaultdict
- * from itertools import chain
- */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_typing, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_tp, __pyx_t_1) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":17
- * import numpy as np
- * import typing as tp
- * from collections import defaultdict             # <<<<<<<<<<<<<<
  * from itertools import chain
  * import networkx as nx
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_typing, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_n_s_defaultdict);
-  __Pyx_GIVEREF(__pyx_n_s_defaultdict);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_defaultdict);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_collections, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_tp, __pyx_t_1) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_defaultdict); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_defaultdict, __pyx_t_1) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":18
+  /* "dawdlib/dijkstra/colorful.pyx":16
+ * import numpy as np
  * import typing as tp
- * from collections import defaultdict
  * from itertools import chain             # <<<<<<<<<<<<<<
  * import networkx as nx
  * 
  */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_chain);
   __Pyx_GIVEREF(__pyx_n_s_chain);
-  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_chain);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_itertools, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_chain); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 18, __pyx_L1_error)
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_chain);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_itertools, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_chain, __pyx_t_2) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_chain); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_chain, __pyx_t_1) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":19
- * from collections import defaultdict
+  /* "dawdlib/dijkstra/colorful.pyx":17
+ * import typing as tp
  * from itertools import chain
  * import networkx as nx             # <<<<<<<<<<<<<<
  * 
  * from dawdlib.golden_gate.gate_data import GGData
  */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_networkx, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nx, __pyx_t_1) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_networkx, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nx, __pyx_t_2) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":21
+  /* "dawdlib/dijkstra/colorful.pyx":19
  * import networkx as nx
  * 
  * from dawdlib.golden_gate.gate_data import GGData             # <<<<<<<<<<<<<<
- * from .colorful_utils import color_gates, nxtonumpy
+ * from dawdlib.dijkstra.colorful_utils import color_gates, nxtonumpy, yield_colorful_shortest_paths
  * 
  */
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_GGData);
   __Pyx_GIVEREF(__pyx_n_s_GGData);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_GGData);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_dawdlib_golden_gate_gate_data, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 21, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_GGData); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 21, __pyx_L1_error)
+  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_GGData);
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_dawdlib_golden_gate_gate_data, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GGData, __pyx_t_1) < 0) __PYX_ERR(0, 21, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_GGData); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GGData, __pyx_t_2) < 0) __PYX_ERR(0, 19, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":22
+  /* "dawdlib/dijkstra/colorful.pyx":20
  * 
  * from dawdlib.golden_gate.gate_data import GGData
- * from .colorful_utils import color_gates, nxtonumpy             # <<<<<<<<<<<<<<
+ * from dawdlib.dijkstra.colorful_utils import color_gates, nxtonumpy, yield_colorful_shortest_paths             # <<<<<<<<<<<<<<
  * 
  * from libcpp.map cimport map
  */
-  __pyx_t_2 = PyList_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_color_gates);
   __Pyx_GIVEREF(__pyx_n_s_color_gates);
-  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_color_gates);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_color_gates);
   __Pyx_INCREF(__pyx_n_s_nxtonumpy);
   __Pyx_GIVEREF(__pyx_n_s_nxtonumpy);
-  PyList_SET_ITEM(__pyx_t_2, 1, __pyx_n_s_nxtonumpy);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_colorful_utils, __pyx_t_2, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_color_gates); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
+  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_nxtonumpy);
+  __Pyx_INCREF(__pyx_n_s_yield_colorful_shortest_paths);
+  __Pyx_GIVEREF(__pyx_n_s_yield_colorful_shortest_paths);
+  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_n_s_yield_colorful_shortest_paths);
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_dawdlib_dijkstra_colorful_utils, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_color_gates, __pyx_t_2) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_nxtonumpy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nxtonumpy, __pyx_t_2) < 0) __PYX_ERR(0, 22, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_color_gates); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_color_gates, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_nxtonumpy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_nxtonumpy, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_yield_colorful_shortest_paths); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_yield_colorful_shortest_paths, __pyx_t_1) < 0) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":60
+  /* "dawdlib/dijkstra/colorful.pyx":64
  * 
  * @cython.embedsignature(True)
  * def all_shortest_paths(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
  *     """Compute all shortest paths in the graph.
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_1all_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all_shortest_paths, __pyx_t_1) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_1all_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all_shortest_paths, __pyx_t_2) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":128
- * 
- * @cython.embedsignature(True)
- * def shortest_path(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
- *     """Compute all shortest paths in the graph.
- * 
- */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_3shortest_path, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_shortest_path, __pyx_t_1) < 0) __PYX_ERR(0, 128, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":195
+  /* "dawdlib/dijkstra/colorful.pyx":199
  * 
  * 
  * def _prep_data(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):             # <<<<<<<<<<<<<<
  *     if method != 'dijkstra':
  *         raise ValueError("method not supported: {}".format(method))
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_5_prep_data, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 195, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_prep_data, __pyx_t_1) < 0) __PYX_ERR(0, 195, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_3_prep_data, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_prep_data, __pyx_t_2) < 0) __PYX_ERR(0, 199, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":210
+  /* "dawdlib/dijkstra/colorful.pyx":214
  * 
  * @cython.embedsignature(True)
  * def all_colorful_shortest_paths(             # <<<<<<<<<<<<<<
  *     nodes: tp.List[int, tp.Any],
  *     G: tp.Dict[int, tp.FrozenSet[int]],
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_7all_colorful_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 210, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all_colorful_shortest_paths, __pyx_t_1) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_5all_colorful_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_all_colorful_shortest_paths, __pyx_t_2) < 0) __PYX_ERR(0, 214, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":250
- * 
- * @cython.embedsignature(True)
- * def colorful_shortest_path(             # <<<<<<<<<<<<<<
- *     nodes: tp.List[int, tp.Any],
- *     G: tp.Dict[int, tp.FrozenSet[int]],
- */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_9colorful_shortest_path, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 250, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_colorful_shortest_path, __pyx_t_1) < 0) __PYX_ERR(0, 250, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":300
+  /* "dawdlib/dijkstra/colorful.pyx":306
  *     umy_type[:, ::1] dist,
  *     umy_type[:, ::1] seen,
  *     int limit = 0,             # <<<<<<<<<<<<<<
  *     int repetitions = 1,
  * ):
  */
-  __pyx_t_1 = __Pyx_PyInt_From_long(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 300, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_From_long(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 306, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
 
-  /* "dawdlib/dijkstra/colorful.pyx":301
+  /* "dawdlib/dijkstra/colorful.pyx":307
  *     umy_type[:, ::1] seen,
  *     int limit = 0,
  *     int repetitions = 1,             # <<<<<<<<<<<<<<
  * ):
  *     cdef:
  */
-  __pyx_t_2 = __Pyx_PyInt_From_long(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 301, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = __Pyx_PyInt_From_long(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 307, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
 
-  /* "dawdlib/dijkstra/colorful.pyx":290
+  /* "dawdlib/dijkstra/colorful.pyx":295
  * 
  * 
  * def find_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
-  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
-  __pyx_t_1 = 0;
+  PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_1);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 290, __pyx_L1_error)
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_7dawdlib_8dijkstra_8colorful_11find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__50)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_7dawdlib_8dijkstra_8colorful_27find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__55)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_1, sizeof(__pyx_defaults4), 0)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_CyFunction_Defaults(__pyx_defaults4, __pyx_t_1)->__pyx_arg_limit = 0;
-  __Pyx_CyFunction_Defaults(__pyx_defaults4, __pyx_t_1)->__pyx_arg_repetitions = 1;
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_t_3);
-  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_1, __pyx_pf_7dawdlib_8dijkstra_8colorful_54__defaults__);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_uint8_t, __pyx_t_1) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_7dawdlib_8dijkstra_8colorful_29find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__55)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_1, sizeof(__pyx_defaults5), 0)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_CyFunction_Defaults(__pyx_defaults5, __pyx_t_1)->__pyx_arg_limit = 0;
-  __Pyx_CyFunction_Defaults(__pyx_defaults5, __pyx_t_1)->__pyx_arg_repetitions = 1;
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_t_3);
-  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_1, __pyx_pf_7dawdlib_8dijkstra_8colorful_56__defaults__);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_uint16_t, __pyx_t_1) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_7dawdlib_8dijkstra_8colorful_31find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__55)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_1, sizeof(__pyx_defaults6), 0)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_CyFunction_Defaults(__pyx_defaults6, __pyx_t_1)->__pyx_arg_limit = 0;
-  __Pyx_CyFunction_Defaults(__pyx_defaults6, __pyx_t_1)->__pyx_arg_repetitions = 1;
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_t_3);
-  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_1, __pyx_pf_7dawdlib_8dijkstra_8colorful_58__defaults__);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_uint32_t, __pyx_t_1) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_7dawdlib_8dijkstra_8colorful_33find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__55)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_1, sizeof(__pyx_defaults7), 0)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_CyFunction_Defaults(__pyx_defaults7, __pyx_t_1)->__pyx_arg_limit = 0;
-  __Pyx_CyFunction_Defaults(__pyx_defaults7, __pyx_t_1)->__pyx_arg_repetitions = 1;
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_t_3);
-  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_1, __pyx_pf_7dawdlib_8dijkstra_8colorful_60__defaults__);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_uint64_t, __pyx_t_1) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __pyx_FusedFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_12find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__55)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_1, __pyx_t_3);
-  ((__pyx_FusedFunctionObject *) __pyx_t_1)->__signatures__ = __pyx_t_2;
-  __Pyx_GIVEREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_find_shortest_paths, __pyx_t_1) < 0) __PYX_ERR(0, 290, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_2, sizeof(__pyx_defaults4), 0)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_CyFunction_Defaults(__pyx_defaults4, __pyx_t_2)->__pyx_arg_limit = 0;
+  __Pyx_CyFunction_Defaults(__pyx_defaults4, __pyx_t_2)->__pyx_arg_repetitions = 1;
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_t_3);
+  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_2, __pyx_pf_7dawdlib_8dijkstra_8colorful_28__defaults__);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_uint8_t, __pyx_t_2) < 0) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_7dawdlib_8dijkstra_8colorful_13find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__50)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_2, sizeof(__pyx_defaults5), 0)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_CyFunction_Defaults(__pyx_defaults5, __pyx_t_2)->__pyx_arg_limit = 0;
+  __Pyx_CyFunction_Defaults(__pyx_defaults5, __pyx_t_2)->__pyx_arg_repetitions = 1;
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_t_3);
+  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_2, __pyx_pf_7dawdlib_8dijkstra_8colorful_30__defaults__);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_uint16_t, __pyx_t_2) < 0) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_7dawdlib_8dijkstra_8colorful_15find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__50)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_2, sizeof(__pyx_defaults6), 0)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_CyFunction_Defaults(__pyx_defaults6, __pyx_t_2)->__pyx_arg_limit = 0;
+  __Pyx_CyFunction_Defaults(__pyx_defaults6, __pyx_t_2)->__pyx_arg_repetitions = 1;
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_t_3);
+  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_2, __pyx_pf_7dawdlib_8dijkstra_8colorful_32__defaults__);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_uint32_t, __pyx_t_2) < 0) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_7dawdlib_8dijkstra_8colorful_17find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__50)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_2, sizeof(__pyx_defaults7), 0)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_CyFunction_Defaults(__pyx_defaults7, __pyx_t_2)->__pyx_arg_limit = 0;
+  __Pyx_CyFunction_Defaults(__pyx_defaults7, __pyx_t_2)->__pyx_arg_repetitions = 1;
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_t_3);
+  __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_2, __pyx_pf_7dawdlib_8dijkstra_8colorful_34__defaults__);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_uint64_t, __pyx_t_2) < 0) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_7find_shortest_paths, 0, __pyx_n_s_find_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__50)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_2, __pyx_t_3);
+  ((__pyx_FusedFunctionObject *) __pyx_t_2)->__signatures__ = __pyx_t_1;
+  __Pyx_GIVEREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_find_shortest_paths, __pyx_t_2) < 0) __PYX_ERR(0, 295, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":317
- * 
- * 
- * def yield_colorful_shortest_paths(nodes, src, trgt, node_colors, pred, dist):             # <<<<<<<<<<<<<<
- *     pred_dict = defaultdict(list)
- *     for key, val in np.argwhere(pred).tolist():
- */
-  __pyx_t_4 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_14yield_colorful_shortest_paths, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 317, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_yield_colorful_shortest_paths, __pyx_t_4) < 0) __PYX_ERR(0, 317, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":343
- * 
- * 
- * def colorful_shortest_path(nodes, src, trgt, node_colors, dist):             # <<<<<<<<<<<<<<
- *     current = trgt
- *     dist_cp = dist.copy()
- */
-  __pyx_t_4 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_17colorful_shortest_path, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 343, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_colorful_shortest_path, __pyx_t_4) < 0) __PYX_ERR(0, 343, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":361
+  /* "dawdlib/dijkstra/colorful.pyx":360
  * 
  * 
  * cdef int random_colorful_shortest_paths(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
+  __pyx_k__6 = 0;
+  __pyx_k__7 = 0;
   __pyx_k__8 = 0;
   __pyx_k__9 = 0;
-  __pyx_k__10 = 0;
-  __pyx_k__11 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":397
- * 
- * @cython.embedsignature(True)
- * def recolor(color_arr, no_colors):             # <<<<<<<<<<<<<<
- *     cdef Py_ssize_t cshape = color_arr.shape[1]
- *     recolor_arr = np.zeros((cshape, no_colors), np.ubyte)
- */
-  __pyx_t_4 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_19recolor, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 397, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_recolor, __pyx_t_4) < 0) __PYX_ERR(0, 397, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":439
- * 
- * @cython.embedsignature(True)
- * def boolmat2int(uint8_t[:, :] arr, umy_type[::1] result):             # <<<<<<<<<<<<<<
- *     cdef:
- *         Py_ssize_t x_max = arr.shape[0]
- */
-  __pyx_t_4 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_7dawdlib_8dijkstra_8colorful_37boolmat2int, 0, __pyx_n_s_boolmat2int, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__62)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_uint8_t, __pyx_t_5) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __pyx_FusedFunction_NewEx(&__pyx_fuse_1__pyx_mdef_7dawdlib_8dijkstra_8colorful_39boolmat2int, 0, __pyx_n_s_boolmat2int, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__62)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_uint16_t, __pyx_t_5) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __pyx_FusedFunction_NewEx(&__pyx_fuse_2__pyx_mdef_7dawdlib_8dijkstra_8colorful_41boolmat2int, 0, __pyx_n_s_boolmat2int, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__62)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_uint32_t, __pyx_t_5) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __pyx_FusedFunction_NewEx(&__pyx_fuse_3__pyx_mdef_7dawdlib_8dijkstra_8colorful_43boolmat2int, 0, __pyx_n_s_boolmat2int, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__62)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_empty_tuple);
-  if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_uint64_t, __pyx_t_5) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_5 = __pyx_FusedFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_21boolmat2int, 0, __pyx_n_s_boolmat2int, NULL, __pyx_n_s_dawdlib_dijkstra_colorful, __pyx_d, ((PyObject *)__pyx_codeobj__62)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
-  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_5, __pyx_empty_tuple);
-  ((__pyx_FusedFunctionObject *) __pyx_t_5)->__signatures__ = __pyx_t_4;
-  __Pyx_GIVEREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_boolmat2int, __pyx_t_5) < 0) __PYX_ERR(0, 439, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
   /* "dawdlib/dijkstra/colorful.pyx":469
  * 
@@ -35834,56 +30188,44 @@ if (!__Pyx_RefNanny) {
  *     cdef int v, u
  *     cdef map[int, vector[int]] *cgraph_ref = new map[int, vector[int]]()
  */
-  __pyx_t_6 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_23graphdict2map, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 469, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_graphdict2map, __pyx_t_6) < 0) __PYX_ERR(0, 469, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-
-  /* "dawdlib/dijkstra/colorful.pyx":499
- * 
- * @cython.embedsignature(True)
- * def colorsdict2map(dict color_dict):             # <<<<<<<<<<<<<<
- *     cdef int v, val
- *     cdef map[int, int] *color_ref = new map[int, int]()
- */
-  __pyx_t_6 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_25colorsdict2map, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 499, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_colorsdict2map, __pyx_t_6) < 0) __PYX_ERR(0, 499, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_4 = PyCFunction_NewEx(&__pyx_mdef_7dawdlib_8dijkstra_8colorful_9graphdict2map, NULL, __pyx_n_s_dawdlib_dijkstra_colorful); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 469, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_graphdict2map, __pyx_t_4) < 0) __PYX_ERR(0, 469, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "dawdlib/dijkstra/colorful.pyx":521
  * 
  * # @cython.embedsignature(True)
  * cdef int _multisource(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
+  __pyx_k__10 = 0;
+  __pyx_k__11 = 0;
   __pyx_k__12 = 0;
   __pyx_k__13 = 0;
-  __pyx_k__14 = 0;
-  __pyx_k__15 = 0;
 
-  /* "dawdlib/dijkstra/colorful.pyx":579
+  /* "dawdlib/dijkstra/colorful.pyx":580
  * 
  * # @cython.embedsignature(True)
  * cdef int predecessor_and_distance(             # <<<<<<<<<<<<<<
  *     map[int, vector[int]] G,
- *     umy_type[:, ::1] weight,
+ *     uint16_t[:, ::1] weight,
  */
+  __pyx_k__14 = 0;
+  __pyx_k__15 = 0;
   __pyx_k__16 = 0;
   __pyx_k__17 = 0;
-  __pyx_k__18 = 0;
-  __pyx_k__19 = 0;
 
   /* "dawdlib/dijkstra/colorful.pyx":1
  * # distutils: language = c++             # <<<<<<<<<<<<<<
  * # distutils: extra_compile_args=-Ofast -std=c++11
- * # distutils: extra_link_args=-fopenmp
+ * # cython: language_level=3, boundscheck=False, wraparound=False, initializedcheck=False, cdivision=False, overflowcheck.fold=False
  */
-  __pyx_t_6 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_6) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_4 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_4) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "View.MemoryView":209
  *         info.obj = self
@@ -35892,10 +30234,10 @@ if (!__Pyx_RefNanny) {
  * 
  *     def __dealloc__(array self):
  */
-  __pyx_t_6 = __pyx_capsule_create(((void *)(&__pyx_array_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 209, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem((PyObject *)__pyx_array_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_6) < 0) __PYX_ERR(2, 209, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_4 = __pyx_capsule_create(((void *)(&__pyx_array_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 209, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem((PyObject *)__pyx_array_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_4) < 0) __PYX_ERR(2, 209, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   PyType_Modified(__pyx_array_type);
 
   /* "View.MemoryView":286
@@ -35905,12 +30247,12 @@ if (!__Pyx_RefNanny) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__67, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 286, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__53, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 286, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_XGOTREF(generic);
-  __Pyx_DECREF_SET(generic, __pyx_t_6);
-  __Pyx_GIVEREF(__pyx_t_6);
-  __pyx_t_6 = 0;
+  __Pyx_DECREF_SET(generic, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  __pyx_t_4 = 0;
 
   /* "View.MemoryView":287
  * 
@@ -35919,12 +30261,12 @@ if (!__Pyx_RefNanny) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__68, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 287, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__54, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 287, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_XGOTREF(strided);
-  __Pyx_DECREF_SET(strided, __pyx_t_6);
-  __Pyx_GIVEREF(__pyx_t_6);
-  __pyx_t_6 = 0;
+  __Pyx_DECREF_SET(strided, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  __pyx_t_4 = 0;
 
   /* "View.MemoryView":288
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -35933,12 +30275,12 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__69, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 288, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__55, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 288, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_XGOTREF(indirect);
-  __Pyx_DECREF_SET(indirect, __pyx_t_6);
-  __Pyx_GIVEREF(__pyx_t_6);
-  __pyx_t_6 = 0;
+  __Pyx_DECREF_SET(indirect, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  __pyx_t_4 = 0;
 
   /* "View.MemoryView":291
  * 
@@ -35947,12 +30289,12 @@ if (!__Pyx_RefNanny) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__70, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 291, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__56, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 291, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_XGOTREF(contiguous);
-  __Pyx_DECREF_SET(contiguous, __pyx_t_6);
-  __Pyx_GIVEREF(__pyx_t_6);
-  __pyx_t_6 = 0;
+  __Pyx_DECREF_SET(contiguous, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  __pyx_t_4 = 0;
 
   /* "View.MemoryView":292
  * 
@@ -35961,12 +30303,12 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__71, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 292, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__57, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 292, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
   __Pyx_XGOTREF(indirect_contiguous);
-  __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_6);
-  __Pyx_GIVEREF(__pyx_t_6);
-  __pyx_t_6 = 0;
+  __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_4);
+  __Pyx_GIVEREF(__pyx_t_4);
+  __pyx_t_4 = 0;
 
   /* "View.MemoryView":316
  * 
@@ -35984,15 +30326,15 @@ if (!__Pyx_RefNanny) {
  *     PyThread_allocate_lock(),
  *     PyThread_allocate_lock(),
  */
-  __pyx_t_7[0] = PyThread_allocate_lock();
-  __pyx_t_7[1] = PyThread_allocate_lock();
-  __pyx_t_7[2] = PyThread_allocate_lock();
-  __pyx_t_7[3] = PyThread_allocate_lock();
-  __pyx_t_7[4] = PyThread_allocate_lock();
-  __pyx_t_7[5] = PyThread_allocate_lock();
-  __pyx_t_7[6] = PyThread_allocate_lock();
-  __pyx_t_7[7] = PyThread_allocate_lock();
-  memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_7, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
+  __pyx_t_5[0] = PyThread_allocate_lock();
+  __pyx_t_5[1] = PyThread_allocate_lock();
+  __pyx_t_5[2] = PyThread_allocate_lock();
+  __pyx_t_5[3] = PyThread_allocate_lock();
+  __pyx_t_5[4] = PyThread_allocate_lock();
+  __pyx_t_5[5] = PyThread_allocate_lock();
+  __pyx_t_5[6] = PyThread_allocate_lock();
+  __pyx_t_5[7] = PyThread_allocate_lock();
+  memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_5, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
 
   /* "View.MemoryView":549
  *         info.obj = self
@@ -36001,10 +30343,10 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_6 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 549, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem((PyObject *)__pyx_memoryview_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_6) < 0) __PYX_ERR(2, 549, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_4 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 549, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem((PyObject *)__pyx_memoryview_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_4) < 0) __PYX_ERR(2, 549, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   PyType_Modified(__pyx_memoryview_type);
 
   /* "View.MemoryView":995
@@ -36014,10 +30356,10 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_6 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 995, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem((PyObject *)__pyx_memoryviewslice_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_6) < 0) __PYX_ERR(2, 995, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_4 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 995, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem((PyObject *)__pyx_memoryviewslice_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_4) < 0) __PYX_ERR(2, 995, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   PyType_Modified(__pyx_memoryviewslice_type);
 
   /* "(tree fragment)":1
@@ -36025,10 +30367,10 @@ if (!__Pyx_RefNanny) {
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_t_6 = PyCFunction_NewEx(&__pyx_mdef_15View_dot_MemoryView_1__pyx_unpickle_Enum, NULL, __pyx_n_s_View_MemoryView); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_6);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_6) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+  __pyx_t_4 = PyCFunction_NewEx(&__pyx_mdef_15View_dot_MemoryView_1__pyx_unpickle_Enum, NULL, __pyx_n_s_View_MemoryView); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_4) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
   /* "(tree fragment)":11
  *         __pyx_unpickle_Enum__set_state(<Enum> __pyx_result, __pyx_state)
@@ -36046,8 +30388,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_6);
   if (__pyx_m) {
     if (__pyx_d) {
       __Pyx_AddTraceback("init dawdlib.dijkstra.colorful", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -38043,35 +32383,105 @@ static CYTHON_INLINE void __Pyx_XDEC_MEMVIEW(__Pyx_memviewslice *memslice,
     }
 }
 
-/* PyObjectCallMethod1 */
-static PyObject* __Pyx__PyObject_CallMethod1(PyObject* method, PyObject* arg) {
-    PyObject *result = __Pyx_PyObject_CallOneArg(method, arg);
-    Py_DECREF(method);
-    return result;
-}
-static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg) {
-    PyObject *method = NULL, *result;
-    int is_method = __Pyx_PyObject_GetMethod(obj, method_name, &method);
-    if (likely(is_method)) {
-        result = __Pyx_PyObject_Call2Args(method, obj, arg);
-        Py_DECREF(method);
-        return result;
+/* WriteUnraisableException */
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#ifdef _MSC_VER
+    else state = (PyGILState_STATE)-1;
+#endif
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
     }
-    if (unlikely(!method)) return NULL;
-    return __Pyx__PyObject_CallMethod1(method, arg);
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
 }
 
-/* append */
-static CYTHON_INLINE int __Pyx_PyObject_Append(PyObject* L, PyObject* x) {
-    if (likely(PyList_CheckExact(L))) {
-        if (unlikely(__Pyx_PyList_Append(L, x) < 0)) return -1;
-    } else {
-        PyObject* retval = __Pyx_PyObject_CallMethod1(L, __pyx_n_s_append, x);
-        if (unlikely(!retval))
-            return -1;
-        Py_DECREF(retval);
+/* ExtTypeTest */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    if (likely(__Pyx_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
+    return 0;
+}
+
+/* PyErrExceptionMatches */
+#if CYTHON_FAST_THREAD_STATE
+static int __Pyx_PyErr_ExceptionMatchesTuple(PyObject *exc_type, PyObject *tuple) {
+    Py_ssize_t i, n;
+    n = PyTuple_GET_SIZE(tuple);
+#if PY_MAJOR_VERSION >= 3
+    for (i=0; i<n; i++) {
+        if (exc_type == PyTuple_GET_ITEM(tuple, i)) return 1;
+    }
+#endif
+    for (i=0; i<n; i++) {
+        if (__Pyx_PyErr_GivenExceptionMatches(exc_type, PyTuple_GET_ITEM(tuple, i))) return 1;
     }
     return 0;
+}
+static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err) {
+    PyObject *exc_type = tstate->curexc_type;
+    if (exc_type == err) return 1;
+    if (unlikely(!exc_type)) return 0;
+    if (unlikely(PyTuple_Check(err)))
+        return __Pyx_PyErr_ExceptionMatchesTuple(exc_type, err);
+    return __Pyx_PyErr_GivenExceptionMatches(exc_type, err);
+}
+#endif
+
+/* None */
+static CYTHON_INLINE Py_ssize_t __Pyx_div_Py_ssize_t(Py_ssize_t a, Py_ssize_t b) {
+    Py_ssize_t q = a / b;
+    Py_ssize_t r = a - q*b;
+    q -= ((r != 0) & ((r ^ b) < 0));
+    return q;
+}
+
+/* GetAttr */
+static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
+#if CYTHON_USE_TYPE_SLOTS
+#if PY_MAJOR_VERSION >= 3
+    if (likely(PyUnicode_Check(n)))
+#else
+    if (likely(PyString_Check(n)))
+#endif
+        return __Pyx_PyObject_GetAttrStr(o, n);
+#endif
+    return PyObject_GetAttr(o, n);
 }
 
 /* ObjectGetItem */
@@ -38100,6 +32510,528 @@ static PyObject *__Pyx_PyObject_GetItem(PyObject *obj, PyObject* key) {
         return m->mp_subscript(obj, key);
     }
     return __Pyx_PyObject_GetIndex(obj, key);
+}
+#endif
+
+/* decode_c_string */
+static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
+         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
+         const char* encoding, const char* errors,
+         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors)) {
+    Py_ssize_t length;
+    if (unlikely((start < 0) | (stop < 0))) {
+        size_t slen = strlen(cstring);
+        if (unlikely(slen > (size_t) PY_SSIZE_T_MAX)) {
+            PyErr_SetString(PyExc_OverflowError,
+                            "c-string too long to convert to Python");
+            return NULL;
+        }
+        length = (Py_ssize_t) slen;
+        if (start < 0) {
+            start += length;
+            if (start < 0)
+                start = 0;
+        }
+        if (stop < 0)
+            stop += length;
+    }
+    length = stop - start;
+    if (unlikely(length <= 0))
+        return PyUnicode_FromUnicode(NULL, 0);
+    cstring += start;
+    if (decode_func) {
+        return decode_func(cstring, length, errors);
+    } else {
+        return PyUnicode_Decode(cstring, length, encoding, errors);
+    }
+}
+
+/* GetAttr3 */
+static PyObject *__Pyx_GetAttr3Default(PyObject *d) {
+    __Pyx_PyThreadState_declare
+    __Pyx_PyThreadState_assign
+    if (unlikely(!__Pyx_PyErr_ExceptionMatches(PyExc_AttributeError)))
+        return NULL;
+    __Pyx_PyErr_Clear();
+    Py_INCREF(d);
+    return d;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *o, PyObject *n, PyObject *d) {
+    PyObject *r = __Pyx_GetAttr(o, n);
+    return (likely(r)) ? r : __Pyx_GetAttr3Default(d);
+}
+
+/* SwapException */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    #if CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    tmp_type = exc_info->exc_type;
+    tmp_value = exc_info->exc_value;
+    tmp_tb = exc_info->exc_traceback;
+    exc_info->exc_type = *type;
+    exc_info->exc_value = *value;
+    exc_info->exc_traceback = *tb;
+    #else
+    tmp_type = tstate->exc_type;
+    tmp_value = tstate->exc_value;
+    tmp_tb = tstate->exc_traceback;
+    tstate->exc_type = *type;
+    tstate->exc_value = *value;
+    tstate->exc_traceback = *tb;
+    #endif
+    *type = tmp_type;
+    *value = tmp_value;
+    *tb = tmp_tb;
+}
+#else
+static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    PyErr_GetExcInfo(&tmp_type, &tmp_value, &tmp_tb);
+    PyErr_SetExcInfo(*type, *value, *tb);
+    *type = tmp_type;
+    *value = tmp_value;
+    *tb = tmp_tb;
+}
+#endif
+
+/* Import */
+static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
+    PyObject *empty_list = 0;
+    PyObject *module = 0;
+    PyObject *global_dict = 0;
+    PyObject *empty_dict = 0;
+    PyObject *list;
+    #if PY_MAJOR_VERSION < 3
+    PyObject *py_import;
+    py_import = __Pyx_PyObject_GetAttrStr(__pyx_b, __pyx_n_s_import);
+    if (!py_import)
+        goto bad;
+    #endif
+    if (from_list)
+        list = from_list;
+    else {
+        empty_list = PyList_New(0);
+        if (!empty_list)
+            goto bad;
+        list = empty_list;
+    }
+    global_dict = PyModule_GetDict(__pyx_m);
+    if (!global_dict)
+        goto bad;
+    empty_dict = PyDict_New();
+    if (!empty_dict)
+        goto bad;
+    {
+        #if PY_MAJOR_VERSION >= 3
+        if (level == -1) {
+            if (strchr(__Pyx_MODULE_NAME, '.')) {
+                module = PyImport_ImportModuleLevelObject(
+                    name, global_dict, empty_dict, list, 1);
+                if (!module) {
+                    if (!PyErr_ExceptionMatches(PyExc_ImportError))
+                        goto bad;
+                    PyErr_Clear();
+                }
+            }
+            level = 0;
+        }
+        #endif
+        if (!module) {
+            #if PY_MAJOR_VERSION < 3
+            PyObject *py_level = PyInt_FromLong(level);
+            if (!py_level)
+                goto bad;
+            module = PyObject_CallFunctionObjArgs(py_import,
+                name, global_dict, empty_dict, list, py_level, (PyObject *)NULL);
+            Py_DECREF(py_level);
+            #else
+            module = PyImport_ImportModuleLevelObject(
+                name, global_dict, empty_dict, list, level);
+            #endif
+        }
+    }
+bad:
+    #if PY_MAJOR_VERSION < 3
+    Py_XDECREF(py_import);
+    #endif
+    Py_XDECREF(empty_list);
+    Py_XDECREF(empty_dict);
+    return module;
+}
+
+/* PyIntBinop */
+#if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
+    (void)inplace;
+    (void)zerodivision_check;
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_CheckExact(op1))) {
+        const long b = intval;
+        long x;
+        long a = PyInt_AS_LONG(op1);
+            x = (long)((unsigned long)a + b);
+            if (likely((x^a) >= 0 || (x^b) >= 0))
+                return PyInt_FromLong(x);
+            return PyLong_Type.tp_as_number->nb_add(op1, op2);
+    }
+    #endif
+    #if CYTHON_USE_PYLONG_INTERNALS
+    if (likely(PyLong_CheckExact(op1))) {
+        const long b = intval;
+        long a, x;
+#ifdef HAVE_LONG_LONG
+        const PY_LONG_LONG llb = intval;
+        PY_LONG_LONG lla, llx;
+#endif
+        const digit* digits = ((PyLongObject*)op1)->ob_digit;
+        const Py_ssize_t size = Py_SIZE(op1);
+        if (likely(__Pyx_sst_abs(size) <= 1)) {
+            a = likely(size) ? digits[0] : 0;
+            if (size == -1) a = -a;
+        } else {
+            switch (size) {
+                case -2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                default: return PyLong_Type.tp_as_number->nb_add(op1, op2);
+            }
+        }
+                x = a + b;
+            return PyLong_FromLong(x);
+#ifdef HAVE_LONG_LONG
+        long_long:
+                llx = lla + llb;
+            return PyLong_FromLongLong(llx);
+#endif
+        
+        
+    }
+    #endif
+    if (PyFloat_CheckExact(op1)) {
+        const long b = intval;
+        double a = PyFloat_AS_DOUBLE(op1);
+            double result;
+            PyFPE_START_PROTECT("add", return NULL)
+            result = ((double)a) + (double)b;
+            PyFPE_END_PROTECT(result)
+            return PyFloat_FromDouble(result);
+    }
+    return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
+}
+#endif
+
+/* None */
+static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname) {
+    PyErr_Format(PyExc_UnboundLocalError, "local variable '%s' referenced before assignment", varname);
+}
+
+/* None */
+static CYTHON_INLINE long __Pyx_div_long(long a, long b) {
+    long q = a / b;
+    long r = a - q*b;
+    q -= ((r != 0) & ((r ^ b) < 0));
+    return q;
+}
+
+/* ImportFrom */
+static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
+    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
+    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
+        PyErr_Format(PyExc_ImportError,
+        #if PY_MAJOR_VERSION < 3
+            "cannot import name %.230s", PyString_AS_STRING(name));
+        #else
+            "cannot import name %S", name);
+        #endif
+    }
+    return value;
+}
+
+/* HasAttr */
+static CYTHON_INLINE int __Pyx_HasAttr(PyObject *o, PyObject *n) {
+    PyObject *r;
+    if (unlikely(!__Pyx_PyBaseString_Check(n))) {
+        PyErr_SetString(PyExc_TypeError,
+                        "hasattr(): attribute name must be string");
+        return -1;
+    }
+    r = __Pyx_GetAttr(o, n);
+    if (unlikely(!r)) {
+        PyErr_Clear();
+        return 0;
+    } else {
+        Py_DECREF(r);
+        return 1;
+    }
+}
+
+/* PyObject_GenericGetAttrNoDict */
+#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
+static PyObject *__Pyx_RaiseGenericGetAttributeError(PyTypeObject *tp, PyObject *attr_name) {
+    PyErr_Format(PyExc_AttributeError,
+#if PY_MAJOR_VERSION >= 3
+                 "'%.50s' object has no attribute '%U'",
+                 tp->tp_name, attr_name);
+#else
+                 "'%.50s' object has no attribute '%.400s'",
+                 tp->tp_name, PyString_AS_STRING(attr_name));
+#endif
+    return NULL;
+}
+static CYTHON_INLINE PyObject* __Pyx_PyObject_GenericGetAttrNoDict(PyObject* obj, PyObject* attr_name) {
+    PyObject *descr;
+    PyTypeObject *tp = Py_TYPE(obj);
+    if (unlikely(!PyString_Check(attr_name))) {
+        return PyObject_GenericGetAttr(obj, attr_name);
+    }
+    assert(!tp->tp_dictoffset);
+    descr = _PyType_Lookup(tp, attr_name);
+    if (unlikely(!descr)) {
+        return __Pyx_RaiseGenericGetAttributeError(tp, attr_name);
+    }
+    Py_INCREF(descr);
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyType_HasFeature(Py_TYPE(descr), Py_TPFLAGS_HAVE_CLASS)))
+    #endif
+    {
+        descrgetfunc f = Py_TYPE(descr)->tp_descr_get;
+        if (unlikely(f)) {
+            PyObject *res = f(descr, obj, (PyObject *)tp);
+            Py_DECREF(descr);
+            return res;
+        }
+    }
+    return descr;
+}
+#endif
+
+/* PyObject_GenericGetAttr */
+#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
+static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_name) {
+    if (unlikely(Py_TYPE(obj)->tp_dictoffset)) {
+        return PyObject_GenericGetAttr(obj, attr_name);
+    }
+    return __Pyx_PyObject_GenericGetAttrNoDict(obj, attr_name);
+}
+#endif
+
+/* SetVTable */
+static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
+#if PY_VERSION_HEX >= 0x02070000
+    PyObject *ob = PyCapsule_New(vtable, 0, 0);
+#else
+    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
+#endif
+    if (!ob)
+        goto bad;
+    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
+        goto bad;
+    Py_DECREF(ob);
+    return 0;
+bad:
+    Py_XDECREF(ob);
+    return -1;
+}
+
+/* SetupReduce */
+static int __Pyx_setup_reduce_is_named(PyObject* meth, PyObject* name) {
+  int ret;
+  PyObject *name_attr;
+  name_attr = __Pyx_PyObject_GetAttrStr(meth, __pyx_n_s_name_2);
+  if (likely(name_attr)) {
+      ret = PyObject_RichCompareBool(name_attr, name, Py_EQ);
+  } else {
+      ret = -1;
+  }
+  if (unlikely(ret < 0)) {
+      PyErr_Clear();
+      ret = 0;
+  }
+  Py_XDECREF(name_attr);
+  return ret;
+}
+static int __Pyx_setup_reduce(PyObject* type_obj) {
+    int ret = 0;
+    PyObject *object_reduce = NULL;
+    PyObject *object_reduce_ex = NULL;
+    PyObject *reduce = NULL;
+    PyObject *reduce_ex = NULL;
+    PyObject *reduce_cython = NULL;
+    PyObject *setstate = NULL;
+    PyObject *setstate_cython = NULL;
+#if CYTHON_USE_PYTYPE_LOOKUP
+    if (_PyType_Lookup((PyTypeObject*)type_obj, __pyx_n_s_getstate)) goto __PYX_GOOD;
+#else
+    if (PyObject_HasAttr(type_obj, __pyx_n_s_getstate)) goto __PYX_GOOD;
+#endif
+#if CYTHON_USE_PYTYPE_LOOKUP
+    object_reduce_ex = _PyType_Lookup(&PyBaseObject_Type, __pyx_n_s_reduce_ex); if (!object_reduce_ex) goto __PYX_BAD;
+#else
+    object_reduce_ex = __Pyx_PyObject_GetAttrStr((PyObject*)&PyBaseObject_Type, __pyx_n_s_reduce_ex); if (!object_reduce_ex) goto __PYX_BAD;
+#endif
+    reduce_ex = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_reduce_ex); if (unlikely(!reduce_ex)) goto __PYX_BAD;
+    if (reduce_ex == object_reduce_ex) {
+#if CYTHON_USE_PYTYPE_LOOKUP
+        object_reduce = _PyType_Lookup(&PyBaseObject_Type, __pyx_n_s_reduce); if (!object_reduce) goto __PYX_BAD;
+#else
+        object_reduce = __Pyx_PyObject_GetAttrStr((PyObject*)&PyBaseObject_Type, __pyx_n_s_reduce); if (!object_reduce) goto __PYX_BAD;
+#endif
+        reduce = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_reduce); if (unlikely(!reduce)) goto __PYX_BAD;
+        if (reduce == object_reduce || __Pyx_setup_reduce_is_named(reduce, __pyx_n_s_reduce_cython)) {
+            reduce_cython = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_reduce_cython); if (unlikely(!reduce_cython)) goto __PYX_BAD;
+            ret = PyDict_SetItem(((PyTypeObject*)type_obj)->tp_dict, __pyx_n_s_reduce, reduce_cython); if (unlikely(ret < 0)) goto __PYX_BAD;
+            ret = PyDict_DelItem(((PyTypeObject*)type_obj)->tp_dict, __pyx_n_s_reduce_cython); if (unlikely(ret < 0)) goto __PYX_BAD;
+            setstate = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_setstate);
+            if (!setstate) PyErr_Clear();
+            if (!setstate || __Pyx_setup_reduce_is_named(setstate, __pyx_n_s_setstate_cython)) {
+                setstate_cython = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_setstate_cython); if (unlikely(!setstate_cython)) goto __PYX_BAD;
+                ret = PyDict_SetItem(((PyTypeObject*)type_obj)->tp_dict, __pyx_n_s_setstate, setstate_cython); if (unlikely(ret < 0)) goto __PYX_BAD;
+                ret = PyDict_DelItem(((PyTypeObject*)type_obj)->tp_dict, __pyx_n_s_setstate_cython); if (unlikely(ret < 0)) goto __PYX_BAD;
+            }
+            PyType_Modified((PyTypeObject*)type_obj);
+        }
+    }
+    goto __PYX_GOOD;
+__PYX_BAD:
+    if (!PyErr_Occurred())
+        PyErr_Format(PyExc_RuntimeError, "Unable to initialize pickling for %s", ((PyTypeObject*)type_obj)->tp_name);
+    ret = -1;
+__PYX_GOOD:
+#if !CYTHON_USE_PYTYPE_LOOKUP
+    Py_XDECREF(object_reduce);
+    Py_XDECREF(object_reduce_ex);
+#endif
+    Py_XDECREF(reduce);
+    Py_XDECREF(reduce_ex);
+    Py_XDECREF(reduce_cython);
+    Py_XDECREF(setstate);
+    Py_XDECREF(setstate_cython);
+    return ret;
+}
+
+/* TypeImport */
+#ifndef __PYX_HAVE_RT_ImportType
+#define __PYX_HAVE_RT_ImportType
+static PyTypeObject *__Pyx_ImportType(PyObject *module, const char *module_name, const char *class_name,
+    size_t size, enum __Pyx_ImportType_CheckSize check_size)
+{
+    PyObject *result = 0;
+    char warning[200];
+    Py_ssize_t basicsize;
+#ifdef Py_LIMITED_API
+    PyObject *py_basicsize;
+#endif
+    result = PyObject_GetAttrString(module, class_name);
+    if (!result)
+        goto bad;
+    if (!PyType_Check(result)) {
+        PyErr_Format(PyExc_TypeError,
+            "%.200s.%.200s is not a type object",
+            module_name, class_name);
+        goto bad;
+    }
+#ifndef Py_LIMITED_API
+    basicsize = ((PyTypeObject *)result)->tp_basicsize;
+#else
+    py_basicsize = PyObject_GetAttrString(result, "__basicsize__");
+    if (!py_basicsize)
+        goto bad;
+    basicsize = PyLong_AsSsize_t(py_basicsize);
+    Py_DECREF(py_basicsize);
+    py_basicsize = 0;
+    if (basicsize == (Py_ssize_t)-1 && PyErr_Occurred())
+        goto bad;
+#endif
+    if ((size_t)basicsize < size) {
+        PyErr_Format(PyExc_ValueError,
+            "%.200s.%.200s size changed, may indicate binary incompatibility. "
+            "Expected %zd from C header, got %zd from PyObject",
+            module_name, class_name, size, basicsize);
+        goto bad;
+    }
+    if (check_size == __Pyx_ImportType_CheckSize_Error && (size_t)basicsize != size) {
+        PyErr_Format(PyExc_ValueError,
+            "%.200s.%.200s size changed, may indicate binary incompatibility. "
+            "Expected %zd from C header, got %zd from PyObject",
+            module_name, class_name, size, basicsize);
+        goto bad;
+    }
+    else if (check_size == __Pyx_ImportType_CheckSize_Warn && (size_t)basicsize > size) {
+        PyOS_snprintf(warning, sizeof(warning),
+            "%s.%s size changed, may indicate binary incompatibility. "
+            "Expected %zd from C header, got %zd from PyObject",
+            module_name, class_name, size, basicsize);
+        if (PyErr_WarnEx(NULL, warning, 0) < 0) goto bad;
+    }
+    return (PyTypeObject *)result;
+bad:
+    Py_XDECREF(result);
+    return NULL;
 }
 #endif
 
@@ -38743,812 +33675,6 @@ static CYTHON_INLINE void __Pyx_CyFunction_SetAnnotationsDict(PyObject *func, Py
     m->func_annotations = dict;
     Py_INCREF(dict);
 }
-
-/* PyIntBinop */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
-    (void)inplace;
-    (void)zerodivision_check;
-    #if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_CheckExact(op1))) {
-        const long b = intval;
-        long x;
-        long a = PyInt_AS_LONG(op1);
-            x = (long)((unsigned long)a + b);
-            if (likely((x^a) >= 0 || (x^b) >= 0))
-                return PyInt_FromLong(x);
-            return PyLong_Type.tp_as_number->nb_add(op1, op2);
-    }
-    #endif
-    #if CYTHON_USE_PYLONG_INTERNALS
-    if (likely(PyLong_CheckExact(op1))) {
-        const long b = intval;
-        long a, x;
-#ifdef HAVE_LONG_LONG
-        const PY_LONG_LONG llb = intval;
-        PY_LONG_LONG lla, llx;
-#endif
-        const digit* digits = ((PyLongObject*)op1)->ob_digit;
-        const Py_ssize_t size = Py_SIZE(op1);
-        if (likely(__Pyx_sst_abs(size) <= 1)) {
-            a = likely(size) ? digits[0] : 0;
-            if (size == -1) a = -a;
-        } else {
-            switch (size) {
-                case -2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                default: return PyLong_Type.tp_as_number->nb_add(op1, op2);
-            }
-        }
-                x = a + b;
-            return PyLong_FromLong(x);
-#ifdef HAVE_LONG_LONG
-        long_long:
-                llx = lla + llb;
-            return PyLong_FromLongLong(llx);
-#endif
-        
-        
-    }
-    #endif
-    if (PyFloat_CheckExact(op1)) {
-        const long b = intval;
-        double a = PyFloat_AS_DOUBLE(op1);
-            double result;
-            PyFPE_START_PROTECT("add", return NULL)
-            result = ((double)a) + (double)b;
-            PyFPE_END_PROTECT(result)
-            return PyFloat_FromDouble(result);
-    }
-    return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
-}
-#endif
-
-/* SliceTupleAndList */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE void __Pyx_crop_slice(Py_ssize_t* _start, Py_ssize_t* _stop, Py_ssize_t* _length) {
-    Py_ssize_t start = *_start, stop = *_stop, length = *_length;
-    if (start < 0) {
-        start += length;
-        if (start < 0)
-            start = 0;
-    }
-    if (stop < 0)
-        stop += length;
-    else if (stop > length)
-        stop = length;
-    *_length = stop - start;
-    *_start = start;
-    *_stop = stop;
-}
-static CYTHON_INLINE void __Pyx_copy_object_array(PyObject** CYTHON_RESTRICT src, PyObject** CYTHON_RESTRICT dest, Py_ssize_t length) {
-    PyObject *v;
-    Py_ssize_t i;
-    for (i = 0; i < length; i++) {
-        v = dest[i] = src[i];
-        Py_INCREF(v);
-    }
-}
-static CYTHON_INLINE PyObject* __Pyx_PyList_GetSlice(
-            PyObject* src, Py_ssize_t start, Py_ssize_t stop) {
-    PyObject* dest;
-    Py_ssize_t length = PyList_GET_SIZE(src);
-    __Pyx_crop_slice(&start, &stop, &length);
-    if (unlikely(length <= 0))
-        return PyList_New(0);
-    dest = PyList_New(length);
-    if (unlikely(!dest))
-        return NULL;
-    __Pyx_copy_object_array(
-        ((PyListObject*)src)->ob_item + start,
-        ((PyListObject*)dest)->ob_item,
-        length);
-    return dest;
-}
-static CYTHON_INLINE PyObject* __Pyx_PyTuple_GetSlice(
-            PyObject* src, Py_ssize_t start, Py_ssize_t stop) {
-    PyObject* dest;
-    Py_ssize_t length = PyTuple_GET_SIZE(src);
-    __Pyx_crop_slice(&start, &stop, &length);
-    if (unlikely(length <= 0))
-        return PyTuple_New(0);
-    dest = PyTuple_New(length);
-    if (unlikely(!dest))
-        return NULL;
-    __Pyx_copy_object_array(
-        ((PyTupleObject*)src)->ob_item + start,
-        ((PyTupleObject*)dest)->ob_item,
-        length);
-    return dest;
-}
-#endif
-
-/* PyIntBinop */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_SubtractObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
-    (void)inplace;
-    (void)zerodivision_check;
-    #if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_CheckExact(op1))) {
-        const long b = intval;
-        long x;
-        long a = PyInt_AS_LONG(op1);
-            x = (long)((unsigned long)a - b);
-            if (likely((x^a) >= 0 || (x^~b) >= 0))
-                return PyInt_FromLong(x);
-            return PyLong_Type.tp_as_number->nb_subtract(op1, op2);
-    }
-    #endif
-    #if CYTHON_USE_PYLONG_INTERNALS
-    if (likely(PyLong_CheckExact(op1))) {
-        const long b = intval;
-        long a, x;
-#ifdef HAVE_LONG_LONG
-        const PY_LONG_LONG llb = intval;
-        PY_LONG_LONG lla, llx;
-#endif
-        const digit* digits = ((PyLongObject*)op1)->ob_digit;
-        const Py_ssize_t size = Py_SIZE(op1);
-        if (likely(__Pyx_sst_abs(size) <= 1)) {
-            a = likely(size) ? digits[0] : 0;
-            if (size == -1) a = -a;
-        } else {
-            switch (size) {
-                case -2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                default: return PyLong_Type.tp_as_number->nb_subtract(op1, op2);
-            }
-        }
-                x = a - b;
-            return PyLong_FromLong(x);
-#ifdef HAVE_LONG_LONG
-        long_long:
-                llx = lla - llb;
-            return PyLong_FromLongLong(llx);
-#endif
-        
-        
-    }
-    #endif
-    if (PyFloat_CheckExact(op1)) {
-        const long b = intval;
-        double a = PyFloat_AS_DOUBLE(op1);
-            double result;
-            PyFPE_START_PROTECT("subtract", return NULL)
-            result = ((double)a) - (double)b;
-            PyFPE_END_PROTECT(result)
-            return PyFloat_FromDouble(result);
-    }
-    return (inplace ? PyNumber_InPlaceSubtract : PyNumber_Subtract)(op1, op2);
-}
-#endif
-
-/* WriteUnraisableException */
-static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
-                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
-                                  int full_traceback, CYTHON_UNUSED int nogil) {
-    PyObject *old_exc, *old_val, *old_tb;
-    PyObject *ctx;
-    __Pyx_PyThreadState_declare
-#ifdef WITH_THREAD
-    PyGILState_STATE state;
-    if (nogil)
-        state = PyGILState_Ensure();
-#ifdef _MSC_VER
-    else state = (PyGILState_STATE)-1;
-#endif
-#endif
-    __Pyx_PyThreadState_assign
-    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
-    if (full_traceback) {
-        Py_XINCREF(old_exc);
-        Py_XINCREF(old_val);
-        Py_XINCREF(old_tb);
-        __Pyx_ErrRestore(old_exc, old_val, old_tb);
-        PyErr_PrintEx(1);
-    }
-    #if PY_MAJOR_VERSION < 3
-    ctx = PyString_FromString(name);
-    #else
-    ctx = PyUnicode_FromString(name);
-    #endif
-    __Pyx_ErrRestore(old_exc, old_val, old_tb);
-    if (!ctx) {
-        PyErr_WriteUnraisable(Py_None);
-    } else {
-        PyErr_WriteUnraisable(ctx);
-        Py_DECREF(ctx);
-    }
-#ifdef WITH_THREAD
-    if (nogil)
-        PyGILState_Release(state);
-#endif
-}
-
-/* ExtTypeTest */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (likely(__Pyx_TypeCheck(obj, type)))
-        return 1;
-    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
-                 Py_TYPE(obj)->tp_name, type->tp_name);
-    return 0;
-}
-
-/* PyErrExceptionMatches */
-#if CYTHON_FAST_THREAD_STATE
-static int __Pyx_PyErr_ExceptionMatchesTuple(PyObject *exc_type, PyObject *tuple) {
-    Py_ssize_t i, n;
-    n = PyTuple_GET_SIZE(tuple);
-#if PY_MAJOR_VERSION >= 3
-    for (i=0; i<n; i++) {
-        if (exc_type == PyTuple_GET_ITEM(tuple, i)) return 1;
-    }
-#endif
-    for (i=0; i<n; i++) {
-        if (__Pyx_PyErr_GivenExceptionMatches(exc_type, PyTuple_GET_ITEM(tuple, i))) return 1;
-    }
-    return 0;
-}
-static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tstate, PyObject* err) {
-    PyObject *exc_type = tstate->curexc_type;
-    if (exc_type == err) return 1;
-    if (unlikely(!exc_type)) return 0;
-    if (unlikely(PyTuple_Check(err)))
-        return __Pyx_PyErr_ExceptionMatchesTuple(exc_type, err);
-    return __Pyx_PyErr_GivenExceptionMatches(exc_type, err);
-}
-#endif
-
-/* None */
-static CYTHON_INLINE Py_ssize_t __Pyx_div_Py_ssize_t(Py_ssize_t a, Py_ssize_t b) {
-    Py_ssize_t q = a / b;
-    Py_ssize_t r = a - q*b;
-    q -= ((r != 0) & ((r ^ b) < 0));
-    return q;
-}
-
-/* GetAttr */
-static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
-#if CYTHON_USE_TYPE_SLOTS
-#if PY_MAJOR_VERSION >= 3
-    if (likely(PyUnicode_Check(n)))
-#else
-    if (likely(PyString_Check(n)))
-#endif
-        return __Pyx_PyObject_GetAttrStr(o, n);
-#endif
-    return PyObject_GetAttr(o, n);
-}
-
-/* decode_c_string */
-static CYTHON_INLINE PyObject* __Pyx_decode_c_string(
-         const char* cstring, Py_ssize_t start, Py_ssize_t stop,
-         const char* encoding, const char* errors,
-         PyObject* (*decode_func)(const char *s, Py_ssize_t size, const char *errors)) {
-    Py_ssize_t length;
-    if (unlikely((start < 0) | (stop < 0))) {
-        size_t slen = strlen(cstring);
-        if (unlikely(slen > (size_t) PY_SSIZE_T_MAX)) {
-            PyErr_SetString(PyExc_OverflowError,
-                            "c-string too long to convert to Python");
-            return NULL;
-        }
-        length = (Py_ssize_t) slen;
-        if (start < 0) {
-            start += length;
-            if (start < 0)
-                start = 0;
-        }
-        if (stop < 0)
-            stop += length;
-    }
-    length = stop - start;
-    if (unlikely(length <= 0))
-        return PyUnicode_FromUnicode(NULL, 0);
-    cstring += start;
-    if (decode_func) {
-        return decode_func(cstring, length, errors);
-    } else {
-        return PyUnicode_Decode(cstring, length, encoding, errors);
-    }
-}
-
-/* GetAttr3 */
-static PyObject *__Pyx_GetAttr3Default(PyObject *d) {
-    __Pyx_PyThreadState_declare
-    __Pyx_PyThreadState_assign
-    if (unlikely(!__Pyx_PyErr_ExceptionMatches(PyExc_AttributeError)))
-        return NULL;
-    __Pyx_PyErr_Clear();
-    Py_INCREF(d);
-    return d;
-}
-static CYTHON_INLINE PyObject *__Pyx_GetAttr3(PyObject *o, PyObject *n, PyObject *d) {
-    PyObject *r = __Pyx_GetAttr(o, n);
-    return (likely(r)) ? r : __Pyx_GetAttr3Default(d);
-}
-
-/* SwapException */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    #if CYTHON_USE_EXC_INFO_STACK
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    tmp_type = exc_info->exc_type;
-    tmp_value = exc_info->exc_value;
-    tmp_tb = exc_info->exc_traceback;
-    exc_info->exc_type = *type;
-    exc_info->exc_value = *value;
-    exc_info->exc_traceback = *tb;
-    #else
-    tmp_type = tstate->exc_type;
-    tmp_value = tstate->exc_value;
-    tmp_tb = tstate->exc_traceback;
-    tstate->exc_type = *type;
-    tstate->exc_value = *value;
-    tstate->exc_traceback = *tb;
-    #endif
-    *type = tmp_type;
-    *value = tmp_value;
-    *tb = tmp_tb;
-}
-#else
-static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    PyErr_GetExcInfo(&tmp_type, &tmp_value, &tmp_tb);
-    PyErr_SetExcInfo(*type, *value, *tb);
-    *type = tmp_type;
-    *value = tmp_value;
-    *tb = tmp_tb;
-}
-#endif
-
-/* Import */
-static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
-    PyObject *empty_list = 0;
-    PyObject *module = 0;
-    PyObject *global_dict = 0;
-    PyObject *empty_dict = 0;
-    PyObject *list;
-    #if PY_MAJOR_VERSION < 3
-    PyObject *py_import;
-    py_import = __Pyx_PyObject_GetAttrStr(__pyx_b, __pyx_n_s_import);
-    if (!py_import)
-        goto bad;
-    #endif
-    if (from_list)
-        list = from_list;
-    else {
-        empty_list = PyList_New(0);
-        if (!empty_list)
-            goto bad;
-        list = empty_list;
-    }
-    global_dict = PyModule_GetDict(__pyx_m);
-    if (!global_dict)
-        goto bad;
-    empty_dict = PyDict_New();
-    if (!empty_dict)
-        goto bad;
-    {
-        #if PY_MAJOR_VERSION >= 3
-        if (level == -1) {
-            if (strchr(__Pyx_MODULE_NAME, '.')) {
-                module = PyImport_ImportModuleLevelObject(
-                    name, global_dict, empty_dict, list, 1);
-                if (!module) {
-                    if (!PyErr_ExceptionMatches(PyExc_ImportError))
-                        goto bad;
-                    PyErr_Clear();
-                }
-            }
-            level = 0;
-        }
-        #endif
-        if (!module) {
-            #if PY_MAJOR_VERSION < 3
-            PyObject *py_level = PyInt_FromLong(level);
-            if (!py_level)
-                goto bad;
-            module = PyObject_CallFunctionObjArgs(py_import,
-                name, global_dict, empty_dict, list, py_level, (PyObject *)NULL);
-            Py_DECREF(py_level);
-            #else
-            module = PyImport_ImportModuleLevelObject(
-                name, global_dict, empty_dict, list, level);
-            #endif
-        }
-    }
-bad:
-    #if PY_MAJOR_VERSION < 3
-    Py_XDECREF(py_import);
-    #endif
-    Py_XDECREF(empty_list);
-    Py_XDECREF(empty_dict);
-    return module;
-}
-
-/* None */
-static CYTHON_INLINE void __Pyx_RaiseUnboundLocalError(const char *varname) {
-    PyErr_Format(PyExc_UnboundLocalError, "local variable '%s' referenced before assignment", varname);
-}
-
-/* None */
-static CYTHON_INLINE long __Pyx_div_long(long a, long b) {
-    long q = a / b;
-    long r = a - q*b;
-    q -= ((r != 0) & ((r ^ b) < 0));
-    return q;
-}
-
-/* ImportFrom */
-static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
-    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
-    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
-        PyErr_Format(PyExc_ImportError,
-        #if PY_MAJOR_VERSION < 3
-            "cannot import name %.230s", PyString_AS_STRING(name));
-        #else
-            "cannot import name %S", name);
-        #endif
-    }
-    return value;
-}
-
-/* HasAttr */
-static CYTHON_INLINE int __Pyx_HasAttr(PyObject *o, PyObject *n) {
-    PyObject *r;
-    if (unlikely(!__Pyx_PyBaseString_Check(n))) {
-        PyErr_SetString(PyExc_TypeError,
-                        "hasattr(): attribute name must be string");
-        return -1;
-    }
-    r = __Pyx_GetAttr(o, n);
-    if (unlikely(!r)) {
-        PyErr_Clear();
-        return 0;
-    } else {
-        Py_DECREF(r);
-        return 1;
-    }
-}
-
-/* PyObject_GenericGetAttrNoDict */
-#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
-static PyObject *__Pyx_RaiseGenericGetAttributeError(PyTypeObject *tp, PyObject *attr_name) {
-    PyErr_Format(PyExc_AttributeError,
-#if PY_MAJOR_VERSION >= 3
-                 "'%.50s' object has no attribute '%U'",
-                 tp->tp_name, attr_name);
-#else
-                 "'%.50s' object has no attribute '%.400s'",
-                 tp->tp_name, PyString_AS_STRING(attr_name));
-#endif
-    return NULL;
-}
-static CYTHON_INLINE PyObject* __Pyx_PyObject_GenericGetAttrNoDict(PyObject* obj, PyObject* attr_name) {
-    PyObject *descr;
-    PyTypeObject *tp = Py_TYPE(obj);
-    if (unlikely(!PyString_Check(attr_name))) {
-        return PyObject_GenericGetAttr(obj, attr_name);
-    }
-    assert(!tp->tp_dictoffset);
-    descr = _PyType_Lookup(tp, attr_name);
-    if (unlikely(!descr)) {
-        return __Pyx_RaiseGenericGetAttributeError(tp, attr_name);
-    }
-    Py_INCREF(descr);
-    #if PY_MAJOR_VERSION < 3
-    if (likely(PyType_HasFeature(Py_TYPE(descr), Py_TPFLAGS_HAVE_CLASS)))
-    #endif
-    {
-        descrgetfunc f = Py_TYPE(descr)->tp_descr_get;
-        if (unlikely(f)) {
-            PyObject *res = f(descr, obj, (PyObject *)tp);
-            Py_DECREF(descr);
-            return res;
-        }
-    }
-    return descr;
-}
-#endif
-
-/* PyObject_GenericGetAttr */
-#if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
-static PyObject* __Pyx_PyObject_GenericGetAttr(PyObject* obj, PyObject* attr_name) {
-    if (unlikely(Py_TYPE(obj)->tp_dictoffset)) {
-        return PyObject_GenericGetAttr(obj, attr_name);
-    }
-    return __Pyx_PyObject_GenericGetAttrNoDict(obj, attr_name);
-}
-#endif
-
-/* SetVTable */
-static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
-#if PY_VERSION_HEX >= 0x02070000
-    PyObject *ob = PyCapsule_New(vtable, 0, 0);
-#else
-    PyObject *ob = PyCObject_FromVoidPtr(vtable, 0);
-#endif
-    if (!ob)
-        goto bad;
-    if (PyDict_SetItem(dict, __pyx_n_s_pyx_vtable, ob) < 0)
-        goto bad;
-    Py_DECREF(ob);
-    return 0;
-bad:
-    Py_XDECREF(ob);
-    return -1;
-}
-
-/* SetupReduce */
-static int __Pyx_setup_reduce_is_named(PyObject* meth, PyObject* name) {
-  int ret;
-  PyObject *name_attr;
-  name_attr = __Pyx_PyObject_GetAttrStr(meth, __pyx_n_s_name_2);
-  if (likely(name_attr)) {
-      ret = PyObject_RichCompareBool(name_attr, name, Py_EQ);
-  } else {
-      ret = -1;
-  }
-  if (unlikely(ret < 0)) {
-      PyErr_Clear();
-      ret = 0;
-  }
-  Py_XDECREF(name_attr);
-  return ret;
-}
-static int __Pyx_setup_reduce(PyObject* type_obj) {
-    int ret = 0;
-    PyObject *object_reduce = NULL;
-    PyObject *object_reduce_ex = NULL;
-    PyObject *reduce = NULL;
-    PyObject *reduce_ex = NULL;
-    PyObject *reduce_cython = NULL;
-    PyObject *setstate = NULL;
-    PyObject *setstate_cython = NULL;
-#if CYTHON_USE_PYTYPE_LOOKUP
-    if (_PyType_Lookup((PyTypeObject*)type_obj, __pyx_n_s_getstate)) goto __PYX_GOOD;
-#else
-    if (PyObject_HasAttr(type_obj, __pyx_n_s_getstate)) goto __PYX_GOOD;
-#endif
-#if CYTHON_USE_PYTYPE_LOOKUP
-    object_reduce_ex = _PyType_Lookup(&PyBaseObject_Type, __pyx_n_s_reduce_ex); if (!object_reduce_ex) goto __PYX_BAD;
-#else
-    object_reduce_ex = __Pyx_PyObject_GetAttrStr((PyObject*)&PyBaseObject_Type, __pyx_n_s_reduce_ex); if (!object_reduce_ex) goto __PYX_BAD;
-#endif
-    reduce_ex = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_reduce_ex); if (unlikely(!reduce_ex)) goto __PYX_BAD;
-    if (reduce_ex == object_reduce_ex) {
-#if CYTHON_USE_PYTYPE_LOOKUP
-        object_reduce = _PyType_Lookup(&PyBaseObject_Type, __pyx_n_s_reduce); if (!object_reduce) goto __PYX_BAD;
-#else
-        object_reduce = __Pyx_PyObject_GetAttrStr((PyObject*)&PyBaseObject_Type, __pyx_n_s_reduce); if (!object_reduce) goto __PYX_BAD;
-#endif
-        reduce = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_reduce); if (unlikely(!reduce)) goto __PYX_BAD;
-        if (reduce == object_reduce || __Pyx_setup_reduce_is_named(reduce, __pyx_n_s_reduce_cython)) {
-            reduce_cython = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_reduce_cython); if (unlikely(!reduce_cython)) goto __PYX_BAD;
-            ret = PyDict_SetItem(((PyTypeObject*)type_obj)->tp_dict, __pyx_n_s_reduce, reduce_cython); if (unlikely(ret < 0)) goto __PYX_BAD;
-            ret = PyDict_DelItem(((PyTypeObject*)type_obj)->tp_dict, __pyx_n_s_reduce_cython); if (unlikely(ret < 0)) goto __PYX_BAD;
-            setstate = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_setstate);
-            if (!setstate) PyErr_Clear();
-            if (!setstate || __Pyx_setup_reduce_is_named(setstate, __pyx_n_s_setstate_cython)) {
-                setstate_cython = __Pyx_PyObject_GetAttrStr(type_obj, __pyx_n_s_setstate_cython); if (unlikely(!setstate_cython)) goto __PYX_BAD;
-                ret = PyDict_SetItem(((PyTypeObject*)type_obj)->tp_dict, __pyx_n_s_setstate, setstate_cython); if (unlikely(ret < 0)) goto __PYX_BAD;
-                ret = PyDict_DelItem(((PyTypeObject*)type_obj)->tp_dict, __pyx_n_s_setstate_cython); if (unlikely(ret < 0)) goto __PYX_BAD;
-            }
-            PyType_Modified((PyTypeObject*)type_obj);
-        }
-    }
-    goto __PYX_GOOD;
-__PYX_BAD:
-    if (!PyErr_Occurred())
-        PyErr_Format(PyExc_RuntimeError, "Unable to initialize pickling for %s", ((PyTypeObject*)type_obj)->tp_name);
-    ret = -1;
-__PYX_GOOD:
-#if !CYTHON_USE_PYTYPE_LOOKUP
-    Py_XDECREF(object_reduce);
-    Py_XDECREF(object_reduce_ex);
-#endif
-    Py_XDECREF(reduce);
-    Py_XDECREF(reduce_ex);
-    Py_XDECREF(reduce_cython);
-    Py_XDECREF(setstate);
-    Py_XDECREF(setstate_cython);
-    return ret;
-}
-
-/* TypeImport */
-#ifndef __PYX_HAVE_RT_ImportType
-#define __PYX_HAVE_RT_ImportType
-static PyTypeObject *__Pyx_ImportType(PyObject *module, const char *module_name, const char *class_name,
-    size_t size, enum __Pyx_ImportType_CheckSize check_size)
-{
-    PyObject *result = 0;
-    char warning[200];
-    Py_ssize_t basicsize;
-#ifdef Py_LIMITED_API
-    PyObject *py_basicsize;
-#endif
-    result = PyObject_GetAttrString(module, class_name);
-    if (!result)
-        goto bad;
-    if (!PyType_Check(result)) {
-        PyErr_Format(PyExc_TypeError,
-            "%.200s.%.200s is not a type object",
-            module_name, class_name);
-        goto bad;
-    }
-#ifndef Py_LIMITED_API
-    basicsize = ((PyTypeObject *)result)->tp_basicsize;
-#else
-    py_basicsize = PyObject_GetAttrString(result, "__basicsize__");
-    if (!py_basicsize)
-        goto bad;
-    basicsize = PyLong_AsSsize_t(py_basicsize);
-    Py_DECREF(py_basicsize);
-    py_basicsize = 0;
-    if (basicsize == (Py_ssize_t)-1 && PyErr_Occurred())
-        goto bad;
-#endif
-    if ((size_t)basicsize < size) {
-        PyErr_Format(PyExc_ValueError,
-            "%.200s.%.200s size changed, may indicate binary incompatibility. "
-            "Expected %zd from C header, got %zd from PyObject",
-            module_name, class_name, size, basicsize);
-        goto bad;
-    }
-    if (check_size == __Pyx_ImportType_CheckSize_Error && (size_t)basicsize != size) {
-        PyErr_Format(PyExc_ValueError,
-            "%.200s.%.200s size changed, may indicate binary incompatibility. "
-            "Expected %zd from C header, got %zd from PyObject",
-            module_name, class_name, size, basicsize);
-        goto bad;
-    }
-    else if (check_size == __Pyx_ImportType_CheckSize_Warn && (size_t)basicsize > size) {
-        PyOS_snprintf(warning, sizeof(warning),
-            "%s.%s size changed, may indicate binary incompatibility. "
-            "Expected %zd from C header, got %zd from PyObject",
-            module_name, class_name, size, basicsize);
-        if (PyErr_WarnEx(NULL, warning, 0) < 0) goto bad;
-    }
-    return (PyTypeObject *)result;
-bad:
-    Py_XDECREF(result);
-    return NULL;
-}
-#endif
 
 /* FusedFunction */
 static PyObject *
@@ -40926,98 +35052,6 @@ no_fail:
 }
 
 /* ObjectToMemviewSlice */
-  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(PyObject *obj, int writable_flag) {
-    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
-    __Pyx_BufFmt_StackElem stack[1];
-    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
-    int retcode;
-    if (obj == Py_None) {
-        result.memview = (struct __pyx_memoryview_obj *) Py_None;
-        return result;
-    }
-    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
-                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 2,
-                                                 &__Pyx_TypeInfo_nn_uint8_t, stack,
-                                                 &result, obj);
-    if (unlikely(retcode == -1))
-        goto __pyx_fail;
-    return result;
-__pyx_fail:
-    result.memview = NULL;
-    result.data = NULL;
-    return result;
-}
-
-/* ObjectToMemviewSlice */
-  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(PyObject *obj, int writable_flag) {
-    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
-    __Pyx_BufFmt_StackElem stack[1];
-    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
-    int retcode;
-    if (obj == Py_None) {
-        result.memview = (struct __pyx_memoryview_obj *) Py_None;
-        return result;
-    }
-    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
-                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 2,
-                                                 &__Pyx_TypeInfo_nn_uint16_t, stack,
-                                                 &result, obj);
-    if (unlikely(retcode == -1))
-        goto __pyx_fail;
-    return result;
-__pyx_fail:
-    result.memview = NULL;
-    result.data = NULL;
-    return result;
-}
-
-/* ObjectToMemviewSlice */
-  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(PyObject *obj, int writable_flag) {
-    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
-    __Pyx_BufFmt_StackElem stack[1];
-    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
-    int retcode;
-    if (obj == Py_None) {
-        result.memview = (struct __pyx_memoryview_obj *) Py_None;
-        return result;
-    }
-    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
-                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 2,
-                                                 &__Pyx_TypeInfo_nn_uint32_t, stack,
-                                                 &result, obj);
-    if (unlikely(retcode == -1))
-        goto __pyx_fail;
-    return result;
-__pyx_fail:
-    result.memview = NULL;
-    result.data = NULL;
-    return result;
-}
-
-/* ObjectToMemviewSlice */
-  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(PyObject *obj, int writable_flag) {
-    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
-    __Pyx_BufFmt_StackElem stack[1];
-    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
-    int retcode;
-    if (obj == Py_None) {
-        result.memview = (struct __pyx_memoryview_obj *) Py_None;
-        return result;
-    }
-    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
-                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 2,
-                                                 &__Pyx_TypeInfo_nn_uint64_t, stack,
-                                                 &result, obj);
-    if (unlikely(retcode == -1))
-        goto __pyx_fail;
-    return result;
-__pyx_fail:
-    result.memview = NULL;
-    result.data = NULL;
-    return result;
-}
-
-/* ObjectToMemviewSlice */
   static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dc_nn_uint8_t(PyObject *obj, int writable_flag) {
     __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
     __Pyx_BufFmt_StackElem stack[1];
@@ -41163,6 +35197,29 @@ __pyx_fail:
     }
 
 /* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint16_t(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
+                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 2,
+                                                 &__Pyx_TypeInfo_nn_uint16_t, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
+}
+
+/* ObjectToMemviewSlice */
   static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dc_int(PyObject *obj, int writable_flag) {
     __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
     __Pyx_BufFmt_StackElem stack[1];
@@ -41175,6 +35232,75 @@ __pyx_fail:
     retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
                                                  (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 1,
                                                  &__Pyx_TypeInfo_int, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
+}
+
+/* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint8_t(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
+                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 2,
+                                                 &__Pyx_TypeInfo_nn_uint8_t, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
+}
+
+/* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint32_t(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
+                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 2,
+                                                 &__Pyx_TypeInfo_nn_uint32_t, stack,
+                                                 &result, obj);
+    if (unlikely(retcode == -1))
+        goto __pyx_fail;
+    return result;
+__pyx_fail:
+    result.memview = NULL;
+    result.data = NULL;
+    return result;
+}
+
+/* ObjectToMemviewSlice */
+  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_d_dc_nn_uint64_t(PyObject *obj, int writable_flag) {
+    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
+    __Pyx_BufFmt_StackElem stack[1];
+    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_FOLLOW), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_CONTIG) };
+    int retcode;
+    if (obj == Py_None) {
+        result.memview = (struct __pyx_memoryview_obj *) Py_None;
+        return result;
+    }
+    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, __Pyx_IS_C_CONTIG,
+                                                 (PyBUF_C_CONTIGUOUS | PyBUF_FORMAT) | writable_flag, 2,
+                                                 &__Pyx_TypeInfo_nn_uint64_t, stack,
                                                  &result, obj);
     if (unlikely(retcode == -1))
         goto __pyx_fail;
@@ -41214,29 +35340,6 @@ __pyx_fail:
         return _PyLong_FromByteArray(bytes, sizeof(int),
                                      little, !is_unsigned);
     }
-}
-
-/* ObjectToMemviewSlice */
-  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsds_nn_uint8_t(PyObject *obj, int writable_flag) {
-    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
-    __Pyx_BufFmt_StackElem stack[1];
-    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED), (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
-    int retcode;
-    if (obj == Py_None) {
-        result.memview = (struct __pyx_memoryview_obj *) Py_None;
-        return result;
-    }
-    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
-                                                 PyBUF_RECORDS_RO | writable_flag, 2,
-                                                 &__Pyx_TypeInfo_nn_uint8_t, stack,
-                                                 &result, obj);
-    if (unlikely(retcode == -1))
-        goto __pyx_fail;
-    return result;
-__pyx_fail:
-    result.memview = NULL;
-    result.data = NULL;
-    return result;
 }
 
 /* CIntToPy */
@@ -43219,6 +37322,24 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to char");
     return (char) -1;
+}
+
+/* PyObjectCallMethod1 */
+  static PyObject* __Pyx__PyObject_CallMethod1(PyObject* method, PyObject* arg) {
+    PyObject *result = __Pyx_PyObject_CallOneArg(method, arg);
+    Py_DECREF(method);
+    return result;
+}
+static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg) {
+    PyObject *method = NULL, *result;
+    int is_method = __Pyx_PyObject_GetMethod(obj, method_name, &method);
+    if (likely(is_method)) {
+        result = __Pyx_PyObject_Call2Args(method, obj, arg);
+        Py_DECREF(method);
+        return result;
+    }
+    if (unlikely(!method)) return NULL;
+    return __Pyx__PyObject_CallMethod1(method, arg);
 }
 
 /* CoroutineBase */
