@@ -42,7 +42,6 @@ class Requirements:
         self.oligo_addition = len(oligo_prefix) + len(oligo_suffix)
         self.const_cost = const_cost
         if re_calc_lengths:
-            self.min_oligo_length -= self.oligo_addition
             self.max_oligo_length -= self.oligo_addition
 
 
