@@ -31,16 +31,16 @@ class GraphMaker:
         dna_var_arr = np.array(dna_var_poss)
 
         def _is_valid_edge(nd1: Gate, nd2: Gate) -> bool:
-            if nd1.idx + 3 >= nd2.idx:
+            if nd1.overlap(nd2):
                 return False
             # segments with variable positions between them
             # are required to be at a certain length
             if np.any(np.logical_and(nd1.idx < dna_var_arr, dna_var_arr < nd2.idx)):
                 # 4 was added to account for nd2 length (4) plus the fact we need to include the entire gate
-                if not (min_oligo_length < nd2.idx - nd1.idx + 4 < max_oligo_length):
+                if not (min_oligo_length < nd2 - nd1 < max_oligo_length):
                     return False
             else:
-                if nd2.idx - nd1.idx + 4 < min_const_oligo_length:
+                if nd2 - nd1 < min_const_oligo_length:
                     return False
             if ggdata.gates_all_scores(nd1.bps, nd2.bps) > max_gate_crosstalk:
                 return False
@@ -104,7 +104,7 @@ def create_default_weight_func(
 
     def edge_weight(nd1: Gate, nd2: Gate) -> int:
         if np.any(np.logical_and(nd1.idx < var_pos_arr, var_pos_arr < nd2.idx)):
-            return (nd2.idx - nd1.idx + 4 + oligo_addition) * np.product(
+            return (nd2 - nd1 + oligo_addition) * np.product(
                 [
                     len(codons) if nd1.idx < pos < nd2.idx else 1
                     for pos, codons in dna_pos_n_codons.items()
