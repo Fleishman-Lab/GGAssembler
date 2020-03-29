@@ -1,4 +1,4 @@
-from typing import NamedTuple, Tuple
+from typing import NamedTuple, Optional, Tuple
 
 from pandas import DataFrame
 
@@ -10,7 +10,7 @@ class SynMut(NamedTuple):
 
 
 class Gate(NamedTuple):
-    idx: int
+    idx: Optional[int]
     bps: str
     req_primer: bool = False
     syn_mut: Tuple[SynMut, ...] = ()

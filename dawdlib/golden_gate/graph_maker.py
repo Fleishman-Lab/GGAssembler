@@ -14,6 +14,9 @@ from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.utils import Requirements, syn_muts
 
+SOURCE = Gate(None, SOURCE_NODE)
+TARGET = Gate(None, SINK_NODE)
+
 
 class GraphMaker:
     def __init__(self, gg_data):
@@ -83,16 +86,16 @@ def create_default_valid_node_function(
 def _add_source_sink(
     d_graph: nx.DiGraph, dna: str, var_poss: List[int]
 ) -> Tuple[Gate, Gate]:
-    src = Gate(-1, SOURCE_NODE)
-    snk = Gate(len(dna), SINK_NODE)
-    d_graph.add_node(src)
-    d_graph.add_node(snk)
+    edges = []
     for nd1 in d_graph.nodes:
-        if src.idx < nd1.idx < var_poss[0]:
-            d_graph.add_edge(src, nd1, weight=0)
-        elif snk.idx > nd1.idx > var_poss[-1]:
-            d_graph.add_edge(nd1, snk, weight=0)
-    return src, snk
+        if nd1.idx < var_poss[0]:
+            edges.append((SOURCE, nd1, 0))
+        elif nd1.idx > var_poss[-1]:
+            edges.append((nd1, TARGET, 0))
+    d_graph.add_node(SOURCE)
+    d_graph.add_node(TARGET)
+    d_graph.add_weighted_edges_from(edges)
+    return SOURCE, TARGET
 
 
 def create_default_weight_func(
