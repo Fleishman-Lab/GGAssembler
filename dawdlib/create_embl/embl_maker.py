@@ -34,16 +34,3 @@ def create_path_features(chosen_path):
         )
         features.append(ftr)
     return features
-
-
-def gate_path_to_df(gate_path: List[Gate]) -> pd.DataFrame:
-    return pd.DataFrame.from_records(
-        gate_path, columns=gate_path[0].__annotations__.keys()
-    )
-
-
-def df_to_gate_path(gate_df: pd.DataFrame) -> List[Gate]:
-    gate_path: List[Gate] = []
-    for row in gate_df.itertuples(index=False):
-        gate_path.append(Gate(**row._asdict()))
-    return gate_path

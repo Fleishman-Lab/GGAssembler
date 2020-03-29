@@ -109,7 +109,7 @@ class CLI:
             prefix (str): the string to add before each oligo. defaults to a BsaI recognition site
             suffix (str): the string to add after each oligo. defaults to a BsaI recognition site and primer
         """
-        from dawdlib.gg_dc_combine.combine_dc_gates import combine_gate_path_deg_codons
+        from dawdlib.gg_dc_combine.gg_dc_combine import combine_gate_path_deg_codons
 
         combine_gate_path_deg_codons(
             dc_table_file=dc_table,

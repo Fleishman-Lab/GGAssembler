@@ -1,11 +1,13 @@
+import json
 from itertools import product
 from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
 
+from dawdlib.degenerate_dna.utils import parse_degenerate_codon_csv
 from dawdlib.golden_gate.gate import Gate
-from dawdlib.golden_gate.utils import OligoTableEntry
+from dawdlib.golden_gate.utils import OligoTableEntry, gate_df_list, parse_dna
 
 
 def parse_gg_segments_csv(csv_file: str) -> pd.DataFrame:
@@ -125,3 +127,24 @@ def create_to_order_df(
                 )
             )
     return pd.DataFrame.from_records(oligo_entries, columns=OligoTableEntry._fields)
+
+
+def combine_gate_path_deg_codons(
+    dc_table_file: str,
+    gate_path_file: str,
+    dna_file: str,
+    prefix: str,
+    suffix: str,
+    to_order_df_file: str,
+):
+    dna = parse_dna(dna_file)
+    dc_df = parse_degenerate_codon_csv(dc_table_file)
+    gate_path = gate_df_list(pd.read_csv(gate_path_file))
+
+    to_order_df = create_to_order_df(
+        gate_path, deg_df=dc_df, dna=dna, prefix=prefix, suffix=suffix
+    )
+    to_order_df["wt"] = to_order_df["name"].str.contains("wt")
+    to_order_df["gate1"] = to_order_df["gate1"].map(json.dumps)
+    to_order_df["gate2"] = to_order_df["gate2"].map(json.dumps)
+    to_order_df.to_csv(to_order_df_file)

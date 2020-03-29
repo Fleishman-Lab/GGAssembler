@@ -2,6 +2,7 @@ from collections import OrderedDict
 from itertools import chain, product
 from typing import Dict, Generator, Iterator, List, NamedTuple, Set, Tuple
 
+import pandas as pd
 from Bio import SeqIO
 from Bio.Data.IUPACData import ambiguous_dna_values as adv
 
@@ -132,3 +133,16 @@ def syn_muts(dna: str) -> Generator[Gate, None, None]:
                     True,
                     (SynMut(idx, aa1, cdn1), SynMut(idx + 4, aa2, cdn2)),
                 )
+
+
+def gate_list_df(gate_path: List[Gate]) -> pd.DataFrame:
+    return pd.DataFrame.from_records(
+        gate_path, columns=gate_path[0].__annotations__.keys()
+    )
+
+
+def gate_df_list(gate_df: pd.DataFrame) -> List[Gate]:
+    gate_path: List[Gate] = []
+    for row in gate_df.itertuples(index=False):
+        gate_path.append(Gate(**row._asdict()))
+    return gate_path

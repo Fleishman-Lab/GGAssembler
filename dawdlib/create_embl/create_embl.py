@@ -6,7 +6,7 @@ from Bio import SeqFeature, SeqIO
 from dawdlib.create_embl.embl_maker import (
     create_dc_features,
     create_path_features,
-    df_to_gate_path,
+    gate_df_list,
 )
 from dawdlib.degenerate_dna.utils import parse_degenerate_codon_csv
 
@@ -35,7 +35,7 @@ def create_embl(
 
     if path_file:
         path_df = pd.read_csv(path_file)
-        gate_path = df_to_gate_path(path_df)
+        gate_path = gate_df_list(path_df)
         features.extend(create_path_features(gate_path))
 
     seq_record.features.extend(features)
