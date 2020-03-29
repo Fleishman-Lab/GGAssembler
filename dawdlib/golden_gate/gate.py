@@ -67,6 +67,9 @@ class Gate(NamedTuple):
             return other.idx <= self.idx + 3
         return self.idx <= other.idx + 3
 
+    def span(self) -> Tuple[int, int]:
+        return self.idx, self.idx + 4
+
 
 class GateSet(NamedTuple):
     no_oligos: str

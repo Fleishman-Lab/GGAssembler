@@ -36,19 +36,14 @@ def create_path_features(chosen_path):
     return features
 
 
-def gate_path_to_df(gate_path):
-    gate_df = pd.DataFrame(data=gate_path)
-    return gate_df
+def gate_path_to_df(gate_path: List[Gate]) -> pd.DataFrame:
+    return pd.DataFrame.from_records(
+        gate_path, columns=gate_path[0].__annotations__.keys()
+    )
 
 
-def df_to_gate_path(gate_df):
+def df_to_gate_path(gate_df: pd.DataFrame) -> List[Gate]:
     gate_path: List[Gate] = []
-    for _, row in gate_df.iterrows():
-        gate = Gate(
-            idx=row["idx"],
-            bps=row["bps"],
-            req_primer=row["req_primer"],
-            syn_mut=row["syn_mut"],
-        )
-        gate_path.append(gate)
+    for row in gate_df.itertuples(index=False):
+        gate_path.append(Gate(**row._asdict()))
     return gate_path
