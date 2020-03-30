@@ -165,13 +165,11 @@ class ReactionSim:
             for row in oligo_table.itertuples(index=False):
                 oligo_entry = OligoTableEntry(**row._asdict())
                 dna_segs_it = enzyme_dna_segments(enzyme, oligo_entry.full_oligo_dna)
+                start = oligo_entry.gate1.idx
+                start = start if start is not None else 0
                 ddna_nodes.append(
                     get_ddna_sections(
-                        enzyme,
-                        dna_segs_it,
-                        oligo_entry.gate1.idx,
-                        oligo_entry.wt,
-                        oligo_entry.const,
+                        enzyme, dna_segs_it, start, oligo_entry.wt, oligo_entry.const,
                     )
                 )
         return chain.from_iterable(ddna_nodes)
@@ -257,13 +255,13 @@ class ReactionSim:
                 (
                     pth[i].fwd.start < pth[i + 1].fwd.start
                     and pth[i].fwd.end < pth[i + 1].fwd.end
-                    for i in range(len(pth) - 1)
+                    for i in range(1, len(pth) - 1)
                 )
             ):
                 return False, pth
             if 0 < expected_prod_len != len("".join(node.fwd.dna for node in pth)):
                 return False, pth
-            if 0 < expected_no_segments != len(pth):
+            if 0 < expected_no_segments != len(pth) - 2:
                 return False, pth
         return True, cnt + 1
 
