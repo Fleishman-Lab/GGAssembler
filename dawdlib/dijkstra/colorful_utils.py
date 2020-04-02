@@ -174,7 +174,7 @@ def nxtonumpy(
     no_colors: int,
     weight="weight",
 ):
-    nodes = sorted(graph.nodes)
+    nodes = list(graph.nodes)
 
     l_nodes = np.log2(len(nodes))
     l_nodes = l_nodes if l_nodes > no_colors else no_colors
@@ -219,53 +219,47 @@ def nxtonumpy(
     )
 
 
-# def yield_colorful_shortest_paths(nodes, src, trgt, n_clrs, pred, limit=0):
-#     pred_dict = defaultdict(list)
-#     for key, val in np.argwhere(pred).tolist():
-#         pred_dict[key].append(val)
-#     stack = [[trgt, 0, n_clrs[trgt], 0]]
-#     top = 0
-#     while top >= 0:
-#         node, i, p_clr, p_len = stack[top]
-#         if node == src:
-#             yield [nodes[p] for p, n, c, l in reversed(stack[: top + 1])]
-#         if len(pred_dict[node]) > i:
-#             p_node = pred_dict[node][i][0]
-#             if not (p_clr & n_clrs[p_node]) and not 0 < limit < p_len:
-#                 top += 1
-#                 p_tup = [
-#                     p_node,
-#                     0,
-#                     p_clr | n_clrs[p_node],
-#                     p_len + 1,
-#                 ]
-#                 if top == len(stack):
-#                     stack.append(p_tup)
-#                 else:
-#                     stack[top] = p_tup
-#             else:
-#                 stack[top][1] += 1
-#         else:
-#             stack[top - 1][1] += 1
-#             top -= 1
-
-
-def yield_colorful_shortest_paths(nodes, src, trgt, s_pred, seen, limit=0):
-    max_val = np.iinfo(seen.dtype).max
-    stack = [[trgt, 0, 0]]
+def yield_shortest_paths(nodes, src, trgt, clr_map, pred, limit=0):
+    pred_dict = defaultdict(list)
+    for key, val in np.argwhere(pred).tolist():
+        pred_dict[key].append(val)
+    stack = [[trgt, 0, clr_map[trgt], 0]]
     top = 0
     while top >= 0:
-        v, i, p_len = stack[top]
-        if v == src:
-            yield [nodes[p] for p, _, _ in reversed(stack[: top + 1])]
-        if np.count_nonzero(seen[v] < max_val) > i and not 0 < limit < p_len:
-            u = s_pred[v, np.argsort(seen[v])[i]]
-            top += 1
-            u_tup = [u, 0, p_len + 1]
-            if top == len(stack):
-                stack.append(u_tup)
+        node, i, p_clr, p_len = stack[top]
+        if node == src:
+            yield [nodes[p] for p, n, c, l in reversed(stack[: top + 1])]
+        if len(pred_dict[node]) > i:
+            p_node = pred_dict[node][i][0]
+            if not (p_clr & clr_map[p_node]) and not 0 < limit < p_len:
+                top += 1
+                p_tup = [
+                    p_node,
+                    0,
+                    p_clr | clr_map[p_node],
+                    p_len + 1,
+                ]
+                if top == len(stack):
+                    stack.append(p_tup)
+                else:
+                    stack[top] = p_tup
             else:
-                stack[top] = u_tup
+                stack[top][1] += 1
         else:
             stack[top - 1][1] += 1
             top -= 1
+
+
+def return_shortest_path(nodes, src, trgt, s_pred, seen, clr_map, limit=0):
+    stack = [[trgt, np.argmin(seen[trgt]), 0]]
+    top = 0
+    while top >= 0:
+        v, p_col, p_len = stack[top]
+        if v == src:
+            return [nodes[p] for p, _, _ in reversed(stack[: top + 1])]
+        if 0 < limit < p_len:
+            raise nx.NetworkXNoPath()
+        u = s_pred[v, p_col]
+        top += 1
+        u_tup = [u, p_col - clr_map[v], p_len + 1]
+        stack.append(u_tup)

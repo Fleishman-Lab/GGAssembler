@@ -261,7 +261,7 @@ class ReactionSim:
                 return False, pth
             if 0 < expected_prod_len != len("".join(node.fwd.dna for node in pth)):
                 return False, pth
-            if 0 < expected_no_segments != len(pth) - 2:
+            if 0 < expected_no_segments != len(pth):
                 return False, pth
         return True, cnt + 1
 
