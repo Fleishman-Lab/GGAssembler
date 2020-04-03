@@ -15,7 +15,6 @@ import numpy as np
 import typing as tp
 from itertools import chain
 import networkx as nx
-from collections import defaultdict
 
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.dijkstra.colorful_utils import color_gates, nxtonumpy, return_shortest_path, yield_shortest_paths

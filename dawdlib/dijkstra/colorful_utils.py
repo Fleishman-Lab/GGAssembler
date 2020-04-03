@@ -77,7 +77,7 @@ def _enumerate_cliques(graph: nx.Graph) -> tp.Dict[int, tp.Set[tp.Any]]:
         _, clique_dict, _ = _MCSCliqueTree(graph.subgraph(cc))
         cliques.extend(clique_dict.values())
 
-    return dict(enumerate(cliques))
+    return dict((i, c) for i, c in enumerate(cliques))
 
 
 def _color_vertices(

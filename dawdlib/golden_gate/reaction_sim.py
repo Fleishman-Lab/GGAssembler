@@ -676,7 +676,7 @@ def find_overhand_dna(
 
 def all_simple_paths(
     G: nx.Graph, source: DDNASection, target: DDNASection, cutoff: Optional[int] = None
-) -> Generator[List[DDNASection], None, None]:
+) -> Iterable[List[DDNASection]]:
     """Generate all simple paths in the graph G from source to target.
 
     A simple path is a path with no repeated nodes.

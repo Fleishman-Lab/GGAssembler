@@ -80,7 +80,7 @@ def create_deg_table(res_filename: str, codon_selector: CodonSelector) -> pd.Dat
     df.columns = [TableColNames.AA_POS.value, TableColNames.DNA_POS.value]
     ambiguous_codons_df = pd.DataFrame(ambiguous_codons)
     ambiguous_codons_df.columns = [
-        f"{TableColNames.AMBIGUOUS_CODONS.value}{i+1}"
+        f"{TableColNames.AMBIGUOUS_CODONS.value}{i+'1'}"
         for i in ambiguous_codons_df.columns
     ]
     aa_pos_count_df = pd.DataFrame(

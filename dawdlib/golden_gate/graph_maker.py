@@ -83,9 +83,7 @@ def create_default_valid_node_function(
     return _is_valid_node
 
 
-def _add_source_sink(
-    d_graph: nx.DiGraph, dna: str, var_poss: List[int]
-) -> Tuple[Gate, Gate]:
+def _add_source_sink(d_graph: nx.DiGraph, var_poss: List[int]) -> Tuple[Gate, Gate]:
     edges = []
     for nd1 in d_graph.nodes:
         if nd1.idx < var_poss[0]:
@@ -147,7 +145,7 @@ def build_custom_graph(
     d_graph: nx.DiGraph = nx.DiGraph()
     make_nodes(d_graph, dna, is_valid_node)
     make_edges(d_graph, is_valid_edge, edge_weight)
-    src, snk = _add_source_sink(d_graph, dna, var_poss)
+    src, snk = _add_source_sink(d_graph, var_poss)
     return d_graph, src, snk
 
 

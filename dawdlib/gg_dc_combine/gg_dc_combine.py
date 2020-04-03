@@ -3,7 +3,6 @@ from itertools import chain, product
 from operator import attrgetter
 from typing import Generator, Iterable, Iterator, List, NamedTuple, Tuple, Union
 
-import numpy as np
 import pandas as pd
 
 from dawdlib.degenerate_dna.utils import parse_degenerate_codon_csv
@@ -230,7 +229,6 @@ def find_cdns(
     """
     Given indices returns the codons which are between the indices
     Args:
-        indices (Tuple[int, int, int]): A tuple of [start, stop, step] (produced by slice().indices())
         deg_codons (Iterable[CodonHolder]): the entire codons
 
     Returns:
@@ -272,8 +270,8 @@ def cdn_add_gates(g1: Gate, g2: Gate, cdns: List[CodonHolder]) -> List[CodonHold
 
 def create_oligo(
     g1: Gate, g2: Gate, cdns: List[CodonHolder], dna: str, prefix: str, suffix: str
-) -> Iterable[OligoTableEntry]:
-    oligos = []
+) -> List[Union[List[OligoTableEntry], Iterable[OligoTableEntry]]]:
+    oligos: List[Union[List[OligoTableEntry], Iterable[OligoTableEntry]]] = []
     const = 0 == len(cdns)
     wt = get_wt(g1, g2, const, dna)
     oligos.append([wt._replace(full_oligo_dna=prefix + wt.oligo_dna + suffix,)])
