@@ -40,7 +40,11 @@ def resfile_aa_codons(
 def aa_pos_aa_freq(aa_pos_codons: Dict[int, PosCodon]) -> Dict[int, Tuple[List, List]]:
     aa_pos_count = {}
     for pos, codons in aa_pos_codons.items():
-        encoded_aas = [amino_acid["amino_acid"] for amino_acid in codons.amino_acids]
+        encoded_aas = [
+            amino_acid["amino_acid"]
+            for amino_acid in codons.amino_acids
+            for codon in amino_acid["codons"]
+        ]
         uniq, counts = np.unique(encoded_aas, return_counts=True)
         aa_pos_count[pos] = (uniq.tolist(), counts.tolist())
     return aa_pos_count
@@ -80,7 +84,7 @@ def create_deg_table(res_filename: str, codon_selector: CodonSelector) -> pd.Dat
     df.columns = [TableColNames.AA_POS.value, TableColNames.DNA_POS.value]
     ambiguous_codons_df = pd.DataFrame(ambiguous_codons)
     ambiguous_codons_df.columns = [
-        f"{TableColNames.AMBIGUOUS_CODONS.value}{i+'1'}"
+        f"{TableColNames.AMBIGUOUS_CODONS.value}{i+1}"
         for i in ambiguous_codons_df.columns
     ]
     aa_pos_count_df = pd.DataFrame(
