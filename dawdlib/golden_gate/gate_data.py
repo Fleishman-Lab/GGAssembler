@@ -1,3 +1,10 @@
+"""
+References:
+Potapov, V., et al. (2018).
+    Comprehensive Profiling of Four Base Overhang Ligation Fidelity by T4 DNA Ligase and Application to DNA Assembly.
+    ACS Synth. Biol. 7, 2665–2674.
+"""
+
 import os
 from functools import lru_cache
 from itertools import combinations, combinations_with_replacement
