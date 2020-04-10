@@ -67,27 +67,17 @@ class CodonSelector:
     codon_dict = property(_get_codon_dict, _set_codon_dict)
 
     def select_aminoacids_codon(self, amino_acids: str) -> tp.Iterable[AmbigCodon]:
-        # ) -> tp.Generator[tp.Any, None, None]:
         req_aas = set(list(amino_acids))
 
         for codon in self.cod_sel.optimise_codons(amino_acids, self.organism_id):
-            # codon_aas = {
-            #     amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
-            # }
             codon_aas = {amino_acid.amino_acid for amino_acid in codon.amino_acids}
             if req_aas.issuperset(codon_aas):
                 yield codon
-            # if set(list(amino_acids)).issuperset(set(codon_aas)):
-            #     yield codon
 
     def select_codon_aminoacids(self, amino_acids: str) -> tp.Iterable[AmbigCodon]:
-        # ) -> tp.Generator[tp.Any, None, None]:
         req_aas = set(list(amino_acids))
         for bps in product(DEG_NUCL_CODES, repeat=3):
             for codon in self.cod_sel.analyse_codon("".join(bps), self.organism_id):
-                # codon_aas = {
-                #     amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
-                # }
                 codon_aas = {amino_acid.amino_acid for amino_acid in codon.amino_acids}
                 if req_aas.issuperset(codon_aas):
                     codon._replace(
@@ -96,10 +86,6 @@ class CodonSelector:
                         )
                     )
                     yield codon
-                # if set(list(amino_acids)).issuperset(set(codon_aas)):
-                #     for amino_acid in codon["amino_acids"]:
-                #         amino_acid["type"] = 1
-                #     yield codon
 
     def _gen_degenerate_codons_big(
         self, amino_acids: tp.List[str]
@@ -165,31 +151,16 @@ def _powerset(p: tp.Sequence[P]) -> tp.Generator[tp.List[P], None, None]:
             yield list(item)
 
 
-# def _codon_to_codons_gen(
-#     codon_gen: tp.Generator[tp.Any, None, None]
-# ) -> tp.Generator[PosCodon, None, None]:
 def _codon_to_codons_gen(codon_gen: tp.Iterable[AmbigCodon]) -> tp.Iterable[PosCodon]:
     for codon in codon_gen:
         yield _codon_to_codons(codon)
 
 
 def _codon_to_codons(codon: AmbigCodon) -> PosCodon:
-    # try:
-    #     score = codon["score"]
-    # except KeyError:
-    #     score = _get_score(codon["amino_acids"])
     score = codon.score
     if 0 == score:
         score = _get_score(codon.amino_acids)
 
-    # return PosCodon(
-    #     ambiguous_codons=[codon["ambiguous_codon"]],
-    #     amino_acids=codon["amino_acids"],
-    #     encoded_acids=frozenset(
-    #         amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
-    #     ),
-    #     score=score,
-    # )
     return PosCodon(
         ambiguous_codons=(codon.ambiguous_codon,),
         amino_acids=codon.amino_acids,
@@ -259,7 +230,6 @@ def _optimise_codons_graph(
         """
     best_codon: PosCodon = PosCodon()
     best_codon_score = np.NINF
-    # aa_str = "".join(sorted(amino_acids))
     aa_set = frozenset(amino_acids)
 
     if codons is not None:

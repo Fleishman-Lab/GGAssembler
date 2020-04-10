@@ -96,25 +96,10 @@ class CodonSelector:
 
         codons = ["".join(c) for c in itertools.product(*ambig_codon_nucls)]
 
-        # amino_acids = defaultdict(dict)
         amino_acids = defaultdict(AminoAcid)
 
         for codon in codons:
             self.__analyse_codon(codon, tax_id, req_amino_acids, amino_acids)
-
-        # amino_acids = [
-        #     dict(val, **{"amino_acid": key})
-        #     for key, val in sorted(
-        #         amino_acids.items(), key=lambda x: (-x[1]["type"], x[0])
-        #     )
-        # ]
-
-        # result = {
-        #     "ambiguous_codon": ambig_codon,
-        #     "ambiguous_codon_nucleotides": tuple(ambig_codon_nucls),
-        #     "ambiguous_codon_expansion": tuple(codons),
-        #     "amino_acids": amino_acids,
-        # }
 
         result = AmbigCodon(
             ambiguous_codon=ambig_codon,
@@ -125,7 +110,6 @@ class CodonSelector:
 
         if req_amino_acids:
             result = result._replace(score=_get_score(result.amino_acids))
-            # result.update({"score": _get_score(amino_acids)})
 
         return result
 
@@ -147,19 +131,6 @@ class CodonSelector:
         amino_acids[amino_acid] = aa._replace(
             type=typ, codons=aa.codons + (codon_tup,), amino_acid=amino_acid
         )
-
-        # amino_acids[amino_acid]["type"] = typ
-
-        # if "codons" not in amino_acids[amino_acid]:
-        #     amino_acids[amino_acid]["codons"] = []
-        #
-        # amino_acids[amino_acid]["codons"].append(
-        #     {
-        #         "codon": codon,
-        #         "probability": codon_opt.get_codon_prob(codon),
-        #         "cai": codon_opt.get_cai(codon),
-        #     }
-        # )
 
     def __get_codon_opt(self, tax_id):
         """Gets the CodonOptimiser for the supplied taxonomy."""
@@ -184,13 +155,7 @@ def _get_score(amino_acids: Iterable[AminoAcid]):
     """Scores a given amino acids collection."""
     for vals in amino_acids:
         vals._replace(codons=tuple(sorted(vals.codons, key=lambda x: -x.cai)))
-        # vals["codons"] = sorted(vals["codons"], key=lambda x: -x["cai"])
 
-    # scores = [
-    #     codon["cai"] if amino_acid["type"] == 1 else 0
-    #     for amino_acid in amino_acids
-    #     for codon in amino_acid["codons"]
-    # ]
     scores = [
         codon.cai if amino_acid.type == 1 else 0
         for amino_acid in amino_acids
@@ -206,10 +171,3 @@ def _format_results(results: List[List[AmbigCodon]]) -> List[AmbigCodon]:
         [codon for result in results for codon in result],
         key=lambda x: (len(x.ambiguous_codon_expansion), -x.score),
     )
-    # return sorted(
-    #     [codon for result in results for codon in result],
-    #     key=lambda x: (
-    #         len(x["ambiguous_codon_expansion"]),
-    #         -x["score"] if "score" in x else 0,
-    #     ),
-    # )
