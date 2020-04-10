@@ -33,7 +33,7 @@ class GraphMakerTest(unittest.TestCase):
         self.const_dna_poss = [
             p for p in range(len(self.dna)) if p not in self.dna_var_poss
         ]
-        self.codon_selector = codon_selector = CodonSelector("37762")
+        self.codon_selector = CodonSelector("37762")
 
     def tearDown(self):
         pass

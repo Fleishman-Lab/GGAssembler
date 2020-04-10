@@ -4,6 +4,7 @@ from itertools import chain, combinations, product
 import networkx as nx
 import numpy as np
 
+from dawdlib.degenerate_dna.codon_utils import AmbigCodon, AminoAcid
 from dawdlib.degenerate_dna.codon_utils import CodonSelector as UtilsCodonSelector
 from dawdlib.degenerate_dna.codon_utils import _get_score
 
@@ -27,8 +28,8 @@ DEG_NUCL_CODES = [
 
 
 class PosCodon(tp.NamedTuple):
-    ambiguous_codons: tp.List = []
-    amino_acids: tp.List = []
+    ambiguous_codons: tp.Tuple = [str, ...]
+    amino_acids: tp.Tuple = [AminoAcid, ...]
     encoded_acids: tp.FrozenSet = frozenset()
     score: int = -1
 
@@ -65,28 +66,40 @@ class CodonSelector:
 
     codon_dict = property(_get_codon_dict, _set_codon_dict)
 
-    def select_aminoacids_codon(
-        self, amino_acids: str
-    ) -> tp.Generator[tp.Any, None, None]:
-        for codon in self.cod_sel.optimise_codons(amino_acids, self.organism_id):
-            codon_aas = {
-                amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
-            }
-            if set(list(amino_acids)).issuperset(set(codon_aas)):
-                yield codon
+    def select_aminoacids_codon(self, amino_acids: str) -> tp.Iterable[AmbigCodon]:
+        # ) -> tp.Generator[tp.Any, None, None]:
+        req_aas = set(list(amino_acids))
 
-    def select_codon_aminoacids(
-        self, amino_acids: str
-    ) -> tp.Generator[tp.Any, None, None]:
+        for codon in self.cod_sel.optimise_codons(amino_acids, self.organism_id):
+            # codon_aas = {
+            #     amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
+            # }
+            codon_aas = {amino_acid.amino_acid for amino_acid in codon.amino_acids}
+            if req_aas.issuperset(codon_aas):
+                yield codon
+            # if set(list(amino_acids)).issuperset(set(codon_aas)):
+            #     yield codon
+
+    def select_codon_aminoacids(self, amino_acids: str) -> tp.Iterable[AmbigCodon]:
+        # ) -> tp.Generator[tp.Any, None, None]:
+        req_aas = set(list(amino_acids))
         for bps in product(DEG_NUCL_CODES, repeat=3):
             for codon in self.cod_sel.analyse_codon("".join(bps), self.organism_id):
-                codon_aas = {
-                    amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
-                }
-                if set(list(amino_acids)).issuperset(set(codon_aas)):
-                    for amino_acid in codon["amino_acids"]:
-                        amino_acid["type"] = 1
+                # codon_aas = {
+                #     amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
+                # }
+                codon_aas = {amino_acid.amino_acid for amino_acid in codon.amino_acids}
+                if req_aas.issuperset(codon_aas):
+                    codon._replace(
+                        amino_acids=tuple(
+                            map(lambda x: x._replace(type=1), codon.amino_acids)
+                        )
+                    )
                     yield codon
+                # if set(list(amino_acids)).issuperset(set(codon_aas)):
+                #     for amino_acid in codon["amino_acids"]:
+                #         amino_acid["type"] = 1
+                #     yield codon
 
     def _gen_degenerate_codons_big(
         self, amino_acids: tp.List[str]
@@ -152,24 +165,36 @@ def _powerset(p: tp.Sequence[P]) -> tp.Generator[tp.List[P], None, None]:
             yield list(item)
 
 
-def _codon_to_codons_gen(
-    codon_gen: tp.Generator[tp.Any, None, None]
-) -> tp.Generator[PosCodon, None, None]:
+# def _codon_to_codons_gen(
+#     codon_gen: tp.Generator[tp.Any, None, None]
+# ) -> tp.Generator[PosCodon, None, None]:
+def _codon_to_codons_gen(codon_gen: tp.Iterable[AmbigCodon]) -> tp.Iterable[PosCodon]:
     for codon in codon_gen:
         yield _codon_to_codons(codon)
 
 
-def _codon_to_codons(codon: tp.Dict) -> PosCodon:
-    try:
-        score = codon["score"]
-    except KeyError:
-        score = _get_score(codon["amino_acids"])
+def _codon_to_codons(codon: AmbigCodon) -> PosCodon:
+    # try:
+    #     score = codon["score"]
+    # except KeyError:
+    #     score = _get_score(codon["amino_acids"])
+    score = codon.score
+    if 0 == score:
+        score = _get_score(codon.amino_acids)
 
+    # return PosCodon(
+    #     ambiguous_codons=[codon["ambiguous_codon"]],
+    #     amino_acids=codon["amino_acids"],
+    #     encoded_acids=frozenset(
+    #         amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
+    #     ),
+    #     score=score,
+    # )
     return PosCodon(
-        ambiguous_codons=[codon["ambiguous_codon"]],
-        amino_acids=codon["amino_acids"],
+        ambiguous_codons=(codon.ambiguous_codon,),
+        amino_acids=codon.amino_acids,
         encoded_acids=frozenset(
-            amino_acid["amino_acid"] for amino_acid in codon["amino_acids"]
+            amino_acid.amino_acid for amino_acid in codon.amino_acids
         ),
         score=score,
     )
@@ -177,10 +202,10 @@ def _codon_to_codons(codon: tp.Dict) -> PosCodon:
 
 def _combine_condons(codons_list: tp.Sequence[PosCodon]) -> PosCodon:
     cdn = PosCodon(
-        ambiguous_codons=list(
+        ambiguous_codons=tuple(
             chain(*(codons.ambiguous_codons for codons in codons_list))
         ),
-        amino_acids=list(chain(*(codons.amino_acids for codons in codons_list))),
+        amino_acids=tuple(chain(*(codons.amino_acids for codons in codons_list))),
         encoded_acids=frozenset(
             (aa for codons in codons_list for aa in codons.encoded_acids)
         ),

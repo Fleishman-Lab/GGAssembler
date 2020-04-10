@@ -41,24 +41,26 @@ def aa_pos_aa_freq(aa_pos_codons: Dict[int, PosCodon]) -> Dict[int, Tuple[List, 
     aa_pos_count = {}
     for pos, codons in aa_pos_codons.items():
         encoded_aas = [
-            amino_acid["amino_acid"]
+            amino_acid.amino_acid
             for amino_acid in codons.amino_acids
-            for codon in amino_acid["codons"]
+            for codon in amino_acid.codons
         ]
         uniq, counts = np.unique(encoded_aas, return_counts=True)
         aa_pos_count[pos] = (uniq.tolist(), counts.tolist())
     return aa_pos_count
 
 
-def aa_pos_ambiguous_codons(aa_pos_codons: Dict[int, PosCodon]) -> Dict[int, List[str]]:
+def aa_pos_ambiguous_codons(
+    aa_pos_codons: Dict[int, PosCodon]
+) -> Dict[int, Tuple[str]]:
     return OrderedDict(
         [(pos, codons.ambiguous_codons) for pos, codons in aa_pos_codons.items()]
     )
 
 
 def dna_pos_ambiguous_codons(
-    aa_pos_deg_codons: Dict[int, List[str]], dna_var_poss: List[int]
-) -> Dict[int, List[str]]:
+    aa_pos_deg_codons: Dict[int, Tuple[str]], dna_var_poss: List[int]
+) -> Dict[int, Tuple[str]]:
     return OrderedDict(
         (dna_pos, aas)
         for dna_pos, aas in zip(dna_var_poss[::3], aa_pos_deg_codons.values())
