@@ -30,11 +30,13 @@ class CLI:
         min_var_oligo_length: int,
         max_var_oligo_length: int,
         min_const_oligo_length: int,
+        gg_temp: int,
+        gg_time: int,
+        gg_min_efficiency: float,
+        gg_min_fidelity: float,
         no_solutions: int = 1,
         min_oligos: int = None,
         max_oligos: int = None,
-        gate_self_binding_min: int = 2000,
-        gate_crosstalk_max: int = 1000,
     ) -> None:
         """
 
@@ -45,11 +47,13 @@ class CLI:
             min_var_oligo_length (int):
             max_var_oligo_length (int):
             min_const_oligo_length (int):
+            gg_temp:
+            gg_time:
+            gg_min_efficiency:
+            gg_min_fidelity:
             no_solutions (int):
             min_oligos (int):
             max_oligos (int):
-            gate_self_binding_min (int):
-            gate_crosstalk_max (int):
 
         Returns:
             object:
@@ -63,11 +67,13 @@ class CLI:
             min_var_oligo_length,
             max_var_oligo_length,
             min_const_oligo_length,
+            gg_temp,
+            gg_time,
+            gg_min_efficiency,
+            gg_min_fidelity,
             no_solutions,
             min_oligos,
             max_oligos,
-            gate_self_binding_min,
-            gate_crosstalk_max,
         )
 
     @staticmethod
@@ -80,7 +86,7 @@ class CLI:
             deg_table (str): (optional) degenerate codon table file in csv format
             gate_path (str): (optional) file with list of gates
         """
-        from dawdlib.create_embl.create_embl import create_embl
+        from dawdlib.embl_utils.create_embl import create_embl
 
         create_embl(
             deg_table_file=deg_table,

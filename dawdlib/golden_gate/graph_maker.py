@@ -14,13 +14,13 @@ from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.utils import Requirements, syn_muts
 
-SOURCE = Gate(None, SOURCE_NODE)
-TARGET = Gate(None, SINK_NODE)
+SOURCE = Gate(-1, SOURCE_NODE, src_or_target=True)
+TARGET = Gate(-1, SINK_NODE, src_or_target=True)
 
 
 class GraphMaker:
-    def __init__(self, gg_data):
-        self.gg_data: GGData = gg_data
+    def __init__(self, ggdata):
+        self.ggdata: GGData = ggdata
 
     def create_default_valid_edge_func(
         self,
@@ -28,9 +28,8 @@ class GraphMaker:
         min_oligo_length: int,
         max_oligo_length: int,
         min_const_oligo_length: int,
-        max_gate_crosstalk: int,
+        min_fidelity: float,
     ) -> Callable[[Gate, Gate], bool]:
-        ggdata = self.gg_data
         dna_var_arr = np.array(dna_var_poss)
 
         def _is_valid_edge(nd1: Gate, nd2: Gate) -> bool:
@@ -45,7 +44,10 @@ class GraphMaker:
             else:
                 if nd2 - nd1 < min_const_oligo_length:
                     return False
-            if ggdata.gates_all_scores(nd1.bps, nd2.bps) > max_gate_crosstalk:
+            if any(
+                f < min_fidelity
+                for f in self.ggdata.overhangs_fidelity(nd1.bps, nd2.bps)
+            ):
                 return False
             return True
 
@@ -76,7 +78,10 @@ def create_default_valid_node_function(
 
         if gate.bps not in acceptable_fcws:
             return False
-        if np.any(np.logical_and(gate.idx <= var_dna_arr, var_dna_arr <= gate.idx + 3)):
+        gate_span = gate.span()
+        if np.any(
+            np.logical_and(gate_span[0] <= var_dna_arr, var_dna_arr <= gate_span[1])
+        ):
             return False
         return True
 
@@ -103,6 +108,10 @@ def create_default_weight_func(
 ) -> Callable[[Gate, Gate], int]:
     var_pos_arr = np.array(list(dna_pos_n_codons.keys()))
 
+    # TODO:
+    #   Fix this code, I can extract which indices are between the two nodes
+    #   and only account for the right indices in the product instead of iterating
+    #   over all positions
     def edge_weight(nd1: Gate, nd2: Gate) -> int:
         if np.any(np.logical_and(nd1.idx < var_pos_arr, var_pos_arr < nd2.idx)):
             return (nd2 - nd1 + oligo_addition) * np.product(
@@ -123,11 +132,11 @@ def make_edges(
 ) -> None:
     d_graph.add_weighted_edges_from(
         map(
-            lambda x: x + (edge_weight(*x),),
+            lambda x: x + (edge_weight(x[0], x[1]),),
             filter(
-                lambda x: is_valid_edge(*x),
+                lambda x: is_valid_edge(x[0], x[1]),
                 map(
-                    lambda x: x if x[0].idx <= x[1].idx else (x[1], x[0]),
+                    lambda x: x if x[0] <= x[1] else (x[1], x[0]),
                     combinations(d_graph.nodes, 2),
                 ),
             ),
@@ -156,14 +165,14 @@ def make_default_graph(
     dna_pos_n_codons: Dict[int, List[str]],
     reqs: Requirements,
 ) -> Tuple[nx.DiGraph, Gate, Gate]:
-    acceptable_fcws = gm.gg_data.filter_self_binding_gates(reqs.gate_self_binding_min)
+    acceptable_fcws = gm.ggdata.filter_self_binding_gates(reqs.min_efficiency)
     is_valid_node = create_default_valid_node_function(acceptable_fcws, var_poss)
     is_valid_edge = gm.create_default_valid_edge_func(
         var_poss,
         reqs.min_oligo_length,
         reqs.max_oligo_length,
         reqs.min_const_oligo_length,
-        reqs.gate_crosstalk_max,
+        reqs.min_fidelity,
     )
     edge_weight = create_default_weight_func(
         dna_pos_n_codons, reqs.oligo_addition, reqs.const_cost

@@ -28,10 +28,10 @@ DEG_NUCL_CODES = [
 
 
 class PosCodon(tp.NamedTuple):
-    ambiguous_codons: tp.Tuple = [str, ...]
-    amino_acids: tp.Tuple = [AminoAcid, ...]
+    ambiguous_codons: tp.Tuple[str, ...] = ()
+    amino_acids: tp.Tuple[AminoAcid, ...] = ()
     encoded_acids: tp.FrozenSet = frozenset()
-    score: int = -1
+    score: float = -1
 
 
 class CodonSelector:
@@ -311,16 +311,21 @@ def _optimise_codons_greedy(
     req_aas = set(amino_acids)
     not_found_aas = set(amino_acids)
     used_codons: tp.List[PosCodon] = []
-    i = len(codons)
+    # i = len(codons)
     cdn_itr = iter(codons)
-    cdn = next(cdn_itr, False)
+    # cdn = next(cdn_itr, False)
 
-    while i > 0 and not_found_aas and cdn:
+    for cdn in cdn_itr:
         used_codons.append(cdn)
         not_found_aas = not_found_aas.difference(cdn.encoded_acids)
-        i -= 1
         cdn_itr = filter(lambda x: not_found_aas.issuperset(x.encoded_acids), cdn_itr)
-        cdn = next(cdn_itr, False)
+
+    # while i > 0 and not_found_aas and cdn:
+    #     used_codons.append(cdn)
+    #     not_found_aas = not_found_aas.difference(cdn.encoded_acids)
+    #     i -= 1
+    #     cdn_itr = filter(lambda x: not_found_aas.issuperset(x.encoded_acids), cdn_itr)
+    #     cdn = next(cdn_itr, False)
 
     codon_comb = _combine_condons(used_codons)
     if _is_codon_set_valid(req_aas, codon_comb.encoded_acids):
@@ -352,8 +357,8 @@ def _optimise_codons_exact(
 
 
 def _populate_set_matrix(
-    a: np.array, amino_acids: tp.List[str], codons: tp.List[tp.Dict]
-) -> None:
+    a: np.ndarray, amino_acids: tp.List[str], codons: tp.List[tp.Dict]
+):
     for i, codon in enumerate(codons):
         for aa in codon["encoded_acids"]:
             a[amino_acids.index(aa), i] = 1

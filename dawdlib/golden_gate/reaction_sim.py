@@ -1,6 +1,6 @@
 import collections
 import json
-from itertools import chain, combinations, product
+from itertools import chain, combinations, permutations, product
 from typing import (
     Any,
     Dict,
@@ -111,7 +111,7 @@ class ReactionGraphEdgeAttr(NamedTuple):
     """
 
     id: str
-    score: int
+    score: float
 
 
 class ReactionGraph(nx.Graph):
@@ -131,8 +131,8 @@ class ReactionSim:
 
     reaction_graph: ReactionGraph
 
-    def __init__(self, gg_data: GGData, reqs: Requirements, enzymes: List[str]):
-        self.gg_data = gg_data
+    def __init__(self, ggdata: GGData, reqs: Requirements, enzymes: List[str]):
+        self.ggdata = ggdata
         self.reqs = reqs
         self.enzymes: List[Union[Ov3, Ov5]] = []
         self.wt_oligos: List[DDNASection]
@@ -165,8 +165,9 @@ class ReactionSim:
             for row in oligo_table.itertuples(index=False):
                 oligo_entry = OligoTableEntry(**row._asdict())
                 dna_segs_it = enzyme_dna_segments(enzyme, oligo_entry.full_oligo_dna)
-                start = oligo_entry.gate1.idx
-                start = start if start is not None else 0
+                start = (
+                    oligo_entry.gate1.idx if not oligo_entry.gate1.src_or_target else 0
+                )
                 ddna_nodes.append(
                     get_ddna_sections(
                         enzyme, dna_segs_it, start, oligo_entry.wt, oligo_entry.const,
@@ -185,7 +186,7 @@ class ReactionSim:
         rgraph.add_nodes_from(ddna_iter)
         rgraph.add_edges_from(
             get_compatible_oligos(
-                self.gg_data, iter(rgraph.nodes), self.reqs.gate_crosstalk_max
+                self.ggdata, iter(rgraph.nodes), self.reqs.min_fidelity
             )
         )
         sources, targets = find_sources_targets(iter(rgraph.nodes))
@@ -223,7 +224,7 @@ class ReactionSim:
 
     def verify_reaction(
         self, expected_prod_len: int = 0, expected_no_segments: int = 0
-    ) -> Tuple[bool, Union[int, List[DDNASection]]]:
+    ) -> Tuple[bool, int, List[DDNASection]]:
         """
         Checks if all DNA sequences in the reaction are connected correctly
         by verifying the numbering of the DNA product is in ascending order.
@@ -258,12 +259,12 @@ class ReactionSim:
                     for i in range(1, len(pth) - 1)
                 )
             ):
-                return False, pth
+                return False, cnt + 1, pth
             if 0 < expected_prod_len != len("".join(node.fwd.dna for node in pth)):
-                return False, pth
+                return False, cnt + 1, pth
             if 0 < expected_no_segments != len(pth):
-                return False, pth
-        return True, cnt + 1
+                return False, cnt + 1, pth
+        return True, cnt + 1, []
 
     def get_all_products(self) -> Generator[Tuple[str, int, int, int], None, None]:
         """
@@ -294,14 +295,16 @@ class ReactionCLI:
         self,
         table_path: str,
         enzymes: List[str],
-        gate_crosstalk_max: int = 1000,
+        min_fidelity: float,
         neb_table_temp: int = 25,
         neb_table_time: int = 18,
     ):
 
         self.sim = ReactionSim(
             GGData(neb_table_temp=neb_table_temp, neb_table_time=neb_table_time),
-            Requirements(0, 0, 0, gate_crosstalk_max=gate_crosstalk_max),
+            # TODO:
+            #   Remove default min_efficiency
+            Requirements(0, 0, 0, min_fidelity=min_fidelity, min_efficiency=0),
             enzymes,
         )
         self.sim.create_reaction_graph(table_path)
@@ -311,7 +314,7 @@ class ReactionCLI:
         self,
         table_path: str,
         enzymes: Union[List[str], str],
-        gate_crosstalk_max: int = 1000,
+        min_fidelity: float,
         neb_table_temp: int = 25,
         neb_table_time: int = 18,
     ):
@@ -319,17 +322,16 @@ class ReactionCLI:
         Prints the WT sequence(s) created by "simulating" the golden gate reaction.
 
         Args:
+
             table_path (str): Path to segments table
             enzymes (str|list[str]): which enzyme(s) to use in the reaction given. Enzymes should be given in a list format, i.e. [BsaI]. You must respect the usual naming convention with the upper case letters and Latin numbering (in upper case as well).
-            gate_crosstalk_max (int): above which threshold two gates are considered as able to connect (default=1000)
+            min_fidelity (float) : The fidelity above overhangs are considered connected
             neb_table_temp (int): Specifies which NEB data to use (default=25)
             neb_table_time (int): Specifies which NEB data to use (default=18)
         """
         if isinstance(enzymes, str):
             enzymes = [enzymes]
-        self._setup(
-            table_path, enzymes, gate_crosstalk_max, neb_table_temp, neb_table_time
-        )
+        self._setup(table_path, enzymes, min_fidelity, neb_table_temp, neb_table_time)
         print("Found WT DNA sequences:")
         for dna, no_segs, dna_start_pos, dna_end_pos in self.sim.get_wt_dna():
             message = (
@@ -342,9 +344,9 @@ class ReactionCLI:
         self,
         table_path: str,
         enzymes: Union[List[str], str],
+        min_fidelity: float,
         expected_dna_len: int = 0,
         expected_no_segments: int = 0,
-        gate_crosstalk_max: int = 1000,
         neb_table_temp: int = 25,
         neb_table_time: int = 18,
     ):
@@ -359,25 +361,23 @@ class ReactionCLI:
         Args:
             table_path (str): Path to segments table
             enzymes (str|list[str]): which enzyme(s) to use in the reaction given. Enzymes should be given in a list format, i.e. [BsaI]. You must respect the usual naming convention with the upper case letters and Latin numbering (in upper case as well).
+            min_fidelity (float) : The fidelity above overhangs are considered connected
             expected_dna_len (int): The number of BPs each product is expected to contain
             expected_no_segments (int): The number of segments each product is expected to contain
-            gate_crosstalk_max (int): above which threshold two gates are considered as able to connect (default=1000)
             neb_table_temp (int): Specifies which NEB data to use (default=25)
             neb_table_time (int): Specifies which NEB data to use (default=18)
 
         """
         if isinstance(enzymes, str):
             enzymes = [enzymes]
-        self._setup(
-            table_path, enzymes, gate_crosstalk_max, neb_table_temp, neb_table_time
-        )
-        success, extra = self.sim.verify_reaction(
+        self._setup(table_path, enzymes, min_fidelity, neb_table_temp, neb_table_time)
+        success, count, extra = self.sim.verify_reaction(
             expected_prod_len=expected_dna_len,
             expected_no_segments=expected_no_segments,
         )
         if success:
             print(
-                f"Reaction simulation is successful, {extra} unique sequences were found."
+                f"Reaction simulation is successful, {count} unique sequences were found."
             )
         else:
             print(
@@ -411,7 +411,7 @@ class ReactionCLI:
         self,
         table_path: str,
         enzymes: Union[List[str], str],
-        gate_crosstalk_max: int = 1000,
+        min_fidelity: float,
         neb_table_temp: int = 25,
         neb_table_time: int = 18,
     ):
@@ -421,15 +421,13 @@ class ReactionCLI:
         Args:
             table_path (str): Path to segments table
             enzymes (str|list[str]): which enzyme(s) to use in the reaction given. Enzymes should be given in a list format, i.e. [BsaI]. You must respect the usual naming convention with the upper case letters and Latin numbering (in upper case as well).
-            gate_crosstalk_max (int): above which threshold two gates are considered as able to connect (default=1000)
+            min_fidelity (float) : The fidelity above overhangs are considered connected
             neb_table_temp (int): Specifies which NEB data to use (default=25)
             neb_table_time (int): Specifies which NEB data to use (default=18)
         """
         if isinstance(enzymes, str):
             enzymes = [enzymes]
-        self._setup(
-            table_path, enzymes, gate_crosstalk_max, neb_table_temp, neb_table_time
-        )
+        self._setup(table_path, enzymes, min_fidelity, neb_table_temp, neb_table_time)
         products = self.sim.get_all_products()
         print(tabulate(products, headers=["DNA", "No. segments", "Start", "End"]))
 
@@ -493,14 +491,14 @@ def find_sources_targets(
 
 
 def get_compatible_oligos(
-    gg_data: GGData, ddnas: Iterator[DDNASection], gate_crosstalk_max: int = 1000
+    ggdata: GGData, ddnas: Iterator[DDNASection], min_fidelity: float
 ) -> Generator[Tuple[DDNASection, DDNASection, Dict], None, None]:
     """
 
     Args:
-        gg_data (GGData): A wrapper around the gates data
+        ggdata (GGData): A wrapper around the gates data
         ddnas (Iterator[DDNASection]):
-        gate_crosstalk_max (int): gg_data.gates_all_scores above this score marks the two dna sections as compatible
+        min_fidelity (float): fidelity above this score marks the two dna sections as compatible
 
     Yields:
          Tuple[DDNASection, DDNASection] - Signifying these two dna sections can connect to one another in the reaction
@@ -508,14 +506,22 @@ def get_compatible_oligos(
     dtup: Tuple[DDNASection, ...]
     for dtup in combinations(ddnas, 2):
         d1, d2 = dtup
-        for h1, h2 in product(
-            filter(len, d1.get_hang_dna_rev()), filter(len, d2.get_hang_dna_rev())
+        for h1, h2 in chain.from_iterable(
+            permutations(
+                product(
+                    filter(len, d1.get_hang_dna_rev()),
+                    filter(len, d2.get_hang_dna_rev()),
+                ),
+                2,
+            )
         ):
-            score = gg_data.gates_scores(h1, h2)
-            if score >= gate_crosstalk_max:
-                rgea = ReactionGraphEdgeAttr(id="-".join(sorted([h1, h2])), score=score)
+            fidelity = ggdata.fidelity.loc[h1, h2]
+            if fidelity >= min_fidelity:
+                rgea = ReactionGraphEdgeAttr(
+                    id="-".join(sorted([h1, h2])), score=fidelity
+                )
                 yield d1, d2, rgea._asdict()
-                continue
+                break
 
 
 def get_ddna_sections(
@@ -809,9 +815,9 @@ def all_simple_paths(
 
     """
     if source not in G:
-        raise nx.NodeNotFound("source node %s not in graph" % source)
+        raise nx.NodeNotFound("source node %s not in graph" % str(source))
     if target not in G:
-        raise nx.NodeNotFound("target node %s not in graph" % target)
+        raise nx.NodeNotFound("target node %s not in graph" % str(target))
     targets = {target}
     if source in targets:
         return []

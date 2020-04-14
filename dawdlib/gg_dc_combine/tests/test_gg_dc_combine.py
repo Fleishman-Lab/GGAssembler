@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# pytype: skip-file
 import os
 import unittest
 from typing import List

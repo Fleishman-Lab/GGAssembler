@@ -1,6 +1,8 @@
 from collections import OrderedDict
 from enum import Enum
-from typing import Dict, List, Tuple
+from typing import Dict, List
+from typing import OrderedDict as OrderedDictType
+from typing import Tuple
 
 import numpy as np
 import pandas as pd
@@ -28,7 +30,7 @@ def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> PosCodon:
 
 def resfile_aa_codons(
     codon_selector: CodonSelector, resfile: Dict[int, str]
-) -> Dict[int, PosCodon]:
+) -> OrderedDictType[int, PosCodon]:
     return OrderedDict(
         [
             (pos, aas_deg_codons(codon_selector, list(aas)))
@@ -43,7 +45,7 @@ def aa_pos_aa_freq(aa_pos_codons: Dict[int, PosCodon]) -> Dict[int, Tuple[List, 
         encoded_aas = [
             amino_acid.amino_acid
             for amino_acid in codons.amino_acids
-            for codon in amino_acid.codons
+            for _ in amino_acid.codons
         ]
         uniq, counts = np.unique(encoded_aas, return_counts=True)
         aa_pos_count[pos] = (uniq.tolist(), counts.tolist())
@@ -52,15 +54,15 @@ def aa_pos_aa_freq(aa_pos_codons: Dict[int, PosCodon]) -> Dict[int, Tuple[List, 
 
 def aa_pos_ambiguous_codons(
     aa_pos_codons: Dict[int, PosCodon]
-) -> Dict[int, Tuple[str]]:
+) -> Dict[int, Tuple[str, ...]]:
     return OrderedDict(
         [(pos, codons.ambiguous_codons) for pos, codons in aa_pos_codons.items()]
     )
 
 
 def dna_pos_ambiguous_codons(
-    aa_pos_deg_codons: Dict[int, Tuple[str]], dna_var_poss: List[int]
-) -> Dict[int, Tuple[str]]:
+    aa_pos_deg_codons: Dict[int, Tuple[str, ...]], dna_var_poss: List[int]
+) -> Dict[int, Tuple[str, ...]]:
     return OrderedDict(
         (dna_pos, aas)
         for dna_pos, aas in zip(dna_var_poss[::3], aa_pos_deg_codons.values())

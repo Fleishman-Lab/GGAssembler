@@ -2,22 +2,22 @@
 # distutils: extra_compile_args=-Ofast -std=c++11
 # cython: language_level=3, boundscheck=False, wraparound=False, initializedcheck=False, cdivision=False, overflowcheck.fold=False
 
-'''
-# cython: infer_types=True
-'''
-'''
-# cython: binding=True
-# cython: profile=True
-# cython: linetrace=True
-# distutils: define_macros=CYTHON_TRACE_NOGIL=1
-'''
+# '''
+# # cython: infer_types=True
+# '''
+# '''
+# # cython: binding=True
+# # cython: profile=True
+# # cython: linetrace=True
+# # distutils: define_macros=CYTHON_TRACE_NOGIL=1
+# '''
 import numpy as np
 import typing as tp
 from itertools import chain
 import networkx as nx
 
-from dawdlib.golden_gate.gate_data import GGData
-from dawdlib.dijkstra.colorful_utils import color_gates, nxtonumpy, return_shortest_path, yield_shortest_paths
+# from dawdlib.golden_gate.gate_data import GGData
+# from dawdlib.dijkstra.colorful_utils import color_gates, nxtonumpy, return_shortest_path, yield_shortest_paths
 
 from libcpp.map cimport map
 from cython.operator cimport dereference as deref
@@ -54,237 +54,245 @@ cdef extern from "cpp_priority_queue.hpp" nogil:
         void swap(greater_priority_queue&)
 
 
-@cython.embedsignature(True)
-def all_shortest_paths(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
-    """Compute all shortest paths in the graph.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-
-    source : node
-       Starting node for path.
-
-    target : node
-       Ending node for path.
-
-    no_colors: int
-        The number of colors to use in the random recoloring.
-        The currently supported maximum is set to 18.
-
-    len_cutoff: int, optional (default = 0)
-        The maximum path length (numbe of gates in the solution)
-
-    weight : None or string, optional (default = None)
-       If None, every edge has weight/distance/cost 1.
-       If a string, use this edge attribute as the edge weight.
-       Any edge attribute not present defaults to 1.
-
-    method : string, optional (default = 'dijkstra')
-       The algorithm to use to compute the path lengths.
-       Supported options: 'dijkstra'.
-       Other inputs produce a ValueError.
-
-    retries: int, optional (default = 1)
-        The number of random coloring retries to check before raising NetworkXNoPath exception
-
-    res_graph: nx.Graph, optional (default = None)
-        Allows the user to provide a custom restriction graph used to color nodes
-
-    Returns
-    -------
-    paths : generator of lists
-        A generator of all paths between source and target.
-
-    Raises
-    ------
-    ValueError
-        If `method` is not among the supported options.
-        If both `no_colors` and `len_cutoff` are not provided.
-
-    NetworkXNoPath
-        If `target` cannot be reached from `source`.
-
-
-    Notes
-    -----
-    There may be many shortest paths between the source and target.
-
-    """
-    nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
-    try:
-        return all_colorful_shortest_paths(
-            nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
-        )
-    except nx.NetworkXNoPath:
-        raise nx.NetworkXNoPath(
-            "Target {} cannot be reached" "from Source {}".format(target, source)
-        )
-
-
-@cython.embedsignature(True)
-def shortest_path(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
-    """Compute all shortest paths in the graph.
-
-    Parameters
-    ----------
-    G : NetworkX graph
-
-    source : node
-       Starting node for path.
-
-    target : node
-       Ending node for path.
-
-    no_colors: int
-        The number of colors to use in the random recoloring.
-        The currently supported maximum is set to 18.
-
-    len_cutoff: int, optional (default = 0)
-        The maximum path length
-
-    weight : None or string, optional (default = None)
-       If None, every edge has weight/distance/cost 1.
-       If a string, use this edge attribute as the edge weight.
-       Any edge attribute not present defaults to 1.
-
-    method : string, optional (default = 'dijkstra')
-       The algorithm to use to compute the path lengths.
-       Supported options: 'dijkstra'.
-       Other inputs produce a ValueError.
-
-    retries: int, optional (default = 1)
-        The number of random coloring retries to check before raising NetworkXNoPath exception
-
-    res_graph: nx.Graph, optional (default = None)
-        Allows the user to provide a custom restriction graph used to color nodes
-
-    Returns
-    -------
-    paths : generator of lists
-        A generator of all paths between source and target.
-
-    Raises
-    ------
-    ValueError
-        If `method` is not among the supported options.
-        If both `no_colors` and `len_cutoff` are not provided.
-
-    NetworkXNoPath
-        If `target` cannot be reached from `source`.
-
-
-    Notes
-    -----
-    There may be many shortest paths between the source and target.
-
-    """
-    nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
-    try:
-        return colorful_shortest_path(
-            nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
-        )
-    except nx.NetworkXNoPath:
-        raise nx.NetworkXNoPath(
-            "Target {} cannot be reached" "from Source {}".format(target, source)
-        )
-
-
-def _prep_data(G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
-    if method != 'dijkstra':
-        raise ValueError("method not supported: {}".format(method))
-    if not no_colors and not len_cutoff:
-        raise ValueError("Either no_colors or len_cutoff are required.")
-
-    gate_colors, num_of_colors = color_gates(G, GGData(), r_graph=res_graph)
-    if not no_colors:
-        no_colors = sum(num_of_colors[:len_cutoff])
-    if no_colors > 18:
-        print(f"Warning! number of colors required {no_colors} is larger than recommended.")
-    return nxtonumpy(G, [source], target, gate_colors.get, no_colors)
-
-
-@cython.embedsignature(True)
-def all_colorful_shortest_paths(
-    nodes: tp.List[int, tp.Any],
-    G: tp.Dict[int, tp.FrozenSet[int]],
-    weight: np.ndarray,
-    sources: np.ndarray,
-    target: int,
-    colors: np.ndarray,
-    color_map: np.ndarray,
-    no_colors: int,
-    pred: np.ndarray,
-    s_pred: np.ndarray,
-    dist: np.ndarray,
-    seen: np.ndarray,
-    limit: int = 0,
-    repetitions: int = 1,
-) -> tp.Generator[tp.Any]:
-    """
-    :param list nodes: The list of nodes, used to identify each node with an index
-    :param dict G: A mapping representation of the golden gate graph
-    :param numpy.ndarray weight: A numpy array representations of graph edge weights
-    :param numpy.ndarray sources: A numpy array holding indices of sources
-    :param int target: The path target
-    :param numpy.ndarray colors: A numpy array mapping between a node and it's colors
-    :param numpy.ndarray color_map: A numpy array holding the random recoloring
-    :param int no_colors: How many colors were used to created the dist and seen arrays
-    :param numpy.ndarray pred: A numpy array pointing to the predecessor of each node in the paths found
-    :param numpy.ndarray dist: A numpy array holding the minimum distance from source to node using specific colors
-    :param numpy.ndarray seen: A numpy array holding the minimum distance from source to node using specific colors
-    :param int limit: A limit to the number of gates found in the shortest path
-    :param int repetitions: How many times to try and find a shortest path using a random recoloring of no_colors
-    :return: A generator yielding shortest colorful paths
-    :rtype: generator
-    """
-    found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)
-    if found:
-        return chain.from_iterable((yield_shortest_paths(nodes, src, target, color_map, pred) for src in sources))
-    else:
-        raise nx.NetworkXNoPath()
-
-
-@cython.embedsignature(True)
-def colorful_shortest_path(
-    nodes: tp.List[int, tp.Any],
-    G: tp.Dict[int, tp.FrozenSet[int]],
-    weight: np.ndarray,
-    sources: np.ndarray,
-    target: int,
-    colors: np.ndarray,
-    color_map: np.ndarray,
-    no_colors: int,
-    pred: np.ndarray,
-    s_pred: np.ndarray,
-    dist: np.ndarray,
-    seen: np.ndarray,
-    limit: int = 0,
-    repetitions: int = 1,
-) -> tp.List[tp.Any]:
-    """
-    :param list nodes: The list of nodes, used to identify each node with an index
-    :param dict G: A mapping representation of the golden gate graph
-    :param numpy.ndarray weight: A numpy array representations of graph edge weights
-    :param numpy.ndarray sources: A numpy array holding indices of sources
-    :param int target: The path target
-    :param numpy.ndarray colors: A numpy array mapping between a node and it's colors
-    :param numpy.ndarray color_map: A numpy array holding the random recoloring
-    :param int no_colors: How many colors were used to created the dist and seen arrays
-    :param numpy.ndarray pred: A numpy array pointing to the predecessor of each node in the paths found
-    :param numpy.ndarray dist: A numpy array holding the minimum distance from source to node using specific colors
-    :param numpy.ndarray seen: A numpy array holding the minimum distance from source to node using specific colors
-    :param int limit: A limit to the number of gates found in the shortest path
-    :param int repetitions: How many times to try and find a shortest path using a random recoloring of no_colors
-    :return: A generator yielding shortest colorful paths
-    :rtype: generator
-    """
-    found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)
-    if found:
-        for src in sources:
-            yield return_shortest_path(nodes, src, target, s_pred, seen, color_map, limit)
-    else:
-        raise nx.NetworkXNoPath()
+# @cython.embedsignature(True)
+# def all_shortest_paths(ggdata, G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
+#     """Compute all shortest paths in the graph.
+#
+#     Parameters
+#     ----------
+#     ggdata: GGData
+#        GGdata for the reaction.
+#
+#     G : NetworkX graph
+#
+#     source : node
+#        Starting node for path.
+#
+#     target : node
+#        Ending node for path.
+#
+#     no_colors: int
+#         The number of colors to use in the random recoloring.
+#         The currently supported maximum is set to 18.
+#
+#     len_cutoff: int, optional (default = 0)
+#         The maximum path length (numbe of gates in the solution)
+#
+#     weight : None or string, optional (default = None)
+#        If None, every edge has weight/distance/cost 1.
+#        If a string, use this edge attribute as the edge weight.
+#        Any edge attribute not present defaults to 1.
+#
+#     method : string, optional (default = 'dijkstra')
+#        The algorithm to use to compute the path lengths.
+#        Supported options: 'dijkstra'.
+#        Other inputs produce a ValueError.
+#
+#     retries: int, optional (default = 1)
+#         The number of random coloring retries to check before raising NetworkXNoPath exception
+#
+#     res_graph: nx.Graph, optional (default = None)
+#         Allows the user to provide a custom restriction graph used to color nodes
+#
+#     Returns
+#     -------
+#     paths : generator of lists
+#         A generator of all paths between source and target.
+#
+#     Raises
+#     ------
+#     ValueError
+#         If `method` is not among the supported options.
+#         If both `no_colors` and `len_cutoff` are not provided.
+#
+#     NetworkXNoPath
+#         If `target` cannot be reached from `source`.
+#
+#
+#     Notes
+#     -----
+#     There may be many shortest paths between the source and target.
+#
+#     """
+#     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(ggdata, G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
+#     try:
+#         return all_colorful_shortest_paths(
+#             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
+#         )
+#     except nx.NetworkXNoPath:
+#         raise nx.NetworkXNoPath(
+#             "Target {} cannot be reached" "from Source {}".format(target, source)
+#         )
+#
+#
+# @cython.embedsignature(True)
+# def shortest_path(ggdata, G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
+#     """Compute all shortest paths in the graph.
+#
+#     Parameters
+#     ----------
+#     ggdata: GGData
+#        GGdata for the reaction.
+#
+#     G : NetworkX graph
+#
+#     source : node
+#        Starting node for path.
+#
+#     target : node
+#        Ending node for path.
+#
+#     no_colors: int
+#         The number of colors to use in the random recoloring.
+#         The currently supported maximum is set to 18.
+#
+#     len_cutoff: int, optional (default = 0)
+#         The maximum path length
+#
+#     weight : None or string, optional (default = None)
+#        If None, every edge has weight/distance/cost 1.
+#        If a string, use this edge attribute as the edge weight.
+#        Any edge attribute not present defaults to 1.
+#
+#     method : string, optional (default = 'dijkstra')
+#        The algorithm to use to compute the path lengths.
+#        Supported options: 'dijkstra'.
+#        Other inputs produce a ValueError.
+#
+#     retries: int, optional (default = 1)
+#         The number of random coloring retries to check before raising NetworkXNoPath exception
+#
+#     res_graph: nx.Graph, optional (default = None)
+#         Allows the user to provide a custom restriction graph used to color nodes
+#
+#     Returns
+#     -------
+#     paths : generator of lists
+#         A generator of all paths between source and target.
+#
+#     Raises
+#     ------
+#     ValueError
+#         If `method` is not among the supported options.
+#         If both `no_colors` and `len_cutoff` are not provided.
+#
+#     NetworkXNoPath
+#         If `target` cannot be reached from `source`.
+#
+#
+#     Notes
+#     -----
+#     There may be many shortest paths between the source and target.
+#
+#     """
+#     nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen = _prep_data(ggdata, G, source, target, no_colors=no_colors, len_cutoff=len_cutoff, weight=weight, method=method, retries = retries, res_graph = res_graph)
+#     try:
+#         return colorful_shortest_path(
+#             nodes, cgraph, weight_arr, sources, trgt, color_arr, new_color, no_colors, pred, s_pred, dist, seen, limit = len_cutoff
+#         )
+#     except nx.NetworkXNoPath:
+#         raise nx.NetworkXNoPath(
+#             "Target {} cannot be reached" "from Source {}".format(target, source)
+#         )
+#
+#
+# def _prep_data(ggdata, G, source, target, no_colors=0, len_cutoff=0, weight=None, method="dijkstra", retries = 1, res_graph: nx.Graph = None):
+#     if method != 'dijkstra':
+#         raise ValueError("method not supported: {}".format(method))
+#     if not no_colors and not len_cutoff:
+#         raise ValueError("Either no_colors or len_cutoff are required.")
+#
+#     gate_colors, num_of_colors = color_gates(G, ggdata, r_graph=res_graph)
+#     if not no_colors:
+#         no_colors = sum(num_of_colors[:len_cutoff])
+#     if no_colors > 18:
+#         print(f"Warning! number of colors required {no_colors} is larger than recommended.")
+#     return nxtonumpy(G, [source], target, gate_colors.get, no_colors)
+#
+#
+# @cython.embedsignature(True)
+# def all_colorful_shortest_paths(
+#     nodes: tp.List[int, tp.Any],
+#     G: tp.Dict[int, tp.FrozenSet[int]],
+#     weight: np.ndarray,
+#     sources: np.ndarray,
+#     target: int,
+#     colors: np.ndarray,
+#     color_map: np.ndarray,
+#     no_colors: int,
+#     pred: np.ndarray,
+#     s_pred: np.ndarray,
+#     dist: np.ndarray,
+#     seen: np.ndarray,
+#     limit: int = 0,
+#     repetitions: int = 1,
+# ) -> tp.Generator[tp.Any]:
+#     """
+#     :param list nodes: The list of nodes, used to identify each node with an index
+#     :param dict G: A mapping representation of the golden gate graph
+#     :param numpy.ndarray weight: A numpy array representations of graph edge weights
+#     :param numpy.ndarray sources: A numpy array holding indices of sources
+#     :param int target: The path target
+#     :param numpy.ndarray colors: A numpy array mapping between a node and it's colors
+#     :param numpy.ndarray color_map: A numpy array holding the random recoloring
+#     :param int no_colors: How many colors were used to created the dist and seen arrays
+#     :param numpy.ndarray pred: A numpy array pointing to the predecessor of each node in the paths found
+#     :param numpy.ndarray s_pred: A numpy array pointing to a single predecessor of each node
+#     :param numpy.ndarray dist: A numpy array holding the minimum distance from source to node using specific colors
+#     :param numpy.ndarray seen: A numpy array holding the minimum distance from source to node using specific colors
+#     :param int limit: A limit to the number of gates found in the shortest path
+#     :param int repetitions: How many times to try and find a shortest path using a random recoloring of no_colors
+#     :return: A generator yielding shortest colorful paths
+#     :rtype: generator
+#     """
+#     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)
+#     if found:
+#         return chain.from_iterable((yield_shortest_paths(nodes, src, target, color_map, pred) for src in sources))
+#     else:
+#         raise nx.NetworkXNoPath()
+#
+#
+# @cython.embedsignature(True)
+# def colorful_shortest_path(
+#     nodes: tp.List[int, tp.Any],
+#     G: tp.Dict[int, tp.FrozenSet[int]],
+#     weight: np.ndarray,
+#     sources: np.ndarray,
+#     target: int,
+#     colors: np.ndarray,
+#     color_map: np.ndarray,
+#     no_colors: int,
+#     pred: np.ndarray,
+#     s_pred: np.ndarray,
+#     dist: np.ndarray,
+#     seen: np.ndarray,
+#     limit: int = 0,
+#     repetitions: int = 1,
+# ) -> tp.List[tp.Any]:
+#     """
+#     :param list nodes: The list of nodes, used to identify each node with an index
+#     :param dict G: A mapping representation of the golden gate graph
+#     :param numpy.ndarray weight: A numpy array representations of graph edge weights
+#     :param numpy.ndarray sources: A numpy array holding indices of sources
+#     :param int target: The path target
+#     :param numpy.ndarray colors: A numpy array mapping between a node and it's colors
+#     :param numpy.ndarray color_map: A numpy array holding the random recoloring
+#     :param int no_colors: How many colors were used to created the dist and seen arrays
+#     :param numpy.ndarray pred: A numpy array pointing to the predecessor of each node in the paths found
+#     :param numpy.ndarray s_pred: A numpy array pointing to a single predecessor of each node
+#     :param numpy.ndarray dist: A numpy array holding the minimum distance from source to node using specific colors
+#     :param numpy.ndarray seen: A numpy array holding the minimum distance from source to node using specific colors
+#     :param int limit: A limit to the number of gates found in the shortest path
+#     :param int repetitions: How many times to try and find a shortest path using a random recoloring of no_colors
+#     :return: A generator yielding shortest colorful paths
+#     :rtype: generator
+#     """
+#     found, res = find_shortest_paths(G, weight, sources, colors, color_map, no_colors, pred, s_pred, dist, seen, limit, repetitions)
+#     if found:
+#         for src in sources:
+#             yield return_shortest_path(nodes, src, target, s_pred, seen, color_map, limit)
+#     else:
+#         raise nx.NetworkXNoPath()
 
 
 def find_shortest_paths(

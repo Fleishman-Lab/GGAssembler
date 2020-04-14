@@ -28,8 +28,8 @@ class Requirements:
         min_oligo_length: int,
         max_oligo_length: int,
         min_const_oligo_length: int,
-        gate_self_binding_min: int = 2000,
-        gate_crosstalk_max: int = 1000,
+        min_efficiency: float,
+        min_fidelity: float,
         oligo_prefix: str = OLIGO_PREFIX,
         oligo_suffix: str = OLIGO_SUFFIX,
         re_calc_lengths: bool = True,
@@ -38,8 +38,8 @@ class Requirements:
         self.min_oligo_length = min_oligo_length
         self.max_oligo_length = max_oligo_length
         self.min_const_oligo_length = min_const_oligo_length
-        self.gate_self_binding_min = gate_self_binding_min
-        self.gate_crosstalk_max = gate_crosstalk_max
+        self.min_efficiency = min_efficiency
+        self.min_fidelity = min_fidelity
         self.oligo_addition = len(oligo_prefix) + len(oligo_suffix)
         self.const_cost = const_cost
         if re_calc_lengths:
@@ -130,15 +130,13 @@ def syn_muts(dna: str) -> Generator[Gate, None, None]:
                 yield Gate(
                     idx,
                     (cdn1 + cdn2)[bps_slice],
-                    True,
-                    (SynMut(idx, aa1, cdn1), SynMut(idx + 4, aa2, cdn2)),
+                    req_primer=True,
+                    syn_mut=(SynMut(idx, aa1, cdn1), SynMut(idx + 4, aa2, cdn2)),
                 )
 
 
 def gate_list_df(gate_path: List[Gate]) -> pd.DataFrame:
-    return pd.DataFrame.from_records(
-        gate_path, columns=gate_path[0].__annotations__.keys()
-    )
+    return pd.DataFrame.from_records(gate_path, columns=gate_path[0]._fields)
 
 
 def gate_df_list(gate_df: pd.DataFrame) -> List[Gate]:

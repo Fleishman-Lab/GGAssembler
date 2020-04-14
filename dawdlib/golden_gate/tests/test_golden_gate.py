@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# pytype: skip-file
 import os
 import unittest
 
@@ -21,8 +22,8 @@ np.random.seed(0)
 
 class GraphMakerTest(unittest.TestCase):
     def setUp(self):
-        self.gg_data = GGData()
-        self.graph_maker = GraphMaker(self.gg_data)
+        self.ggdata = GGData()
+        self.graph_maker = GraphMaker(self.ggdata)
 
         self.dna = parse_dna(f"{os.path.dirname(__file__)}/input_921/921_DNA_seq")
         self.resfile = parse_resfile(
@@ -39,7 +40,7 @@ class GraphMakerTest(unittest.TestCase):
         pass
 
     def test_is_node(self):
-        acceptable_fcws = self.gg_data.filter_self_binding_gates()
+        acceptable_fcws = self.ggdata.filter_self_binding_gates()
         self.assertTrue(not _is_node("AAAA", 10, acceptable_fcws, []))
         self.assertTrue(_is_node("AAAC", 10, acceptable_fcws, list(range(100))))
 

@@ -28,9 +28,9 @@ def gen_gate_sets(
     len_cutoff: int = None,
     weight="weight",
     **kwargs,
-) -> Generator[List[Gate], None, None]:
+) -> Iterable[List[Gate]]:
     path_counter = 0
-    for gate_set in all_shortest_paths(
+    for gate_set, dist in all_shortest_paths(
         graph, source, target, weight=weight, len_cutoff=len_cutoff, **kwargs
     ):
         if is_valid_path(gate_set):
@@ -107,27 +107,25 @@ def gate_deg_codons(
     dna: str,
     deg_table: pd.DataFrame,
     ggdata: GGData,
+    min_efficiency: float,
+    min_fidelity: float,
     min_var_oligo_length: int,
     max_var_oligo_length: int,
     min_const_oligo_length: int,
     no_solutions: int = 1,
     min_oligos: int = None,
     max_oligos: int = None,
-    gate_self_binding_min: int = 2000,
-    gate_crosstalk_max: int = 1000,
 ) -> Iterable[GateSet]:
 
-    is_valid_path = create_path_validator(
-        ggdata, gate_self_binding_min, gate_crosstalk_max
-    )
+    is_valid_path = create_path_validator(ggdata, min_efficiency, min_fidelity)
     var_poss = deg_table[TableColNames.DNA_POS.value].tolist()
     var_poss = expand_dna_var_poss(var_poss)
     reqs = Requirements(
         min_var_oligo_length,
         max_var_oligo_length,
         min_const_oligo_length,
-        gate_self_binding_min,
-        gate_crosstalk_max,
+        min_efficiency,
+        min_fidelity,
     )
     d_graph, src, target = make_default_graph(
         GraphMaker(ggdata), dna, var_poss, deg_table_to_dict(deg_table), reqs
@@ -144,28 +142,30 @@ def create_goldengates(
     min_var_oligo_length: int,
     max_var_oligo_length: int,
     min_const_oligo_length: int,
+    gg_temp: int,
+    gg_time: int,
+    gg_min_efficiency: float,
+    gg_min_fidelity: float,
     no_solutions: int = 1,
     min_oligos: int = None,
     max_oligos: int = None,
-    gate_self_binding_min: int = 2000,
-    gate_crosstalk_max: int = 1000,
 ):
     dna = parse_dna(dna_filename)
     deg_table = pd.read_csv(
         deg_table_filename, index_col=False, na_filter=True, keep_default_na=False
     )
-    ggdata = GGData()
+    ggdata = GGData(neb_table_temp=gg_temp, neb_table_time=gg_time)
     gatesets = gate_deg_codons(
         dna,
         deg_table,
         ggdata,
+        gg_min_efficiency,
+        gg_min_fidelity,
         min_var_oligo_length,
         max_var_oligo_length,
         min_const_oligo_length,
         no_solutions,
         min_oligos,
         max_oligos,
-        gate_self_binding_min,
-        gate_crosstalk_max,
     )
     write_oligo_gatesets(gatesets, output_dir)

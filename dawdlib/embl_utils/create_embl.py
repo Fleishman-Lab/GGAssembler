@@ -3,14 +3,22 @@ from typing import List
 import pandas as pd
 from Bio import SeqFeature, SeqIO
 
-from dawdlib.create_embl.embl_maker import create_dc_features, create_path_features
 from dawdlib.degenerate_dna.utils import parse_degenerate_codon_csv
+from dawdlib.embl_utils.embl_maker import create_dc_features, create_path_features
 from dawdlib.golden_gate.utils import gate_df_list
 
 
 def create_embl(
     deg_table_file: str, embl_file: str, path_file: str, out_embl_file: str
 ):
+    """
+
+    Args:
+        deg_table_file (str):
+        embl_file (str):
+        path_file (str):
+        out_embl_file (str):
+    """
     seq_record = SeqIO.read(embl_file, "embl")
 
     features: List[SeqFeature.SeqFeature] = []

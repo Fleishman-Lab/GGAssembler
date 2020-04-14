@@ -1,3 +1,4 @@
+# pytype: skip-file
 import filecmp
 import os
 import unittest
@@ -59,7 +60,7 @@ class IntegrationTests(unittest.TestCase):
         )
 
     def test_embl(self):
-        from dawdlib.create_embl.create_embl import create_embl
+        from dawdlib.embl_utils.create_embl import create_embl
 
         create_embl(
             deg_table_file=self.deg_table_in,

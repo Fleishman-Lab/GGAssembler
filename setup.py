@@ -41,12 +41,12 @@ if USE_CYTHON:
         else:
             raise
 
-ext = ".pyx" if USE_CYTHON else ".cpp"
+file_ext = ".pyx" if USE_CYTHON else ".cpp"
 
 ext_modules = [
     Extension(
         "dawdlib.dijkstra.colorful",
-        ["dawdlib/dijkstra/colorful" + ext],
+        ["dawdlib/dijkstra/colorful" + file_ext],
         include_dirs=[],
         language="c++",
         extra_compile_args=["-Ofast", "-std=c++11"]

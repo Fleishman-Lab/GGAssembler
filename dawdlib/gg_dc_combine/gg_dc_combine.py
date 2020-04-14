@@ -1,7 +1,7 @@
 import json
 from itertools import chain, product
 from operator import attrgetter
-from typing import Generator, Iterable, Iterator, List, NamedTuple, Tuple, Union
+from typing import Generator, Iterable, Iterator, List, NamedTuple, Union
 
 import pandas as pd
 
@@ -165,12 +165,15 @@ def get_wt(g1: Gate, g2: Gate, const: bool, dna: str,) -> OligoTableEntry:
         OligoTableEntry: Of the WT sequence
 
     """
-    g2_idx = g2.span()[1]
-    try:
-        g2_idx += 1
-    except TypeError:
-        pass
-    o_slice = slice(g1.idx, g2_idx)
+    # g2_idx = g2.span()[1]
+    # try:
+    #     g2_idx += 1
+    # except TypeError:
+    #     pass
+    # o_slice = slice(g1.idx, g2_idx)
+    g1_idx = g1.idx if not g1.src_or_target else None
+    g2_idx = g2.span()[1] + 1 if not g2.src_or_target else None
+    o_slice = slice(g1_idx, g2_idx)
     indices = o_slice.indices(len(dna))
     wt_entry = OligoTableEntry(
         wt=True,
@@ -229,13 +232,18 @@ def find_cdns(
     """
     Given indices returns the codons which are between the indices
     Args:
+        g1 (Gate): First gate
+        g2 (Gate): Second gate
+        dna (str): The gene DNA string
         deg_codons (Iterable[CodonHolder]): the entire codons
 
     Returns:
         List[CodonHolder]: Matching codons between start and stop
 
     """
-    o_slice = slice(g1.idx, g2.span()[1])
+    g1_idx = g1.idx if not g1.src_or_target else None
+    g2_idx = g2.span()[1] if not g2.src_or_target else None
+    o_slice = slice(g1_idx, g2_idx)
     indices = o_slice.indices(len(dna))
     return [x for x in deg_codons if indices[0] < x.idx < indices[1]]
 
@@ -252,19 +260,22 @@ def cdn_add_gates(g1: Gate, g2: Gate, cdns: List[CodonHolder]) -> List[CodonHold
         List[CodonHolder]: A sorted list of codons by index with gate1 and gate2 added to it
 
     """
-    g1_idx = g1.idx
-    try:
-        g1_idx += 1
-    except TypeError:
-        pass
-    g2_idx = g2.span()[1]
-    try:
-        g2_idx += 2
-    except TypeError:
-        pass
-    g1_edge_codon = CodonHolder(g1_idx, [None])
-    g2_edge_codon = CodonHolder(g2_idx, [None])
-    cdns += [g1_edge_codon, g2_edge_codon]
+    # g1_idx = g1.idx
+    # try:
+    #     g1_idx += 1
+    # except TypeError:
+    #     pass
+    # g2_idx = g2.span()[1] if not g2.src_or_target else None
+    # try:
+    #     g2_idx += 2
+    # except TypeError:
+    #     pass
+    # g1_edge_codon = CodonHolder(g1.idx + 1, [None])
+    # g2_edge_codon = CodonHolder(g2.span()[1] + 2, [None])
+    # cdns += [g1_edge_codon, g2_edge_codon]
+    cdns.extend(
+        [CodonHolder(g1.idx + 1, [None]), CodonHolder(g2.span()[1] + 2, [None])]
+    )
     return sorted(cdns, key=attrgetter("idx"))
 
 
@@ -314,8 +325,8 @@ def create_oligos(
         project_name += "."
     for g1, g2 in zip(pth[:-1], pth[1:]):
         cdns = find_cdns(g1, g2, dna, deg_codons)
-        o_pre = prefix if g1.idx is not None else ""
-        o_suf = suffix if g2.idx is not None else ""
+        o_pre = prefix if not g1.src_or_target else ""
+        o_suf = suffix if not g2.src_or_target else ""
         oligos.extend(create_oligo(g1, g2, cdns, dna, o_pre, o_suf))
     return map(
         lambda x: x._replace(name=f"{project_name}{x.name}"),
