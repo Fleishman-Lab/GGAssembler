@@ -117,7 +117,7 @@ def gate_deg_codons(
     max_oligos: int = None,
 ) -> Iterable[GateSet]:
 
-    is_valid_path = create_path_validator(ggdata, min_efficiency, min_fidelity)
+    is_valid_path = create_path_validator(ggdata)
     var_poss = deg_table[TableColNames.DNA_POS.value].tolist()
     var_poss = expand_dna_var_poss(var_poss)
     reqs = Requirements(

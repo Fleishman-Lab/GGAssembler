@@ -16,47 +16,9 @@ class Gate(NamedTuple):
     req_primer: bool = False
     syn_mut: Tuple[SynMut, ...] = ()
 
-    # Since gate is based on a tuple and only a single gate be at the a specific
-    # index tuple comparison is enough to check all these cases.
-    # def __lt__(self, other: Tuple) -> Union[bool, "NotImplemented"]:
-    #     if not isinstance(other, Gate):
-    #         return NotImplemented
-    #     return self.idx < other.idx
-    #
-    # def __le__(self, other: Tuple) -> Union[bool, "NotImplemented"]:
-    #     if not isinstance(other, Gate):
-    #         return NotImplemented
-    #     return self.idx <= other.idx
-    #
-    # def __eq__(self, other: object) -> Union[bool, "NotImplemented"]:
-    #     if not isinstance(other, Gate):
-    #         return NotImplemented
-    #     return (
-    #         self.idx == other.idx
-    #         and self.bps == other.bps
-    #         and self.req_primer == other.req_primer
-    #         and self.syn_mut == other.syn_mut
-    #     )
-    #
-    # def __ne__(self, other: object) -> Union[bool, "NotImplemented"]:
-    #     if not isinstance(other, Gate):
-    #         return NotImplemented
-    #
-    #     return self.idx != other.idx
-    #
-    # def __gt__(self, other: Tuple) -> Union[bool, "NotImplemented"]:
-    #     if not isinstance(other, Gate):
-    #         return NotImplemented
-    #
-    #     return self.idx > other.idx
-    #
-    # def __ge__(self, other: Tuple) -> Union[bool, "NotImplemented"]:
-    #     if not isinstance(other, Gate):
-    #         return NotImplemented
-    #
-    #     return self.idx >= other.idx
-
     def __sub__(self, other: "Gate") -> int:
+        # 4 is added to account for gate length (4)
+        # plus the fact we need to include the entire gate
         if self.idx == other.idx:
             return 0
         if self < other:

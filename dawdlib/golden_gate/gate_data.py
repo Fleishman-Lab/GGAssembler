@@ -8,11 +8,8 @@ Potapov, V., et al. (2018).
 import math
 import os
 from functools import lru_cache
-
-# from itertools import combinations, combinations_with_replacement
 from typing import Dict, FrozenSet, Iterable, List, Tuple
 
-# import numpy as np
 import pandas as pd
 
 
@@ -34,7 +31,6 @@ class GGData:
         neb_table_time: int = 18,
         min_efficiency: float = MIN_EFFICIENCY,
         min_fidelity: float = MIN_FIDELITY,
-        # init_dicts=True,
     ) -> None:
         self.lig_df: pd.DataFrame
         # Efficiency is proportional to the "best" overhang in the data.
@@ -64,13 +60,6 @@ class GGData:
             efficiency = self.lig_df.sum(axis=0)
             self.efficiency = efficiency / efficiency.max()
             self.fidelity = self.lig_df.divide(efficiency)
-        # if init_dicts:
-        #     abc = "ACGT"
-        #     for g1, g2 in combinations(combinations_with_replacement(abc, 4), 2):
-        #         gate1 = "".join(g1)
-        #         gate2 = "".join(g2)
-        #         self.gates_scores(gate1, gate2)
-        #         self.gates_all_scores(gate1, gate2)
 
     def get_efficiency(self) -> float:
         return self._min_efficiency
@@ -113,9 +102,6 @@ class GGData:
         assert (
             self._efficient_overhangs
         ), "filter_self_binding_gates has not been called yet, cannot run!"
-        # overhangs = set(map(reverse_complement, self._efficient_overhangs)).union(
-        #     self._efficient_overhangs
-        # )
         sub_lig_df = self.lig_df.loc[
             self._efficient_overhangs, self._efficient_overhangs
         ]
@@ -145,7 +131,6 @@ class GGData:
                     break
 
     def overhangs_fidelity(self, *args) -> Iterable[float]:
-        # indices = np.arange(len(overhangs))
         overhangs = list(map(str, args))
         revs = list(map(reverse_complement, overhangs))
         for over, rev in zip(overhangs, revs):
@@ -160,10 +145,6 @@ class GGData:
                     self.fidelity.loc[over, rev]
                     / self.fidelity.loc[revs + overhangs, rev].sum(),
                 )
-        # for i in indices:
-        #     over = overhangs[i]
-        #     if revs
-        #     yield self.fidelity.loc[revs[i], over] / self.fidelity.loc[revs, over].sum()
 
 
 @lru_cache(maxsize=256)

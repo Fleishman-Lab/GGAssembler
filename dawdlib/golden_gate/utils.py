@@ -34,6 +34,7 @@ class Requirements:
         oligo_suffix: str = OLIGO_SUFFIX,
         re_calc_lengths: bool = True,
         const_cost=CONST_COST,
+        filter_gc_overhangs: bool = True,
     ):
         self.min_oligo_length = min_oligo_length
         self.max_oligo_length = max_oligo_length
@@ -42,6 +43,7 @@ class Requirements:
         self.min_fidelity = min_fidelity
         self.oligo_addition = len(oligo_prefix) + len(oligo_suffix)
         self.const_cost = const_cost
+        self.filter_gc_overhangs = filter_gc_overhangs
         if re_calc_lengths:
             self.max_oligo_length -= self.oligo_addition
 
@@ -71,7 +73,6 @@ def ambiguous_dna_unambiguous(dna: str) -> Iterator[str]:
 
 
 def find_dna_var_poss(var_poss: List[int]) -> List[int]:
-    # return list(chain(*([pos * 3 - 2, pos * 3 - 1, pos * 3] for pos in var_poss)))
     all_poss: List[int] = []
     for pos in var_poss:
         all_poss.append(pos * 3 - 2)

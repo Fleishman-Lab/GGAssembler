@@ -302,9 +302,9 @@ class ReactionCLI:
 
         self.sim = ReactionSim(
             GGData(neb_table_temp=neb_table_temp, neb_table_time=neb_table_time),
-            # TODO:
-            #   Remove default min_efficiency
-            Requirements(0, 0, 0, min_fidelity=min_fidelity, min_efficiency=0),
+            Requirements(
+                0, 0, 0, min_fidelity=min_fidelity, min_efficiency=GGData.MIN_EFFICIENCY
+            ),
             enzymes,
         )
         self.sim.create_reaction_graph(table_path)

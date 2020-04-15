@@ -1,8 +1,7 @@
+import collections
 from collections import OrderedDict
 from enum import Enum
-from typing import Dict, List
-from typing import OrderedDict as OrderedDictType
-from typing import Tuple
+from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -30,7 +29,7 @@ def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> PosCodon:
 
 def resfile_aa_codons(
     codon_selector: CodonSelector, resfile: Dict[int, str]
-) -> OrderedDictType[int, PosCodon]:
+) -> OrderedDict[int, PosCodon]:
     return OrderedDict(
         [
             (pos, aas_deg_codons(codon_selector, list(aas)))
@@ -69,7 +68,6 @@ def dna_pos_ambiguous_codons(
     )
 
 
-#  organism_id: str = '37762'
 def create_deg_table(res_filename: str, codon_selector: CodonSelector) -> pd.DataFrame:
     resfile = parse_resfile(res_filename)
     aa_var_poss: List[int] = list(resfile.keys())

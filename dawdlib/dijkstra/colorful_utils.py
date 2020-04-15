@@ -12,7 +12,6 @@ from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.gate_restriction import gen_gate_restriction_graph
 
 
-# @cython.embedsignature(True)
 def all_shortest_paths(
     ggdata,
     G,
@@ -123,14 +122,8 @@ def all_shortest_paths(
         seen,
         limit=len_cutoff,
     )
-    #     return res
-    # except nx.NetworkXNoPath:
-    #     raise nx.NetworkXNoPath(
-    #         "Target {} cannot be reached" "from Source {}".format(target, source)
-    #     )
 
 
-# @cython.embedsignature(True)
 def shortest_path(
     ggdata,
     G,
@@ -241,11 +234,6 @@ def shortest_path(
         seen,
         limit=len_cutoff,
     )
-    #     return res
-    # except nx.NetworkXNoPath:
-    #     raise nx.NetworkXNoPath(
-    #         "Target {} cannot be reached" "from Source {}".format(target, source)
-    #     )
 
 
 def _prep_data(
@@ -275,7 +263,6 @@ def _prep_data(
     return nxtonumpy(G, [source], target, gate_colors.get, no_colors)
 
 
-# @cython.embedsignature(True)
 def all_colorful_shortest_paths(
     nodes: tp.List[int],
     G: tp.Dict[int, tp.FrozenSet[int]],
@@ -335,7 +322,6 @@ def all_colorful_shortest_paths(
         raise nx.NetworkXNoPath
 
 
-# @cython.embedsignature(True)
 def colorful_shortest_path(
     nodes: tp.List[int],
     G: tp.Dict[int, tp.FrozenSet[int]],
@@ -389,91 +375,8 @@ def colorful_shortest_path(
             return_shortest_path(nodes, src, target, s_pred, seen, color_map, limit)
             for src in sources
         )
-        # for src in sources:
-        #     yield return_shortest_path(
-        #         nodes, src, target, s_pred, seen, color_map, limit
-        #     )
     else:
         raise nx.NetworkXNoPath
-
-
-# def _MCSCliqueTree(
-#     G: nx.Graph,
-# ) -> tp.Tuple[tp.List[tp.Tuple[int, int]], tp.Dict[int, tp.Set], tp.Dict[tp.Any, int]]:
-#     """
-#     Ref: Galinier et al. - Chordal graphs and their clique graphs (2005)
-#     Data: A graph G = (V, E)
-#     Result: If the input graph is chordal: a PEO and an associated
-#     clique-tree T = (I, F) where I is the set of maximal cliques
-#     begin
-#         each vertex of X is initialized with the empty set
-#         previousmark = -1
-#         j=0
-#         for i=n to 1 do
-#             choose a vertex x not yet numbered such that |mark(x)| is maximum
-#             if mark(x) < previousmark then
-#                 j=j+1
-#                 create the maximal clique Cj = M(x) U {x}
-#                 create the tie between Cj and C(last(x))
-#             else
-#                 Cj = Cj U {x}
-#             for each y neighbour of x do
-#                 M(y) = M(y) U {x}
-#                 mark(y) = mark(y) + 1
-#                 last(y) = x
-#             previousmark = mark(x)
-#             x is numbered by i
-#             C(x) = j
-#     end
-#     """
-#     heap = dict((n, 0) for n in G.nodes)
-#     T: tp.List[tp.Tuple[int, int]] = []
-#     alpha: tp.Dict[tp.Any, int] = dict()
-#     C: tp.Dict[int, tp.Set] = defaultdict(set)
-#     C_dict: tp.Dict[tp.Any, int] = dict((n, 0) for n in G.nodes)
-#     M: tp.Dict[tp.Any, tp.Set] = dict((n, set()) for n in G.nodes)
-#     previousmark = -1
-#     j = 0
-#     last: tp.Dict[tp.Any, int] = dict((n, 0) for n in G.nodes)
-#     for i in range(len(G.nodes), 0, -1):
-#         u = max(heap, key=heap.get)
-#         marku = heap.pop(u)
-#         if marku <= previousmark:
-#             j += 1
-#             C[j] = M[u] | {u}
-#             T.append((j, C_dict[last[u]]))
-#         else:
-#             C[j] |= {u}
-#         for v in G[u]:
-#             try:
-#                 heap[v] += 1
-#                 M[v] |= {u}
-#                 last[v] = u
-#             except KeyError:
-#                 pass
-#         previousmark = marku
-#         alpha[u] = i
-#         C_dict[u] = j
-#     return T, C, alpha
-
-
-# def _enumerate_cliques(graph: nx.Graph) -> tp.Dict[int, tp.Set[tp.Any]]:
-#     cliques: tp.List[tp.Set] = []
-#     for cc in nx.connected_components(graph):
-#         _, clique_dict, _ = _MCSCliqueTree(graph.subgraph(cc))
-#         cliques.extend(clique_dict.values())
-#
-#     return dict((i, c) for i, c in enumerate(cliques))
-
-
-# def _color_vertices(
-#     clique_colors: tp.Dict[int, tp.Set[tp.Any]]
-# ) -> tp.DefaultDict[tp.Any, tp.FrozenSet[int]]:
-#     vertex_colors = defaultdict(frozenset)
-#     for color, clique in clique_colors.items():
-#         for vertex in clique:
-#             vertex_colors[vertex] |= frozenset([color])
-#     return vertex_colors
 
 
 def _color_gates(
@@ -566,7 +469,6 @@ def nxtonumpy(
     target = nodes.index(target)
     pred = np.zeros_like(weight_arr, dtype=np.ubyte)
 
-    # dtype = np.uint8
     if l_nodes < 9:
         dtype = np.uint8
     elif 8 < l_nodes < 17:

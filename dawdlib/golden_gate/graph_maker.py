@@ -38,7 +38,6 @@ class GraphMaker:
             # segments with variable positions between them
             # are required to be at a certain length
             if np.any(np.logical_and(nd1.idx < dna_var_arr, dna_var_arr < nd2.idx)):
-                # 4 was added to account for nd2 length (4) plus the fact we need to include the entire gate
                 if not (min_oligo_length < nd2 - nd1 < max_oligo_length):
                     return False
             else:
@@ -165,7 +164,7 @@ def make_default_graph(
     dna_pos_n_codons: Dict[int, List[str]],
     reqs: Requirements,
 ) -> Tuple[nx.DiGraph, Gate, Gate]:
-    acceptable_fcws = gm.ggdata.filter_self_binding_gates(reqs.min_efficiency)
+    acceptable_fcws = gm.ggdata.filter_self_binding_gates(reqs.filter_gc_overhangs)
     is_valid_node = create_default_valid_node_function(acceptable_fcws, var_poss)
     is_valid_edge = gm.create_default_valid_edge_func(
         var_poss,

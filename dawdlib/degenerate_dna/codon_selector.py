@@ -311,21 +311,12 @@ def _optimise_codons_greedy(
     req_aas = set(amino_acids)
     not_found_aas = set(amino_acids)
     used_codons: tp.List[PosCodon] = []
-    # i = len(codons)
     cdn_itr = iter(codons)
-    # cdn = next(cdn_itr, False)
 
     for cdn in cdn_itr:
         used_codons.append(cdn)
         not_found_aas = not_found_aas.difference(cdn.encoded_acids)
         cdn_itr = filter(lambda x: not_found_aas.issuperset(x.encoded_acids), cdn_itr)
-
-    # while i > 0 and not_found_aas and cdn:
-    #     used_codons.append(cdn)
-    #     not_found_aas = not_found_aas.difference(cdn.encoded_acids)
-    #     i -= 1
-    #     cdn_itr = filter(lambda x: not_found_aas.issuperset(x.encoded_acids), cdn_itr)
-    #     cdn = next(cdn_itr, False)
 
     codon_comb = _combine_condons(used_codons)
     if _is_codon_set_valid(req_aas, codon_comb.encoded_acids):

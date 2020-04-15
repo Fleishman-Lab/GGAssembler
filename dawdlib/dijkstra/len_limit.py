@@ -260,7 +260,7 @@ def _dijkstra_multisource(
     pop = heappop
     dist = defaultdict(dict)  # dictionary of final distances
     seen = defaultdict(dict)
-    # fringe is heapq with 4-tuples (distance, length, c,node)
+    # fringe is heapq with 4-tuples (distance, length, c, node)
     # use the count c to avoid comparing nodes (may not be able to)
     c = count()
     fringe = []
