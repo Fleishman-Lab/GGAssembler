@@ -8,6 +8,7 @@ Potapov, V., et al. (2018).
 import math
 import os
 from functools import lru_cache
+
 # from itertools import combinations, combinations_with_replacement
 from typing import Dict, FrozenSet, Iterable, List, Tuple
 
@@ -96,10 +97,15 @@ class GGData:
 
     def filter_self_binding_gates(self, filter_gc: bool = True) -> List[str]:
         if not self._efficient_overhangs:
-            overhangs = self.efficiency[self.efficiency > self.min_efficiency].index
+            overhangs = self.efficiency
             if filter_gc:
-                overhangs = filter(lambda x: "T" in x or "A" in x, overhangs)
-            self._efficient_overhangs = list(overhangs)
+                overhangs = self.efficiency.filter(regex=r"[A|T]")
+            revs = overhangs.index.map(reverse_complement)
+            overhangs = overhangs[
+                (overhangs > self.min_efficiency).values
+                & (overhangs.loc[revs] > self.min_efficiency).values
+            ]
+            self._efficient_overhangs = list(overhangs.index)
             self._update_fidelity()
         return self._efficient_overhangs
 
@@ -107,10 +113,12 @@ class GGData:
         assert (
             self._efficient_overhangs
         ), "filter_self_binding_gates has not been called yet, cannot run!"
-        overhangs = set(map(reverse_complement, self._efficient_overhangs)).union(
-            self._efficient_overhangs
-        )
-        sub_lig_df = self.lig_df.loc[overhangs, self._efficient_overhangs]
+        # overhangs = set(map(reverse_complement, self._efficient_overhangs)).union(
+        #     self._efficient_overhangs
+        # )
+        sub_lig_df = self.lig_df.loc[
+            self._efficient_overhangs, self._efficient_overhangs
+        ]
         efficiency = sub_lig_df.sum(axis=0)
         self.fidelity = sub_lig_df.divide(efficiency)
 
@@ -141,12 +149,17 @@ class GGData:
         overhangs = list(map(str, args))
         revs = list(map(reverse_complement, overhangs))
         for over, rev in zip(overhangs, revs):
-            if rev in overhangs:
+            if overhangs.count(over) > 1:
+                yield 0.0
+            elif rev in overhangs:
                 yield 0.0
             else:
-                yield self.fidelity.loc[rev, over] / self.fidelity.loc[
-                    revs + overhangs, over
-                ].sum()
+                yield min(
+                    self.fidelity.loc[rev, over]
+                    / self.fidelity.loc[revs + overhangs, over].sum(),
+                    self.fidelity.loc[over, rev]
+                    / self.fidelity.loc[revs + overhangs, rev].sum(),
+                )
         # for i in indices:
         #     over = overhangs[i]
         #     if revs
