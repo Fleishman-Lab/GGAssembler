@@ -28,7 +28,7 @@ def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> PosCodon:
 
 def resfile_aa_codons(
     codon_selector: CodonSelector, resfile: Dict[int, str]
-) -> OrderedDict[int, PosCodon]:
+) -> Dict[int, PosCodon]:
     return OrderedDict(
         [
             (pos, aas_deg_codons(codon_selector, list(aas)))
