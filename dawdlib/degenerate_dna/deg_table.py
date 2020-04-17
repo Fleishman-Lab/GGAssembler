@@ -1,4 +1,3 @@
-import collections
 from collections import OrderedDict
 from enum import Enum
 from typing import Dict, List, Tuple
