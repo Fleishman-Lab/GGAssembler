@@ -27,8 +27,8 @@ class GGData:
     def __init__(
         self,
         init_df=True,
-        neb_table_temp: int = 37,
-        neb_table_time: int = 18,
+        temperature: int = 37,
+        hours: int = 18,
         min_efficiency: float = MIN_EFFICIENCY,
         min_fidelity: float = MIN_FIDELITY,
     ) -> None:
@@ -37,18 +37,18 @@ class GGData:
         # It is the proportion of an overhang from the "best" overhang
         self.efficiency: pd.Series
         # Fidelity is the probability of an overhang to connect to it's reverse complement
-        self.fidelity: pd.Series
+        self.fidelity: pd.DataFrame
 
         self._min_efficiency: float = min_efficiency
         self._min_fidelity: float = min_fidelity
         self._efficient_overhangs: List[str] = []
 
         try:
-            self.default_df = self.df_files[(neb_table_time, neb_table_temp)]
+            self.default_df = self.df_files[(hours, temperature)]
         except KeyError:
             raise ValueError(
                 "No data was found for the combination of temperature %d C and time %d H."
-                % (neb_table_temp, neb_table_time)
+                % (temperature, hours)
             )
 
         self.score_dict: Dict[FrozenSet, int] = {}

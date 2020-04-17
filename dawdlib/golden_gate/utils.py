@@ -22,30 +22,60 @@ class OligoTableEntry(NamedTuple):
     oligo_dna: str
 
 
-class Requirements:
-    def __init__(
-        self,
-        min_oligo_length: int,
-        max_oligo_length: int,
-        min_const_oligo_length: int,
-        min_efficiency: float,
-        min_fidelity: float,
-        oligo_prefix: str = OLIGO_PREFIX,
-        oligo_suffix: str = OLIGO_SUFFIX,
-        re_calc_lengths: bool = True,
-        const_cost=CONST_COST,
-        filter_gc_overhangs: bool = True,
-    ):
-        self.min_oligo_length = min_oligo_length
-        self.max_oligo_length = max_oligo_length
-        self.min_const_oligo_length = min_const_oligo_length
-        self.min_efficiency = min_efficiency
-        self.min_fidelity = min_fidelity
-        self.oligo_addition = len(oligo_prefix) + len(oligo_suffix)
-        self.const_cost = const_cost
-        self.filter_gc_overhangs = filter_gc_overhangs
-        if re_calc_lengths:
-            self.max_oligo_length -= self.oligo_addition
+class Requirements(NamedTuple):
+    gg_temp: int
+    gg_hours: int
+    min_oligo_length: int
+    max_oligo_length: int
+    min_const_oligo_length: int
+    min_efficiency: float
+    min_fidelity: float
+    oligo_prefix: str  # = OLIGO_PREFIX
+    oligo_suffix: str  # = OLIGO_SUFFIX
+    const_cost: int  # = CONST_COST
+    oligo_addition: int = 0
+    re_calc_lengths: bool = True
+    filter_gc_overhangs: bool = True
+
+
+def RequirementsFactory(*args, **kwargs) -> Requirements:
+    reqs = Requirements(*args, **kwargs)
+    if reqs.re_calc_lengths:
+        oligo_addition = len(reqs.oligo_prefix) + len(reqs.oligo_suffix)
+        return reqs._replace(
+            oligo_addition=oligo_addition,
+            max_oligo_length=reqs.max_oligo_length - oligo_addition,
+        )
+
+
+# class Requirements:
+#     def __init__(
+#         self,
+#         gg_temp: int,
+#         gg_hours: int,
+#         min_oligo_length: int,
+#         max_oligo_length: int,
+#         min_const_oligo_length: int,
+#         min_efficiency: float,
+#         min_fidelity: float,
+#         oligo_prefix: str = OLIGO_PREFIX,
+#         oligo_suffix: str = OLIGO_SUFFIX,
+#         re_calc_lengths: bool = True,
+#         const_cost=CONST_COST,
+#         filter_gc_overhangs: bool = True,
+#     ):
+#         self.gg_temp = gg_temp
+#         self.gg_hours = gg_hours
+#         self.min_oligo_length = min_oligo_length
+#         self.max_oligo_length = max_oligo_length
+#         self.min_const_oligo_length = min_const_oligo_length
+#         self.min_efficiency = min_efficiency
+#         self.min_fidelity = min_fidelity
+#         self.oligo_addition = len(oligo_prefix) + len(oligo_suffix)
+#         self.const_cost = const_cost
+#         self.filter_gc_overhangs = filter_gc_overhangs
+#         if re_calc_lengths:
+#             self.max_oligo_length -= self.oligo_addition
 
 
 def parse_dna(dna_file: str, frmt="fasta") -> str:

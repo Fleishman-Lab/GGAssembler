@@ -185,9 +185,7 @@ class ReactionSim:
         rgraph = ReactionGraph()
         rgraph.add_nodes_from(ddna_iter)
         rgraph.add_edges_from(
-            get_compatible_oligos(
-                self.ggdata, iter(rgraph.nodes), self.reqs.min_fidelity
-            )
+            get_compatible_oligos(self.ggdata, rgraph.nodes, self.reqs.min_fidelity)
         )
         sources, targets = find_sources_targets(iter(rgraph.nodes))
         rgraph.add_edges_from(
@@ -301,7 +299,7 @@ class ReactionCLI:
     ):
 
         self.sim = ReactionSim(
-            GGData(neb_table_temp=neb_table_temp, neb_table_time=neb_table_time),
+            GGData(temperature=neb_table_temp, hours=neb_table_time),
             Requirements(
                 0, 0, 0, min_fidelity=min_fidelity, min_efficiency=GGData.MIN_EFFICIENCY
             ),
@@ -491,7 +489,7 @@ def find_sources_targets(
 
 
 def get_compatible_oligos(
-    ggdata: GGData, ddnas: Iterator[DDNASection], min_fidelity: float
+    ggdata: GGData, ddnas: Iterable[DDNASection], min_fidelity: float
 ) -> Generator[Tuple[DDNASection, DDNASection, Dict], None, None]:
     """
 
@@ -504,19 +502,24 @@ def get_compatible_oligos(
          Tuple[DDNASection, DDNASection] - Signifying these two dna sections can connect to one another in the reaction
     """
     dtup: Tuple[DDNASection, ...]
+    overhangs = set(
+        filter(None, chain.from_iterable(d.get_hang_dna_rev() for d in ddnas))
+    )
+    sub_fid: pd.DataFrame = ggdata.fidelity.loc[overhangs, overhangs]
+    sub_fid = sub_fid.divide(sub_fid.sum(axis=0))
     for dtup in combinations(ddnas, 2):
         d1, d2 = dtup
         for h1, h2 in chain.from_iterable(
             permutations(
                 product(
-                    filter(len, d1.get_hang_dna_rev()),
-                    filter(len, d2.get_hang_dna_rev()),
+                    filter(None, d1.get_hang_dna_rev()),
+                    filter(None, d2.get_hang_dna_rev()),
                 ),
                 2,
             )
         ):
-            fidelity = ggdata.fidelity.loc[h1, h2]
-            if fidelity >= min_fidelity:
+            fidelity = sub_fid.loc[h1, h2]
+            if fidelity >= 1 - min_fidelity:
                 rgea = ReactionGraphEdgeAttr(
                     id="-".join(sorted([h1, h2])), score=fidelity
                 )

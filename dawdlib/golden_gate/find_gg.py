@@ -154,7 +154,7 @@ def create_goldengates(
     deg_table = pd.read_csv(
         deg_table_filename, index_col=False, na_filter=True, keep_default_na=False
     )
-    ggdata = GGData(neb_table_temp=gg_temp, neb_table_time=gg_time)
+    ggdata = GGData(temperature=gg_temp, hours=gg_time)
     gatesets = gate_deg_codons(
         dna,
         deg_table,
