@@ -7,7 +7,7 @@ import networkx as nx
 import numpy as np
 from networkx.algorithms.shortest_paths.weighted import _weight_function
 
-from dawdlib.dijkstra import colorful  # pytype: disable=import-error
+from dawdlib.dijkstra import colorful_algorithm  # pytype: disable=import-error
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.gate_restriction import gen_gate_restriction_graph
 
@@ -297,7 +297,7 @@ def all_colorful_shortest_paths(
     :return: A generator yielding shortest colorful paths
     :rtype: generator
     """
-    found, res = colorful.find_shortest_paths(
+    found, res = colorful_algorithm.find_shortest_paths(
         G,
         weight,
         sources,
@@ -356,7 +356,7 @@ def colorful_shortest_path(
     :return: A generator yielding shortest colorful paths
     :rtype: generator
     """
-    found, res = colorful.find_shortest_paths(
+    found, res = colorful_algorithm.find_shortest_paths(
         G,
         weight,
         sources,
@@ -446,7 +446,7 @@ def _nxgraphtomap(weight_arr: np.ndarray) -> tp.Mapping:
     for i, j in zip(rows, cols):
         cgraph[int(i)].append(int(j))
 
-    return colorful.graphdict2map(dict(cgraph))
+    return colorful_algorithm.graphdict2map(dict(cgraph))
 
 
 def nxtonumpy(
