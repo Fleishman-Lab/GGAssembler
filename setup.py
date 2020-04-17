@@ -45,8 +45,8 @@ file_ext = ".pyx" if USE_CYTHON else ".cpp"
 
 ext_modules = [
     Extension(
-        "dawdlib.dijkstra.colorful",
-        ["dawdlib/dijkstra/colorful" + file_ext],
+        "dawdlib.dijkstra.colorful_algorithm",
+        ["dawdlib/dijkstra/colorful_algorithm" + file_ext],
         include_dirs=[],
         language="c++",
         extra_compile_args=["-Ofast", "-std=c++11"]
