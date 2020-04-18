@@ -1,29 +1,22 @@
 from collections import OrderedDict
-from enum import Enum
 from typing import Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
 
 from dawdlib.degenerate_dna.codon_selector import CodonSelector, PosCodon
+from dawdlib.degenerate_dna.structs import TableColNames
 from dawdlib.golden_gate.utils import find_dna_var_poss, parse_resfile
 
 
-class TableColNames(Enum):
-    AA_POS = "AA_POS"
-    DNA_POS = "DNA_POS"
-    AMBIGUOUS_CODONS = "AMBIGUOUS_CODONS"
-    ENCODED_AAS = "ENCODED_AAS"
-    ENCODED_COUNT = "ENCODED_COUNT"
-
-
 def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> PosCodon:
-    length = len(aas)
-    if length > 15:
-        return codon_selector.optimise_codons(aas, mode="greedy")
-    if length < 4:
-        return codon_selector.optimise_codons(aas, mode="exact")
-    return codon_selector.optimise_codons(aas)
+    return codon_selector.optimise_codons(aas, mode="exact")
+    # length = len(aas)
+    # if length > 15:
+    #     return codon_selector.optimise_codons(aas, mode="exact")
+    # if length < 4:
+    #     return codon_selector.optimise_codons(aas, mode="exact")
+    # return codon_selector.optimise_codons(aas, mode="exact")
 
 
 def resfile_aa_codons(

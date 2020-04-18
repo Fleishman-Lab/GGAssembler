@@ -9,31 +9,13 @@ To view a copy of this license, visit <http://opensource.org/licenses/MIT/>.
 """
 import itertools
 from collections import defaultdict
-from typing import Dict, Iterable, List, NamedTuple, Tuple
+from typing import Dict, Iterable, List
 
 import Bio.Data.CodonTable as CodonTable
 from synbiochem.utils import seq_utils
 from synbiochem.utils.seq_utils import CodonOptimiser
 
-
-class Codon(NamedTuple):
-    codon: str
-    probability: float
-    cai: float
-
-
-class AminoAcid(NamedTuple):
-    type: int = -1
-    amino_acid: str = "Stop"
-    codons: Tuple[Codon, ...] = ()
-
-
-class AmbigCodon(NamedTuple):
-    ambiguous_codon: str
-    ambiguous_codon_nucleotides: Tuple[str, ...]
-    ambiguous_codon_expansion: Tuple[str, ...]
-    amino_acids: Tuple[AminoAcid, ...]
-    score: float = 0
+from dawdlib.degenerate_dna.structs import AmbigCodon, AminoAcid, Codon
 
 
 class CodonSelector:

@@ -4,34 +4,11 @@ from itertools import chain, combinations, product
 import networkx as nx
 import numpy as np
 
-from dawdlib.degenerate_dna.codon_utils import AmbigCodon, AminoAcid
+from dawdlib.degenerate_dna.alg_x import AlgXSolver
+from dawdlib.degenerate_dna.codon_utils import AmbigCodon
 from dawdlib.degenerate_dna.codon_utils import CodonSelector as UtilsCodonSelector
 from dawdlib.degenerate_dna.codon_utils import _get_score
-
-DEG_NUCL_CODES = [
-    "A",
-    "C",
-    "G",
-    "T",
-    "R",
-    "Y",
-    "S",
-    "W",
-    "K",
-    "M",
-    "B",
-    "D",
-    "H",
-    "V",
-    "N",
-]
-
-
-class PosCodon(tp.NamedTuple):
-    ambiguous_codons: tp.Tuple[str, ...] = ()
-    amino_acids: tp.Tuple[AminoAcid, ...] = ()
-    encoded_acids: tp.FrozenSet = frozenset()
-    score: float = -1
+from dawdlib.degenerate_dna.structs import DEG_NUCL_CODES, PosCodon
 
 
 class CodonSelector:
@@ -116,7 +93,7 @@ class CodonSelector:
                 pass
         return acc
 
-    def optimise_codons(self, amino_acids: tp.List[str], mode="graph") -> PosCodon:
+    def optimise_codons(self, amino_acids: tp.List[str], mode="exact") -> PosCodon:
 
         if mode == "graph" and self.graph is not None:
             return _optimise_codons_graph(amino_acids, graph=self.graph)
@@ -333,17 +310,22 @@ def _optimise_codons_exact(
     best_codon_len = np.inf
     req_aas_set = set(amino_acids)
 
-    for codons_list in _powerset(codons):
-        codon_comb = _combine_condons(codons_list)
+    for cdns in AlgXSolver.solve(req_aas_set, codons):
+        if len(cdns) > best_codon_len:
+            continue
+        codon_comb = _combine_condons(cdns)
         if not _is_codon_set_valid(req_aas_set, codon_comb.encoded_acids):
             continue
-        if len(codon_comb.ambiguous_codons) > best_codon_len:
+        if len(codon_comb.ambiguous_codons) < best_codon_len:
+            best_codon = codon_comb
+            best_codon_len = len(codon_comb.ambiguous_codons)
+            best_codon_score = codon_comb.score
             continue
-        if codon_comb.score < best_codon_score:
-            continue
-        best_codon = codon_comb
-        best_codon_len = len(codon_comb.ambiguous_codons)
-        best_codon_score = codon_comb.score
+        # Last case: lengths are equal
+        if codon_comb.score > best_codon_score:
+            best_codon = codon_comb
+            best_codon_len = len(codon_comb.ambiguous_codons)
+            best_codon_score = codon_comb.score
     return best_codon
 
 
