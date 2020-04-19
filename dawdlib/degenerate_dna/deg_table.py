@@ -91,7 +91,12 @@ def create_deg_table(res_filename: str, codon_selector: CodonSelector) -> pd.Dat
 
 def generate_deg_csv(res_filename: str, csv_filename: str, organism_id: str = "37762"):
     """
-    Default organism is Escherichia coli
+    Default organism is Escherichia coli, ID = "37762"
+    Saccharomyces cerevisiae ID = "4932"
+
+    For to search for a different organism
+        see: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?
+        https://doi.org/10.1093/nar/gkr1178
     """
     cs = CodonSelector(organism_id)
     df: pd.DataFrame = create_deg_table(res_filename, cs)

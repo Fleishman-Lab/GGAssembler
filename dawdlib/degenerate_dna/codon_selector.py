@@ -13,8 +13,14 @@ from dawdlib.degenerate_dna.structs import DEG_NUCL_CODES, PosCodon
 
 class CodonSelector:
     """Usage:
-    initiate giving an organism id as an NCBI Taxonomy id
-        See: https://doi.org/10.1093/nar/gkr1178
+    initiate giving an organism id as an NCBI Taxonomy id.
+    Commons ids:
+        Escherichia coli ID = "37762"
+        Saccharomyces cerevisiae ID = "4932"
+
+    Lookup ids at: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?
+
+    For paper see: https://doi.org/10.1093/nar/gkr1178
 
     To get best degenerate codon library call optimise_codons with the
     required amino acids as single letter list.
@@ -317,13 +323,13 @@ def _optimise_codons_exact(
     best_codon: PosCodon = PosCodon()
     best_codon_score = np.NINF
     best_codon_len = np.inf
-    req_aas_set = set(amino_acids)
+    req_aas = set(amino_acids)
 
-    for cdns in AlgXSolver.solve(req_aas_set, codons):
+    for cdns in AlgXSolver.solve(req_aas, codons):
         if len(cdns) > best_codon_len:
             continue
         codon_comb = _combine_condons(cdns)
-        if not _is_codon_set_valid(req_aas_set, codon_comb.encoded_acids):
+        if not _is_codon_set_valid(req_aas, codon_comb.encoded_acids):
             continue
         if len(codon_comb.ambiguous_codons) < best_codon_len:
             best_codon = codon_comb
@@ -335,7 +341,11 @@ def _optimise_codons_exact(
             best_codon = codon_comb
             best_codon_len = len(codon_comb.ambiguous_codons)
             best_codon_score = codon_comb.score
-    return best_codon
+
+    if _is_codon_set_valid(req_aas, best_codon.encoded_acids):
+        return best_codon
+
+    raise ValueError("No codons were found for AAs %s" % amino_acids)
 
 
 def _populate_set_matrix(
