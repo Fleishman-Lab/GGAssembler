@@ -168,13 +168,13 @@ def _combine_condons(codons_list: tp.Sequence[PosCodon]) -> PosCodon:
 
 
 def _remove_duplicate_codons(codons_list: tp.Sequence[PosCodon]) -> tp.List[PosCodon]:
-    codon_dict: tp.Dict[str, PosCodon] = {}
+    codon_dict: tp.Dict[tp.FrozenSet[str], PosCodon] = {}
     for codon in codons_list:
         try:
-            if codon_dict["".join(sorted(codon.encoded_acids))].score < codon.score:
-                codon_dict["".join(sorted(codon.encoded_acids))] = codon
+            if codon_dict[codon.encoded_acids].score < codon.score:
+                codon_dict[codon.encoded_acids] = codon
         except KeyError:
-            codon_dict["".join(sorted(codon.encoded_acids))] = codon
+            codon_dict[codon.encoded_acids] = codon
     return list(codon_dict.values())
 
 
