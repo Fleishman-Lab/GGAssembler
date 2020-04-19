@@ -116,6 +116,10 @@ class CodonSelector:
         if mode == "greedy":
             return _optimise_codons_greedy(amino_acids, codons)
         if mode == "exact":
+            # Only keep codons which prived every amino acid once
+            amino_acids = filter(
+                lambda x: len(x.encoded_acids) == len(x.amino_acids), amino_acids
+            )
             return _optimise_codons_exact(amino_acids, codons)
 
         raise ValueError(
@@ -318,7 +322,7 @@ def _optimise_codons_greedy(
 
 
 def _optimise_codons_exact(
-    amino_acids: tp.List[str], codons: tp.List[PosCodon]
+    amino_acids: tp.Iterable[str], codons: tp.List[PosCodon]
 ) -> PosCodon:
     best_codon: PosCodon = PosCodon()
     best_codon_score = np.NINF
