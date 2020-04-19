@@ -1,7 +1,7 @@
 import json
 from itertools import chain, product
 from operator import attrgetter
-from typing import Generator, Iterable, Iterator, List, NamedTuple, Union
+from typing import Generator, Iterable, Iterator, List, NamedTuple, Optional, Union
 
 import pandas as pd
 
@@ -11,12 +11,14 @@ from dawdlib.golden_gate.utils import OligoTableEntry, gate_df_list, parse_dna
 
 
 class CodonHolder(NamedTuple):
-    dna_idx: int
+    dna_idx: Optional[int]
     codons: Iterable[Union[str, None]]
 
     @property
     def idx(self):
-        return self.dna_idx - 1
+        if self.dna_idx is not None:
+            return self.dna_idx - 1
+        return self.dna_idx
 
 
 def dc_df_codon_list(dc_df: pd.DataFrame) -> Iterable[CodonHolder]:
@@ -85,12 +87,13 @@ def yield_mut(
     Yields:
         OligoTableEntry: The appropriate oligo
     """
-    idxs = [cdn.idx for cdn in cdns]
     muts_cdns = [cdn.codons for cdn in cdns]
     for i, m_cdns in enumerate(product(*muts_cdns)):
         e_dna = ""
         e_cdns = []
-        for idx1, idx2, cdn in zip(idxs[:-1], idxs[1:], m_cdns[:-1]):
+        for ch1, ch2, cdn in zip(cdns[:-1], cdns[1:], m_cdns[:-1]):
+            dna_slice = slice(ch1.idx, ch2.idx)
+            idx1, idx2, _ = dna_slice.indices(len(dna))
             if cdn is None:
                 e_dna += dna[idx1:idx2]
             else:
@@ -99,7 +102,7 @@ def yield_mut(
         yield wt._replace(
             wt=False,
             oligo_dna=e_dna,
-            name=f"{idxs[0]}-{idxs[-1]}.{i+1}",
+            name=f"{cdns[0].idx}-{cdns[-1].idx}.{i+1}",
             oligo_codons=e_cdns,
             const=False,
         )
@@ -123,8 +126,12 @@ def find_cdns(
     g1_idx = g1.idx if not g1.src_or_target else None
     g2_idx = g2.span()[1] if not g2.src_or_target else None
     o_slice = slice(g1_idx, g2_idx)
-    indices = o_slice.indices(len(dna))
-    return [x for x in deg_codons if indices[0] < x.idx < indices[1]]
+    start, end, _ = o_slice.indices(len(dna))
+    if g1.src_or_target:
+        start -= 1
+    if g2.src_or_target:
+        end += 1
+    return [x for x in deg_codons if start < x.idx < end]
 
 
 def cdn_add_gates(g1: Gate, g2: Gate, cdns: List[CodonHolder]) -> List[CodonHolder]:
@@ -139,10 +146,16 @@ def cdn_add_gates(g1: Gate, g2: Gate, cdns: List[CodonHolder]) -> List[CodonHold
         List[CodonHolder]: A sorted list of codons by index with gate1 and gate2 added to it
 
     """
-    cdns.extend(
-        [CodonHolder(g1.idx + 1, [None]), CodonHolder(g2.span()[1] + 2, [None])]
-    )
-    return sorted(cdns, key=attrgetter("idx"))
+    cdns = sorted(cdns, key=attrgetter("idx"))
+    start = CodonHolder(g1.idx + 1, [None])
+    if g1.src_or_target:
+        start = start._replace(dna_idx=None)
+    cdns.insert(0, start)
+    end = CodonHolder(g2.span()[1] + 2, [None])
+    if g2.src_or_target:
+        end = end._replace(dna_idx=None)
+    cdns.append(end)
+    return cdns
 
 
 def create_oligo(

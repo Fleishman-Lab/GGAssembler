@@ -422,9 +422,11 @@ def _nxweighttonp(
     weight_arr = np.empty((len(nodes), len(nodes)), dtype=np.uint16)
     weight_arr[:] = np.iinfo(np.uint16).max
     for edge in graph.edges:
-        weight_arr[nodes.index(edge[0]), nodes.index(edge[1])] = weight_fn(
-            edge[0], edge[1], graph.edges[edge[0], edge[1]]
-        )
+        nd1_idx = nodes.index(edge[0])
+        nd2_idx = nodes.index(edge[1])
+        w = weight_fn(edge[0], edge[1], graph.edges[edge[0], edge[1]])
+        weight_arr[nd1_idx, nd2_idx] = w
+        weight_arr[nd2_idx, nd1_idx] = w
     return weight_arr
 
 

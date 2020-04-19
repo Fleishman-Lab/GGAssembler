@@ -10,12 +10,12 @@ from dawdlib.golden_gate.constants import (
     SOURCE_NODE,
     VAR_ADD_COST,
 )
-from dawdlib.golden_gate.gate import Gate
+from dawdlib.golden_gate.gate import Gate, PseudoGate
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.utils import Requirements, syn_muts
 
-SOURCE = Gate(-1, SOURCE_NODE, src_or_target=True)
-TARGET = Gate(-1, SINK_NODE, src_or_target=True)
+SOURCE = PseudoGate(idx=-1, bps=SOURCE_NODE, src_or_target=True)
+TARGET = PseudoGate(idx=1, bps=SINK_NODE, src_or_target=True)
 
 
 class GraphMaker:
@@ -37,13 +37,16 @@ class GraphMaker:
                 return False
             # segments with variable positions between them
             # are required to be at a certain length
-            if np.any(np.logical_and(nd1.idx < dna_var_arr, dna_var_arr < nd2.idx)):
+            start = min(nd1.idx, nd2.idx)
+            end = max(nd1.idx, nd2.idx)
+            psuedogates = isinstance(nd1, PseudoGate) or isinstance(nd2, PseudoGate)
+            if np.any(np.logical_and(start < dna_var_arr, dna_var_arr < end)):
                 if not (min_oligo_length < nd2 - nd1 < max_oligo_length):
                     return False
             else:
-                if nd2 - nd1 < min_const_oligo_length:
+                if not psuedogates and (nd2 - nd1 < min_const_oligo_length):
                     return False
-            if any(
+            if not psuedogates and any(
                 f < min_fidelity
                 for f in self.ggdata.overhangs_fidelity(nd1.bps, nd2.bps)
             ):
@@ -87,19 +90,6 @@ def create_default_valid_node_function(
     return _is_valid_node
 
 
-def _add_source_sink(d_graph: nx.DiGraph, var_poss: List[int]) -> Tuple[Gate, Gate]:
-    edges = []
-    for nd1 in d_graph.nodes:
-        if nd1.idx < var_poss[0]:
-            edges.append((SOURCE, nd1, 0))
-        elif nd1.idx > var_poss[-1]:
-            edges.append((nd1, TARGET, 0))
-    d_graph.add_node(SOURCE)
-    d_graph.add_node(TARGET)
-    d_graph.add_weighted_edges_from(edges)
-    return SOURCE, TARGET
-
-
 def create_default_weight_func(
     dna_pos_n_codons: Dict[int, List[str]],
     oligo_addition: int = VAR_ADD_COST,
@@ -107,54 +97,48 @@ def create_default_weight_func(
 ) -> Callable[[Gate, Gate], int]:
     var_pos_arr = np.array(list(dna_pos_n_codons.keys()))
 
-    # TODO:
-    #   Fix this code, I can extract which indices are between the two nodes
-    #   and only account for the right indices in the product instead of iterating
-    #   over all positions
     def edge_weight(nd1: Gate, nd2: Gate) -> int:
-        if np.any(np.logical_and(nd1.idx < var_pos_arr, var_pos_arr < nd2.idx)):
+        start = min(nd1.idx, nd2.idx)
+        end = max(nd1.idx, nd2.idx)
+        psuedogates = isinstance(nd1, PseudoGate) or isinstance(nd2, PseudoGate)
+        var_pos = var_pos_arr[np.logical_and(start < var_pos_arr, var_pos_arr < end)]
+        if var_pos.size:
             return (nd2 - nd1 + oligo_addition) * np.product(
-                [
-                    len(codons) if nd1.idx < pos < nd2.idx else 1
-                    for pos, codons in dna_pos_n_codons.items()
-                ]
+                list(len(dna_pos_n_codons[pos]) for pos in var_pos)
             )
-        return const_cost
+        return const_cost if not psuedogates else 0
 
     return edge_weight
 
 
 def make_edges(
-    d_graph: nx.DiGraph,
+    d_graph: nx.Graph,
     is_valid_edge: Callable[[Gate, Gate], bool],
     edge_weight: Callable[[Gate, Gate], Union[float, int]],
 ) -> None:
     d_graph.add_weighted_edges_from(
         map(
             lambda x: x + (edge_weight(x[0], x[1]),),
-            filter(
-                lambda x: is_valid_edge(x[0], x[1]),
-                map(
-                    lambda x: x if x[0] <= x[1] else (x[1], x[0]),
-                    combinations(d_graph.nodes, 2),
-                ),
-            ),
+            filter(lambda x: is_valid_edge(x[0], x[1]), combinations(d_graph.nodes, 2)),
         )
     )
 
 
 def build_custom_graph(
     dna: str,
-    var_poss: List[int],
     is_valid_node: Callable[[Gate], bool],
     is_valid_edge: Callable[[Gate, Gate], bool],
     edge_weight: Callable[[Gate, Gate], Union[float, int]],
-) -> Tuple[nx.DiGraph, Gate, Gate]:
-    d_graph: nx.DiGraph = nx.DiGraph()
+) -> Tuple[nx.Graph, Gate, Gate]:
+    d_graph: nx.Graph = nx.Graph()
+    src = SOURCE
+    target = TARGET._replace(idx=TARGET.idx + len(dna))
+
     make_nodes(d_graph, dna, is_valid_node)
+    d_graph.add_node(src)
+    d_graph.add_node(target)
     make_edges(d_graph, is_valid_edge, edge_weight)
-    src, snk = _add_source_sink(d_graph, var_poss)
-    return d_graph, src, snk
+    return d_graph, src, target
 
 
 def make_default_graph(
@@ -163,7 +147,7 @@ def make_default_graph(
     var_poss: List[int],
     dna_pos_n_codons: Dict[int, List[str]],
     reqs: Requirements,
-) -> Tuple[nx.DiGraph, Gate, Gate]:
+) -> Tuple[nx.Graph, Gate, Gate]:
     acceptable_fcws = gm.ggdata.filter_self_binding_gates(reqs.filter_gc_overhangs)
     is_valid_node = create_default_valid_node_function(acceptable_fcws, var_poss)
     is_valid_edge = gm.create_default_valid_edge_func(
@@ -176,4 +160,4 @@ def make_default_graph(
     edge_weight = create_default_weight_func(
         dna_pos_n_codons, reqs.oligo_addition, reqs.const_cost
     )
-    return build_custom_graph(dna, var_poss, is_valid_node, is_valid_edge, edge_weight)
+    return build_custom_graph(dna, is_valid_node, is_valid_edge, edge_weight)

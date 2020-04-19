@@ -19,14 +19,14 @@ class Gate(NamedTuple):
     def __sub__(self, other: "Gate") -> int:
         # 4 is added to account for gate length (4)
         # plus the fact we need to include the entire gate
-        if self.idx == other.idx:
-            return 0
-        if self < other:
-            return self.idx - other.idx - 4
-        # only option left is self.idx > other.idx:
-        return self.idx + 4 - other.idx
+        diff = self.idx - other.idx
+        if diff:
+            return abs(diff) + 4
+        return diff
 
     def overlap(self, other: "Gate") -> bool:
+        if isinstance(other, PseudoGate):
+            return False
         if self == other:
             return True
         if self < other:
@@ -37,6 +37,20 @@ class Gate(NamedTuple):
         if self.src_or_target:
             return self.idx, self.idx
         return self.idx, self.idx + 3
+
+
+class PseudoGate(Gate):
+    def __sub__(self, other: "PseudoGate") -> int:
+        diff = super().__sub__(other)
+        if diff:
+            return diff - 1
+        return diff
+
+    def overlap(self, other: "PseudoGate") -> bool:
+        return False
+
+    def span(self) -> Tuple[int, int]:
+        return self.idx, self.idx
 
 
 class GateSet(NamedTuple):
