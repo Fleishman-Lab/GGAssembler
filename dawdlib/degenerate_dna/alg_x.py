@@ -15,7 +15,7 @@ class AlgXSolver:
 
     @classmethod
     def solve(
-        cls, amino_acids: Set[str], codons: List[PosCodon]
+        cls, amino_acids: Set[str], codons: Iterable[PosCodon]
     ) -> Iterable[List[PosCodon]]:
         """
         Solve the exact cover problem, using Algorith X.
@@ -31,7 +31,7 @@ class AlgXSolver:
 
     @staticmethod
     def _prep_data(
-        amino_acids: Set[str], codons: List[PosCodon]
+        amino_acids: Set[str], codons: Iterable[PosCodon]
     ) -> Tuple[AADict, PosDict]:
         amb_cdn: Tuple[str, ...]
         pos_cdn: PosCodon
