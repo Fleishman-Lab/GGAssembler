@@ -1,10 +1,22 @@
 from collections import OrderedDict
 from itertools import chain, product
-from typing import Dict, Generator, Iterator, List, NamedTuple, Set, Tuple
+from typing import (
+    Dict,
+    Generator,
+    Iterable,
+    Iterator,
+    List,
+    NamedTuple,
+    Optional,
+    Set,
+    Tuple,
+)
 
 import pandas as pd
 from Bio import SeqIO
 from Bio.Data.IUPACData import ambiguous_dna_values as adv
+from Bio.Restriction import Restriction
+from Bio.Seq import Seq
 
 from dawdlib.golden_gate.constants import CONST_COST, OLIGO_PREFIX, OLIGO_SUFFIX
 from dawdlib.golden_gate.gate import Gate, SynMut
@@ -175,3 +187,22 @@ def gate_df_list(gate_df: pd.DataFrame) -> List[Gate]:
     for row in gate_df.itertuples(index=False):
         gate_path.append(Gate(**row._asdict()))
     return gate_path
+
+
+def restriction_sites(dna: str, enzymes: List[str]) -> Iterable[List[int]]:
+    dna_seq = Seq(dna)
+    return chain(
+        enz_cls.search(dna_seq)
+        for enz_cls in map(lambda x: getattr(Restriction, x, None), enzymes)
+        if enz_cls is not None
+    )
+
+
+def check_for_restriction_sites(
+    dna: str, enzymes: List[str]
+) -> Tuple[bool, Optional[str], List[int]]:
+    for enzyme in enzymes:
+        for sites in restriction_sites(dna, [enzyme]):
+            if not sites:
+                return False, enzyme, sites
+    return True, None, []
