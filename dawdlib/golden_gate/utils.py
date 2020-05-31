@@ -203,6 +203,6 @@ def check_for_restriction_sites(
 ) -> Tuple[bool, Optional[str], List[int]]:
     for enzyme in enzymes:
         for sites in restriction_sites(dna, [enzyme]):
-            if not sites:
+            if sites:
                 return False, enzyme, sites
     return True, None, []
