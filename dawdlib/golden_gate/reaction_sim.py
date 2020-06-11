@@ -166,7 +166,13 @@ class ReactionSim:
         for enzyme in self.enzymes:
             for row in oligo_table.itertuples(index=False):
                 oligo_entry = OligoTableEntry(**row._asdict())
-                dna_segs_it = enzyme_dna_segments(enzyme, oligo_entry.full_oligo_dna)
+                try:
+                    dna_segs_it = enzyme_dna_segments(
+                        enzyme, oligo_entry.full_oligo_dna
+                    )
+                except AssertionError as e:
+                    e.args = (e.args, oligo_entry)
+                    raise e
                 start = (
                     oligo_entry.gate1.idx if not oligo_entry.gate1.src_or_target else 0
                 )
@@ -177,13 +183,18 @@ class ReactionSim:
                 )
         return chain.from_iterable(ddna_nodes)
 
-    def create_reaction_graph(self, table_path: str) -> None:
+    def create_reaction_graph(
+        self, table_path: str
+    ) -> Optional[Tuple[str, OligoTableEntry]]:
         """
         Creates the reaction graph given a table of ~dawdlib.goldengate.utils.OligoTableEntry
         Args:
             table_path (str): The path to a CSV file of OligoTableEntries.
         """
-        ddna_iter = self.load_oligo_table(table_path)
+        try:
+            ddna_iter = self.load_oligo_table(table_path)
+        except AssertionError as e:
+            return ", ".join(e.args[0]), OligoTableEntry(*e.args[1])
         rgraph = ReactionGraph()
         rgraph.add_nodes_from(ddna_iter)
         rgraph.add_edges_from(
@@ -591,6 +602,9 @@ def enzyme_dna_segments(
     dnas: List[Iterator] = []
     for dna in ambiguous_dna_unambiguous(udna):
         seq = Seq(dna)
+        assert (
+            len(enzyme.search(seq)) < 3
+        ), "Dna has more than two occurrences of restriction site!!!"
         fwd = map(str, enzyme.catalyse(seq))
         rev = map(
             lambda x: "".join(reversed(x)),
