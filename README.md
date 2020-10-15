@@ -7,7 +7,7 @@ Create a cost sensitive degenerate codon sequence
 ## Install
 
 1. clone the repo: `git clone https://github.com/Fleishman-Lab/dawdlib.git`
-2. Install using pip: `pip install dawdlib`
+2. Install using pip: `pip install dawdlib/`
 
 ## Usage
 Please follow the example notebook in example/gg_oligo_design.ipynb
