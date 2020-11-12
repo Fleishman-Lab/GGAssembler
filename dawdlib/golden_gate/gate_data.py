@@ -7,8 +7,9 @@ Potapov, V., et al. (2018).
 
 import math
 import os
+from collections import defaultdict
 from functools import lru_cache
-from typing import Dict, FrozenSet, Iterable, List, Tuple
+from typing import DefaultDict, Dict, FrozenSet, Iterable, List, Tuple
 
 import pandas as pd
 
@@ -130,6 +131,7 @@ class GGData:
                 if tot >= cutoff or math.isclose(cutoff, tot, abs_tol=1e-2):
                     break
 
+    @lru_cache(maxsize=None)
     def overhangs_fidelity(self, *args) -> Iterable[float]:
         overhangs = list(map(str, args))
         revs = list(map(reverse_complement, overhangs))
@@ -146,8 +148,38 @@ class GGData:
                     / self.fidelity.loc[revs + overhangs, rev].sum(),
                 )
 
+    def create_subreactions(
+        self, overhangs: List[str], max_reactions: int
+    ) -> DefaultDict[int, Tuple[float, FrozenSet[int]]]:
+        best_reactions: DefaultDict[int, Tuple[float, FrozenSet[int]]] = defaultdict(
+            lambda: (0, frozenset())
+        )
+        for cuts in nmulticombinations(len(overhangs), max_reactions):
+            cuts_min_fidelity = 1
+            for a_cut, b_cut in zip(cuts[:-1], cuts[1:]):
+                cuts_min_fidelity = min(
+                    cuts_min_fidelity,
+                    min(self.overhangs_fidelity(overhangs[a_cut:b_cut])),
+                )
+                if cuts_min_fidelity < best_reactions[len(cuts)][0]:
+                    continue
+            best_reactions[len(cuts)] = (cuts_min_fidelity, cuts)
+        return best_reactions
+
 
 @lru_cache(maxsize=256)
 def reverse_complement(seq) -> str:
     complement = {"A": "T", "T": "A", "G": "C", "C": "G"}
     return "".join([complement[a] for a in seq[::-1]])
+
+
+def nmulticombinations(
+    balls: int, bins: int, partition: Tuple[int, ...] = (0,)
+) -> Iterable[FrozenSet[int]]:
+    if bins <= 0:
+        raise ValueError()
+    if bins == 1:
+        yield sorted(frozenset(partition + (balls,)))
+    else:
+        for b in range(partition[-1], balls):
+            yield from nmulticombinations(balls, bins - 1, partition + (b,))
