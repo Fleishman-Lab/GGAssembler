@@ -13,6 +13,7 @@
 # '''
 
 from libcpp.map cimport map
+from libcpp.pair cimport pair as cpair
 from cython.operator cimport dereference as deref
 from libcpp.vector cimport vector
 from libc.stdint cimport uint8_t, uint16_t, uint32_t, uint64_t, int8_t, int16_t, int32_t, int64_t
@@ -185,6 +186,28 @@ cdef vector[umy_type] vectorize(umy_type d, umy_type p_len, umy_type v_col, umy_
 
 
 # @cython.embedsignature(True)
+cdef int predecessor_and_distance(
+    map[int, vector[int]] G,
+    uint16_t[:, ::1] weight,
+    int[::1] sources,
+    umy_type[::1] color,
+    uint8_t[:, ::1] pred,
+    umy_type[:, ::1] s_pred,
+    umy_type[:, ::1] dist,
+    umy_type[:, ::1] seen,
+    int limit=0
+):
+    cdef:
+        int res
+
+    dist[:] = numeric_limits[umy_type].min()
+    seen[:] = numeric_limits[umy_type].max()
+    res  = _multisource(
+            G, weight, sources, color, pred, s_pred, dist, seen, limit
+    )
+    return res
+
+# @cython.embedsignature(True)
 cdef int _multisource(
     map[int, vector[int]] G,
     uint16_t[:, ::1] weight,
@@ -243,25 +266,60 @@ cdef int _multisource(
     return counter
 
 
-# @cython.embedsignature(True)
-cdef int predecessor_and_distance(
-    map[int, vector[int]] G,
-    uint16_t[:, ::1] weight,
-    int[::1] sources,
-    umy_type[::1] color,
-    uint8_t[:, ::1] pred,
-    umy_type[:, ::1] s_pred,
-    umy_type[:, ::1] dist,
-    umy_type[:, ::1] seen,
-    int limit=0
-):
-    cdef:
-        int res
-
-    dist[:] = numeric_limits[umy_type].min()
-    seen[:] = numeric_limits[umy_type].max()
-    res  = _multisource(
-            G, weight, sources, color, pred, s_pred, dist, seen, limit
-    )
-    return res
-
+# # @cython.embedsignature(True)
+# cdef int _map_multisource(
+#     map[int, vector[int]] G,
+#     uint16_t[:, ::1] weight,
+#     int[::1] sources,
+#     umy_type[::1] color_map,
+#     map[cpair[int, int], uint8_t] pred,
+#     map[cpair[int, umy_type], int] s_pred,
+#     map[cpair[int, umy_type], uint16_t] dist,
+#     map[cpair[int, umy_type], uint16_t] seen,
+#     int limit=0
+# ):
+#     max_sources = sources.shape[0]
+#     # fringe is heapq with 4-tuples (distance, length, color, node)
+#     cdef:
+#         umy_type vu_dist, d, source_color, source, v, v_col, vu_col, u_col, i, u, p_len
+#         int counter = 0
+#         vector[umy_type] *vec_ref
+#         vector[umy_type] vec
+#         greater_priority_queue[vector[umy_type]] fringe
+#     for i in range(max_sources):
+#         source = sources[i]
+#         source_color = color_map[source]
+#         seen[source, source_color] = 0
+#         vec = vectorize(0, 0, source_color, source)
+#         fringe.push(vec)
+#     while fringe.size() != 0:
+#         counter += 1
+#         vec = fringe.top()
+#         d = vec[0]
+#         p_len = vec[1]
+#         v_col = vec[2]
+#         v = vec[3]
+#         fringe.pop()
+#         if 0 < limit < p_len:
+#             continue
+#         if 0 < dist[cpair[int, umy_type](v, v_col)]:
+#             continue
+#         dist[cpair[int, umy_type](v, v_col)] = d
+#         for u in G[v]:
+#             u_col = color_map[u]
+#             if v_col & u_col:
+#                 continue
+#             vu_col = v_col | u_col
+#             vu_dist = d + weight[v, u]
+#             if vu_dist < dist[cpair[int, umy_type](v, vu_col)]:
+#                 return -counter
+#             if vu_dist < seen[cpair[int, umy_type](v, vu_col)] or 0 == seen[cpair[int, umy_type](v, vu_col)]:
+#                 seen[cpair[int, umy_type](v, vu_col)] = vu_dist
+#                 vec = vectorize(vu_dist, p_len + 1, vu_col, u)
+#                 fringe.push(vec)
+#                 pred[cpair[int, int](u,v)] = 1
+#                 s_pred[cpair[int, umy_type](u, vu_col)] = v
+#             elif vu_dist == seen[cpair[int, umy_type](v, vu_col)]:
+#                 pred[cpair[int, int](u, v)] = 1
+#                 s_pred[cpair[int, umy_type](u, vu_col)] = v
+#     return counter
