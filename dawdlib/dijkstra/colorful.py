@@ -8,8 +8,77 @@ import numpy as np
 from networkx.algorithms.shortest_paths.weighted import _weight_function
 
 from dawdlib.dijkstra import colorful_algorithm  # pytype: disable=import-error
+from dawdlib.dijkstra import colourful_dijkstra  # pytype: disable=import-error
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.gate_restriction import gen_gate_restriction_graph
+
+
+class ShortestPathFinder:
+    def __init__(self, graph: nx.Graph, ggdata: GGData, source: tp.Any, target: tp.Any):
+        self.graph = graph
+        self.ggdata = ggdata
+        self.source = source
+        self.target = target
+
+        self.gate_colors, self.num_of_colors = color_gates(self.graph, self.ggdata)
+        self.node_map = dict((v, k) for k, v in enumerate(graph.nodes))
+        self.idx_node_map = dict((k, v) for k, v in enumerate(graph.nodes))
+        self.graph_edges = [
+            (self.node_map[u], self.node_map[v], c)
+            if v != source
+            else (self.node_map[v], self.node_map[u], c)
+            for (u, v, c) in graph.edges.data("weight", default=0)
+        ]
+
+        self.all_gate_colors = set()
+        for val in self.gate_colors.values():
+            self.all_gate_colors.update(val)
+
+    def random_recolor(
+        self, len_cutoff: tp.Optional[int], no_colors: tp.Optional[int]
+    ) -> tp.Dict[int, int]:
+        if no_colors is None and len_cutoff is None:
+            raise ValueError(
+                "At least one of len_cutoff or no_colors must be provided."
+            )
+        if no_colors is None:
+            no_colors = sum(self.num_of_colors[:len_cutoff])
+        dtype = np.uint8
+        if no_colors > 8:
+            dtype = np.uint16
+        if no_colors > 16:
+            dtype = np.uint32
+        if no_colors > 32:
+            dtype = np.uint64
+        if no_colors > 64:
+            raise ValueError(
+                f"Len limit of {len_cutoff} results in over 64 colors please provide limit on the number of colors."
+            )
+        selected_colors = (2 ** np.arange(no_colors)).astype(np.uint32)
+        color_mapping = dict(
+            (k, np.random.choice(selected_colors).astype(np.uint32))
+            for k in self.all_gate_colors
+        )
+        return dict(
+            (self.node_map[n], sum(color_mapping[c] for c in self.gate_colors[n]))
+            for n in self.graph.nodes
+        )
+
+    def find_shortest_path(
+        self, len_cutoff: tp.Optional[int] = None, no_colors: tp.Optional[int] = None
+    ):
+        if no_colors is None and len_cutoff is None:
+            raise ValueError(
+                "At least one of len_cutoff or no_colors must be provided."
+            )
+        path = colourful_dijkstra.colourful_shortest_path(
+            self.graph_edges,
+            self.node_map[self.source],
+            self.node_map[self.target],
+            self.random_recolor(len_cutoff, no_colors),
+            len_cutoff,
+        )
+        return [self.idx_node_map[idx] for idx in path]
 
 
 def all_shortest_paths(
@@ -380,7 +449,8 @@ def colorful_shortest_path(
 
 
 def _color_gates(
-    graph: tp.Union[nx.Graph, nx.DiGraph], vertex_colors: nx.Graph,
+    graph: tp.Union[nx.Graph, nx.DiGraph],
+    vertex_colors: nx.Graph,
 ) -> tp.Dict[tp.Any, tp.FrozenSet[int]]:
     gate_colors = {}
     for node in graph.nodes:
@@ -393,7 +463,9 @@ def _color_gates(
 
 
 def color_gates(
-    graph: tp.Union[nx.Graph, nx.DiGraph], ggdata: GGData, r_graph: nx.Graph = None,
+    graph: tp.Union[nx.Graph, nx.DiGraph],
+    ggdata: GGData,
+    r_graph: nx.Graph = None,
 ) -> tp.Tuple[tp.Dict[tp.Any, tp.FrozenSet[int]], tp.List[int]]:
     if r_graph is None:
         r_graph = gen_gate_restriction_graph(ggdata)

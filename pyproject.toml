@@ -4,6 +4,9 @@
 # It's the equivalent of r-strings in Python.  Multiline strings are treated as
 # verbose regular expressions by Black.  Use [ ] to denote a significant space
 # character.
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-rust"]
+
 
 [tool.black]
 line-length = 88

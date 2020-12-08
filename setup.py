@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-# from distutils.extension import Extension
-
 from distutils.command.build import build as build_orig
 
 import pkg_resources
+# from distutils.extension import Extension
 from setuptools import Extension, find_packages, setup
+from setuptools_rust import RustExtension
 
 
 class build(build_orig):
@@ -76,8 +76,11 @@ setup(
         "fire",
         "tabulate",
     ],
-    python_requires=">=3.6",
-    setup_requires=["numpy"],
+    rust_extensions=[
+        RustExtension("dawdlib.dijkstra.colourful_dijkstra", "Cargo.toml", debug=False)
+    ],
+    python_requires=">=3.7",
+    setup_requires=["setuptools", "setuptools-rust", "numpy"],
     include_package_data=True,
     entry_points={"console_scripts": ["dawdlib=dawdlib.__main__:main"]},
 )
