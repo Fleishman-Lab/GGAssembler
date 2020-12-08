@@ -131,7 +131,6 @@ class GGData:
                 if tot >= cutoff or math.isclose(cutoff, tot, abs_tol=1e-2):
                     break
 
-    @lru_cache(maxsize=None)
     def overhangs_fidelity(self, *args) -> Iterable[float]:
         overhangs = list(map(str, args))
         revs = list(map(reverse_complement, overhangs))
