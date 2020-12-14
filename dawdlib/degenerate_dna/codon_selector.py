@@ -27,8 +27,9 @@ class CodonSelector:
     example optimise_codons(['L', 'D'])
     """
 
-    def __init__(self, organism_id: str):
+    def __init__(self, organism_id: str, mode: str = "exact"):
         self.organism_id = organism_id
+        self.mode = mode
         self._graph: tp.Optional[nx.Graph] = None
         self._codon_dict: tp.Optional[tp.Dict] = None
         self.cod_sel = UtilsCodonSelector()
@@ -99,9 +100,9 @@ class CodonSelector:
                 pass
         return acc
 
-    def optimise_codons(self, amino_acids: tp.List[str], mode="exact") -> PosCodon:
+    def optimise_codons(self, amino_acids: tp.List[str]) -> PosCodon:
 
-        if mode == "graph" and self.graph is not None:
+        if self.mode == "graph" and self.graph is not None:
             return _optimise_codons_graph(amino_acids, graph=self.graph)
 
         if self.codon_dict is not None:
@@ -111,11 +112,11 @@ class CodonSelector:
             codons = _remove_duplicate_codons(codons)
         codons = sorted(codons, key=lambda x: len(x.encoded_acids), reverse=True)
 
-        if mode == "graph":
+        if self.mode == "graph":
             return _optimise_codons_graph(amino_acids, codons)
-        if mode == "greedy":
+        if self.mode == "greedy":
             return _optimise_codons_greedy(amino_acids, codons)
-        if mode == "exact":
+        if self.mode == "exact":
             # Only keep codons which prived every amino acid once
             codons = filter(
                 lambda x: len(x.encoded_acids)
@@ -127,7 +128,7 @@ class CodonSelector:
         raise ValueError(
             "Unknown value %s for mode given.\
                 Allowed value are: lp, graph, greedy, exact"
-            % mode
+            % self.mode
         )
 
 
@@ -208,15 +209,15 @@ def _optimise_codons_graph(
     graph: tp.Optional[nx.Graph] = None,
 ) -> PosCodon:
     """Build a graph of possible degenerate codons
-        that only encode the required given codons.
+    that only encode the required given codons.
 
-        The nodes are all possible combinations of amino acids
-        given. (No. of vertices is 2 **|amino acids|)
+    The nodes are all possible combinations of amino acids
+    given. (No. of vertices is 2 **|amino acids|)
 
-        Edge are degenerate codons which encode the required AAs.
-        Two nodes are connected by an edge if there is a degenerate codon
-        that can create the difference between the two nodes AAs.
-        """
+    Edge are degenerate codons which encode the required AAs.
+    Two nodes are connected by an edge if there is a degenerate codon
+    that can create the difference between the two nodes AAs.
+    """
     best_codon: PosCodon = PosCodon()
     best_codon_score = np.NINF
     aa_set = frozenset(amino_acids)

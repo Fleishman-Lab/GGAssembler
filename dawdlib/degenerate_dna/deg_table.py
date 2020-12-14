@@ -10,7 +10,7 @@ from dawdlib.golden_gate.utils import find_dna_var_poss, parse_resfile
 
 
 def aas_deg_codons(codon_selector: CodonSelector, aas: List[str]) -> PosCodon:
-    return codon_selector.optimise_codons(aas, mode="exact")
+    return codon_selector.optimise_codons(aas)
     # length = len(aas)
     # if length > 15:
     #     return codon_selector.optimise_codons(aas, mode="exact")
@@ -89,7 +89,12 @@ def create_deg_table(res_filename: str, codon_selector: CodonSelector) -> pd.Dat
     return df
 
 
-def generate_deg_csv(res_filename: str, csv_filename: str, organism_id: str = "37762"):
+def generate_deg_csv(
+    res_filename: str,
+    csv_filename: str,
+    organism_id: str = "37762",
+    mode: str = "exact",
+):
     """
     Default organism is Escherichia coli, ID = "37762"
     Saccharomyces cerevisiae ID = "4932"
@@ -98,6 +103,6 @@ def generate_deg_csv(res_filename: str, csv_filename: str, organism_id: str = "3
         see: https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?
         https://doi.org/10.1093/nar/gkr1178
     """
-    cs = CodonSelector(organism_id)
+    cs = CodonSelector(organism_id, mode)
     df: pd.DataFrame = create_deg_table(res_filename, cs)
     df.to_csv(csv_filename, index=False)
