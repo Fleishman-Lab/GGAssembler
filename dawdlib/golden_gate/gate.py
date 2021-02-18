@@ -22,7 +22,7 @@ class Gate(NamedTuple):
         # plus the fact we need to include the entire gate
         diff = self.idx - other.idx
         if diff:
-            return abs(diff) + gatelength
+            return abs(diff) + self.gatelength
         return diff
 
     def overlap(self, other: "Gate") -> bool:
@@ -31,13 +31,13 @@ class Gate(NamedTuple):
         if self == other:
             return True
         if self < other:
-            return other.idx <= self.idx + gatelength - 1
-        return self.idx <= other.idx + gatelength - 1
+            return other.idx <= self.idx + self.gatelength - 1
+        return self.idx <= other.idx + self.gatelength - 1
 
     def span(self) -> Tuple[int, int]:
         if self.src_or_target:
             return self.idx, self.idx
-        return self.idx, self.idx + gatelength - 1
+        return self.idx, self.idx + self.gatelength - 1
 
 
 class PseudoGate(Gate):

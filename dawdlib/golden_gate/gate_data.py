@@ -44,8 +44,7 @@ class GGData:
         self._min_efficiency: float = min_efficiency
         self._min_fidelity: float = min_fidelity
         self._efficient_overhangs: List[str] = []
-
-        if restriction_enzyme = "SapI":
+        if restriction_enzyme == "SapI":
             self.default_df = "%s/resources/SapI.csv" % os.path.dirname(__file__)
         else:
             try:

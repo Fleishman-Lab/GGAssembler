@@ -147,6 +147,7 @@ def make_default_graph(
     var_poss: List[int],
     dna_pos_n_codons: Dict[int, List[str]],
     reqs: Requirements,
+    gatelength: int = 4
 ) -> Tuple[nx.Graph, Gate, Gate]:
     acceptable_fcws = gm.ggdata.filter_self_binding_gates(reqs.filter_gc_overhangs)
     is_valid_node = create_default_valid_node_function(acceptable_fcws, var_poss)
@@ -160,4 +161,4 @@ def make_default_graph(
     edge_weight = create_default_weight_func(
         dna_pos_n_codons, reqs.oligo_addition, reqs.const_cost
     )
-    return build_custom_graph(dna, is_valid_node, is_valid_edge, edge_weight)
+    return build_custom_graph(dna, is_valid_node, is_valid_edge, edge_weight, gate_length = gatelength)
