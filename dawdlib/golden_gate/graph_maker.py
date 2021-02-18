@@ -57,15 +57,15 @@ class GraphMaker:
 
 
 def make_nodes(
-    d_graph, dna: str, is_valid_node: Callable[[Gate], bool], add_syn: bool = False
-) -> None:
+    d_graph, dna: str, is_valid_node: Callable[[Gate], bool], add_syn: bool = False,
+glength: int = 4) -> None:
     if add_syn and len(dna) % 3 == 0:
         add_syn = True
     possible_nodes: List[Gate] = []
-    for ind in range(len(dna) - 3):
-        gate_idxs = slice(ind, ind + 4)
+    for ind in range(len(dna) - glength - 1):
+        gate_idxs = slice(ind, ind + glength)
         fcw = dna[gate_idxs]
-        possible_nodes.append(Gate(ind, fcw, False))
+        possible_nodes.append(Gate(ind, fcw, False, gatelength = glength))
     if add_syn:
         possible_nodes += syn_muts(dna)
     d_graph.add_nodes_from(filter(is_valid_node, possible_nodes))
@@ -128,13 +128,13 @@ def build_custom_graph(
     dna: str,
     is_valid_node: Callable[[Gate], bool],
     is_valid_edge: Callable[[Gate, Gate], bool],
-    edge_weight: Callable[[Gate, Gate], Union[float, int]],
+    edge_weight: Callable[[Gate, Gate], Union[float, int]],gate_length : int = 4
 ) -> Tuple[nx.Graph, Gate, Gate]:
     d_graph: nx.Graph = nx.Graph()
     src = SOURCE
     target = TARGET._replace(idx=TARGET.idx + len(dna))
 
-    make_nodes(d_graph, dna, is_valid_node)
+    make_nodes(d_graph, dna, is_valid_node, glength = gate_length)
     d_graph.add_node(src)
     d_graph.add_node(target)
     make_edges(d_graph, is_valid_edge, edge_weight)
