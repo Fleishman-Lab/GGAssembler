@@ -32,6 +32,7 @@ class GGData:
         hours: int = 18,
         min_efficiency: float = MIN_EFFICIENCY,
         min_fidelity: float = MIN_FIDELITY,
+        restriction_enzyme: str = "BsaI"
     ) -> None:
         self.lig_df: pd.DataFrame
         # Efficiency is proportional to the "best" overhang in the data.
@@ -44,13 +45,16 @@ class GGData:
         self._min_fidelity: float = min_fidelity
         self._efficient_overhangs: List[str] = []
 
-        try:
-            self.default_df = self.df_files[(hours, temperature)]
-        except KeyError:
-            raise ValueError(
-                "No data was found for the combination of temperature %d C and time %d H."
-                % (temperature, hours)
-            )
+        if restriction_enzyme = "SapI":
+            self.default_df = "%s/resources/SapI.csv" % os.path.dirname(__file__)
+        else:
+            try:
+                self.default_df = self.df_files[(hours, temperature)]
+            except KeyError:
+                raise ValueError(
+                    "No data was found for the combination of temperature %d C and time %d H."
+                    % (temperature, hours)
+                )
 
         self.score_dict: Dict[FrozenSet, int] = {}
         self.all_score_dict: Dict[FrozenSet, int] = {}
