@@ -44,26 +44,38 @@ class GGData:
         self._min_efficiency: float = min_efficiency
         self._min_fidelity: float = min_fidelity
         self._efficient_overhangs: List[str] = []
-        if restriction_enzyme == "SapI":
-            self.default_df = "%s/resources/SapI.csv" % os.path.dirname(__file__)
-        else:
-            try:
-                self.default_df = self.df_files[(hours, temperature)]
-            except KeyError:
-                raise ValueError(
-                    "No data was found for the combination of temperature %d C and time %d H."
-                    % (temperature, hours)
-                )
+        try:
+            self.default_df = self.df_files[(hours, temperature)]
+            self.init()
+        except KeyError:
+            raise ValueError(
+                "No data was found for the combination of temperature %d C and time %d H."
+                % (temperature, hours)
+            )
 
         self.score_dict: Dict[FrozenSet, int] = {}
         self.all_score_dict: Dict[FrozenSet, int] = {}
         self._rev_dict: Dict[str, str] = {}
 
-        if init_df:
-            self.lig_df = self._parse_ligation_df()
-            efficiency = self.lig_df.sum(axis=0)
-            self.efficiency = efficiency / efficiency.max()
-            self.fidelity = self.lig_df.divide(efficiency)
+        #if init_df:
+            #self.lig_df = self._parse_ligation_df()
+            #efficiency = self.lig_df.sum(axis=0)
+            #self.efficiency = efficiency / efficiency.max()
+            #self.fidelity = self.lig_df.divide(efficiency)
+
+
+
+    def init(self) -> None:
+        self.lig_df = self._parse_ligation_df()
+        efficiency = self.lig_df.sum(axis=0)
+        self.efficiency = efficiency / efficiency.max()
+        self.fidelity = self.lig_df.divide(efficiency)
+
+    def set_default_df(self, csv_path: str = "") -> None:
+        if csv_path:
+            self.default_df = csv_path
+        self.init()
+
 
     def get_efficiency(self) -> float:
         return self._min_efficiency
