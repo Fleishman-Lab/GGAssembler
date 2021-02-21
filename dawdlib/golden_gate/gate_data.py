@@ -57,24 +57,14 @@ class GGData:
         self.all_score_dict: Dict[FrozenSet, int] = {}
         self._rev_dict: Dict[str, str] = {}
 
-        #if init_df:
-            #self.lig_df = self._parse_ligation_df()
-            #efficiency = self.lig_df.sum(axis=0)
-            #self.efficiency = efficiency / efficiency.max()
-            #self.fidelity = self.lig_df.divide(efficiency)
-
-
-
     def init(self) -> None:
         self.lig_df = self._parse_ligation_df()
         efficiency = self.lig_df.sum(axis=0)
         self.efficiency = efficiency / efficiency.max()
         self.fidelity = self.lig_df.divide(efficiency)
 
-    def set_default_df(self, csv_path: str = "") -> None:
-        if csv_path:
-            self.default_df = csv_path
-        self.init()
+    def set_default_df(self, csv_path: str) -> None:
+        self.default_df = csv_path
 
 
     def get_efficiency(self) -> float:
