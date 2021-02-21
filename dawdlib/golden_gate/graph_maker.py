@@ -58,7 +58,7 @@ class GraphMaker:
 
 def make_nodes(
     d_graph, dna: str, is_valid_node: Callable[[Gate], bool], add_syn: bool = False,
-glength: int = 4) -> None:
+    glength: int = 4) -> None:
     if add_syn and len(dna) % 3 == 0:
         add_syn = True
     possible_nodes: List[Gate] = []
@@ -128,7 +128,8 @@ def build_custom_graph(
     dna: str,
     is_valid_node: Callable[[Gate], bool],
     is_valid_edge: Callable[[Gate, Gate], bool],
-    edge_weight: Callable[[Gate, Gate], Union[float, int]],gate_length : int = 4
+    edge_weight: Callable[[Gate, Gate], Union[float, int]],
+    gate_length : int = 4
 ) -> Tuple[nx.Graph, Gate, Gate]:
     d_graph: nx.Graph = nx.Graph()
     src = SOURCE
