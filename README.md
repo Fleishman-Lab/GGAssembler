@@ -22,3 +22,10 @@ a. W_PATH to be the working dir
 b. resfile_path to your input refile. Make sure that your file does not contain positions with a single option (they are treated as variable positions)
 c. dna_path to the sequence file. It should contain DNA seq of a parent design of your repertoire in fasta format. 
 Do not forget to add lack of density before translating the protein back to DNA.
+
+*If you want to use three base pair gates instead of 4*
+1. Set the variable RESTRICTION_ENZYME in box 1.2 to have the restriction enzyme you wish to use (probably SapI)
+2. Set the variable gatelength in box 1.2 to be 3
+3. Change the PREFIX and SUFFIX variables to include restriction sites for your restriction enzyme. For SapI, this is GCTCTTC in PREFIX and GAAGACC in SUFFIX
+4. Set the path to the ligation data in box 1.2.1. For SapI, you should be able to just keep my path or you can add a different one
+5. Run box 1.2.1
