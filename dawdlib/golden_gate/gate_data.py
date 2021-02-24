@@ -9,9 +9,15 @@ import math
 import os
 from collections import defaultdict
 from functools import lru_cache
-from typing import DefaultDict, Dict, FrozenSet, Iterable, List, Tuple
+from typing import DefaultDict, Dict, FrozenSet, Iterable, List, NamedTuple, Tuple
 
 import pandas as pd
+
+
+class FidelityResults(NamedTuple):
+    NEB: float
+    FWD: float
+    REV: float
 
 
 class GGData:
@@ -27,12 +33,10 @@ class GGData:
 
     def __init__(
         self,
-        init_df=True,
-        temperature: int = 37,
+        temperature: int = 25,
         hours: int = 18,
         min_efficiency: float = MIN_EFFICIENCY,
         min_fidelity: float = MIN_FIDELITY,
-        restriction_enzyme: str = "BsaI"
     ) -> None:
         self.lig_df: pd.DataFrame
         # Efficiency is proportional to the "best" overhang in the data.
@@ -44,6 +48,12 @@ class GGData:
         self._min_efficiency: float = min_efficiency
         self._min_fidelity: float = min_fidelity
         self._efficient_overhangs: List[str] = []
+        self.lig_df: pd.DataFrame = pd.DataFrame()
+        self.fwd_efficiency: pd.DataFrame = pd.DataFrame()
+        self.rev_efficiency: pd.DataFrame = pd.DataFrame()
+        self.fwd_fidelity: pd.DataFrame = pd.DataFrame()
+        self.rev_fidelity: pd.DataFrame = pd.DataFrame()
+        self.initialized = False
         try:
             self.default_df = self.df_files[(hours, temperature)]
             self.init()
@@ -58,14 +68,17 @@ class GGData:
         self._rev_dict: Dict[str, str] = {}
 
     def init(self) -> None:
-        self.lig_df = self._parse_ligation_df()
-        efficiency = self.lig_df.sum(axis=0)
-        self.efficiency = efficiency / efficiency.max()
-        self.fidelity = self.lig_df.divide(efficiency)
+        self.lig_df = self._parse_ligation_df().sort_index(axis=0)
+        fwd_efficiency = self.lig_df.sum(axis=1).sort_index(axis=0)
+        rev_efficiency = self.lig_df.sum(axis=0).sort_index(axis=0)
+        self.fwd_efficiency = fwd_efficiency / fwd_efficiency.max()
+        self.rev_efficiency = rev_efficiency / rev_efficiency.max()
+        self.fwd_fidelity = self.lig_df
+        self.rev_fidelity = self.lig_df
+        self.initialized = True
 
     def set_default_df(self, csv_path: str) -> None:
         self.default_df = csv_path
-
 
     def get_efficiency(self) -> float:
         return self._min_efficiency
@@ -87,18 +100,20 @@ class GGData:
     def _load_ligation_df(df_path: str, *args, **kwargs) -> pd.DataFrame:
         return pd.read_csv(df_path, *args, **kwargs)
 
-    def _parse_ligation_df(self):
-        return self._load_ligation_df(self.default_df, index_col=0)
+    def _parse_ligation_df(self) -> pd.DataFrame:
+        df = self._load_ligation_df(self.default_df, index_col=0)
+        # According to NEB we need to transform values so the sum os 100K
+        return (df * 1e5) / df.values.sum()
 
     def filter_self_binding_gates(self, filter_gc: bool = True) -> List[str]:
         if not self._efficient_overhangs:
-            overhangs = self.efficiency
+            overhangs = self.fwd_efficiency
             if filter_gc:
-                overhangs = self.efficiency.filter(regex=r"[A|T]")
-            revs = overhangs.index.map(reverse_complement)
+                overhangs = self.fwd_efficiency.filter(regex=r"[A|T]")
+            revs = sorted(overhangs.index.map(reverse_complement))
             overhangs = overhangs[
                 (overhangs > self.min_efficiency).values
-                & (overhangs.loc[revs] > self.min_efficiency).values
+                & (self.rev_efficiency.loc[revs] > self.min_efficiency).values
             ]
             self._efficient_overhangs = list(overhangs.index)
             self._update_fidelity()
@@ -111,46 +126,60 @@ class GGData:
         sub_lig_df = self.lig_df.loc[
             self._efficient_overhangs, self._efficient_overhangs
         ]
-        efficiency = sub_lig_df.sum(axis=0)
-        self.fidelity = sub_lig_df.divide(efficiency)
+        self.fwd_fidelity = sub_lig_df.sort_index(axis=0)
+        self.rev_fidelity = sub_lig_df.T.sort_index(axis=0)
 
-    def restriction_edges(self, overhangs: List[str]) -> Iterable[Tuple[str, str]]:
+    def restriction_edges(self, fwd_overhangs: List[str]) -> Iterable[Tuple[str, str]]:
+        rev_overhangs = list(map(reverse_complement, fwd_overhangs))
+        overhangs = fwd_overhangs + rev_overhangs
         for over in overhangs:
-            rev = reverse_complement(over)
-            node_ser = self.fidelity.loc[:, over]
-            yield over, rev
-            if node_ser.loc[rev] >= self.min_fidelity or math.isclose(
-                node_ser.loc[rev], self.min_fidelity, abs_tol=1e-2
-            ):
-                continue
-            tot = 0
-            cutoff = 1 - node_ser.loc[rev] / self.min_fidelity
-            srtd_node_ser = node_ser.loc[node_ser.index != rev].sort_values(
-                ascending=False
-            )
-            for indx, val in srtd_node_ser.iteritems():
-                if val < 1e-2:
-                    break
-                tot += val
-                yield over, indx
-                if tot >= cutoff or math.isclose(cutoff, tot, abs_tol=1e-2):
-                    break
+            for fid_df in [self.fwd_fidelity, self.rev_fidelity]:
+                fidelity = fid_df[over]
+                for ligating_over in fidelity[fidelity > 10].index:
+                    yield over, ligating_over
 
     def overhangs_fidelity(self, *args) -> Iterable[float]:
-        overhangs = list(map(str, args))
-        revs = list(map(reverse_complement, overhangs))
-        for over, rev in zip(overhangs, revs):
-            if overhangs.count(over) > 1:
+        fwds = list(map(str, args))
+        revs = list(map(reverse_complement, fwds))
+        overhangs = fwds + revs
+        for over, rev in zip(fwds, revs):
+            if fwds.count(over) > 1:
                 yield 0.0
-            elif rev in overhangs:
+            elif rev in fwds:
                 yield 0.0
             else:
                 yield min(
-                    self.fidelity.loc[rev, over]
-                    / self.fidelity.loc[revs + overhangs, over].sum(),
-                    self.fidelity.loc[over, rev]
-                    / self.fidelity.loc[revs + overhangs, rev].sum(),
+                    self.fwd_fidelity.loc[over, rev]
+                    / self.fwd_fidelity.loc[over, overhangs].sum(),
+                    self.fwd_fidelity.loc[rev, over]
+                    / self.fwd_fidelity.loc[rev, overhangs].sum(),
+                    self.rev_fidelity.loc[over, rev]
+                    / self.rev_fidelity.loc[over, overhangs].sum(),
+                    self.rev_fidelity.loc[rev, over]
+                    / self.rev_fidelity.loc[rev, overhangs].sum(),
                 )
+
+    def reaction_fidelity(self, *args) -> Tuple[float, float, float]:
+        fwds = sorted(map(str, args))
+        revs = list(map(reverse_complement, fwds))
+
+        fwd_fidelity = self._directional_fidelity(fwds, revs, True)
+        rev_fidelity = self._directional_fidelity(revs, fwds, False)
+
+        return FidelityResults(
+            1 - (fwd_fidelity + rev_fidelity) / 2,
+            1 - fwd_fidelity,
+            1 - rev_fidelity,
+        )
+
+    def _directional_fidelity(self, fwds: List[str], revs: List[str], fwd=True):
+        fidelity_df = self.fwd_fidelity if fwd else self.rev_fidelity
+        overhangs = fwds + revs
+        all_fid = (
+            fidelity_df.loc[fwds, overhangs][fidelity_df.loc[fwds, overhangs] >= 10]
+        ).sum(axis=1, skipna=True)
+        complement = fidelity_df.loc[fwds, revs].values.diagonal()
+        return (all_fid - complement).divide(all_fid).sum()
 
     def create_subreactions(
         self, overhangs: List[str], max_reactions: int
@@ -162,8 +191,7 @@ class GGData:
             cuts_min_fidelity = 1
             for a_cut, b_cut in zip(cuts[:-1], cuts[1:]):
                 cuts_min_fidelity = min(
-                    cuts_min_fidelity,
-                    min(self.overhangs_fidelity(overhangs[a_cut:b_cut])),
+                    cuts_min_fidelity, self.reaction_fidelity(overhangs[a_cut:b_cut])[0]
                 )
                 if cuts_min_fidelity < best_reactions[len(cuts)][0]:
                     continue

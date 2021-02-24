@@ -54,13 +54,18 @@ class ShortestPathFinder:
             raise ValueError(
                 f"Len limit of {len_cutoff} results in over 64 colors please provide limit on the number of colors."
             )
-        selected_colors = (2 ** np.arange(no_colors)).astype(np.uint32)
+        selected_colors = (2 ** np.arange(no_colors)).astype(dtype)
         color_mapping = dict(
-            (k, np.random.choice(selected_colors).astype(np.uint32))
+            (k, np.random.choice(selected_colors).astype(dtype))
             for k in self.all_gate_colors
         )
         return dict(
-            (self.node_map[n], sum(color_mapping[c] for c in self.gate_colors[n]))
+            (
+                self.node_map[n],
+                np.sum(
+                    [color_mapping[c] for c in self.gate_colors[n]], dtype=dtype
+                ).item(),
+            )
             for n in self.graph.nodes
         )
 
