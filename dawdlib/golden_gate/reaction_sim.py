@@ -129,6 +129,14 @@ class ReactionGraph(nx.Graph):
     )
 
 
+class ReactionGraphWt(NamedTuple):
+    dna: str
+    no_segments: int
+    start: int
+    end: int
+    fidelity_sum: float
+
+
 class ReactionSim:
 
     reaction_graph: ReactionGraph
@@ -178,7 +186,11 @@ class ReactionSim:
                 )
                 ddna_nodes.append(
                     get_ddna_sections(
-                        enzyme, dna_segs_it, start, oligo_entry.wt, oligo_entry.const,
+                        enzyme,
+                        dna_segs_it,
+                        start,
+                        oligo_entry.wt,
+                        oligo_entry.const,
                     )
                 )
         return chain.from_iterable(ddna_nodes)
@@ -206,7 +218,7 @@ class ReactionSim:
         )
         self.reaction_graph = rgraph
 
-    def get_wt_dna(self) -> Generator[Tuple[str, int, int, int], None, None]:
+    def get_wt_dna(self) -> Generator[Tuple[str, int, int, int, int], None, None]:
         """
         Finds all WT dna segments that can be connected in the reaction.
 
@@ -231,10 +243,16 @@ class ReactionSim:
                 pass
             except IndexError:
                 pass
-            yield dna, len(pth), start, end
+            fidelity_sum = sum(
+                map(lambda x: sub_reaction_g.edges[x]["score"], nx.utils.pairwise(pth))
+            )
+            yield ReactionGraphWt(dna, len(pth), start, end, fidelity_sum)
 
     def verify_reaction(
-        self, expected_prod_len: int = 0, expected_no_segments: int = 0
+        self,
+        expected_prod_len: int = 0,
+        expected_no_segments: int = 0,
+        expected_fidelity_sum: float = 0,
     ) -> Tuple[bool, int, List[DDNASection]]:
         """
         Checks if all DNA sequences in the reaction are connected correctly
@@ -260,7 +278,9 @@ class ReactionSim:
         cnt = -1
         for cnt, pth in enumerate(
             all_simple_paths(
-                sub_reaction_g, self.reaction_graph.source, self.reaction_graph.target,
+                sub_reaction_g,
+                self.reaction_graph.source,
+                self.reaction_graph.target,
             )
         ):
             if not all(
@@ -275,13 +295,24 @@ class ReactionSim:
                 return False, cnt + 1, pth
             if 0 < expected_no_segments != len(pth):
                 return False, cnt + 1, pth
+            if (
+                0
+                < expected_fidelity_sum
+                != sum(
+                    map(
+                        lambda x: sub_reaction_g.edges[x]["score"],
+                        nx.utils.pairwise(pth),
+                    )
+                )
+            ):
+                return False, cnt + 1, pth
         return True, cnt + 1, []
 
     def get_all_products(self) -> Generator[Tuple[str, int, int, int], None, None]:
         """
         Use wisely! this method yields all possible products of the golden gate reaction.
         Yields:
-            Tuple: [dna, number of segments, start position, end position] 
+            Tuple: [dna, number of segments, start position, end position]
         """
         pth: List[DDNASection]
         for pth in all_simple_paths(
@@ -514,30 +545,36 @@ def get_compatible_oligos(
     Yields:
          Tuple[DDNASection, DDNASection] - Signifying these two dna sections can connect to one another in the reaction
     """
-    dtup: Tuple[DDNASection, ...]
-    overhangs = set(
-        filter(None, chain.from_iterable(d.get_hang_dna_rev() for d in ddnas))
-    )
-    sub_fid: pd.DataFrame = ggdata.fidelity.loc[overhangs, overhangs]
-    sub_fid = sub_fid.divide(sub_fid.sum(axis=0))
-    for dtup in combinations(ddnas, 2):
-        d1, d2 = dtup
-        for h1, h2 in chain.from_iterable(
-            permutations(
-                product(
-                    filter(None, d1.get_hang_dna_rev()),
-                    filter(None, d2.get_hang_dna_rev()),
-                ),
-                2,
-            )
-        ):
-            fidelity = sub_fid.loc[h1, h2]
-            if fidelity >= 1 - min_fidelity:
-                rgea = ReactionGraphEdgeAttr(
-                    id="-".join(sorted([h1, h2])), score=fidelity
+    d1: DDNASection
+    d2: DDNASection
+    for d1, d2 in combinations(ddnas, 2):
+        fidelity = max(
+            chain.from_iterable(
+                map(
+                    lambda x: (
+                        ggdata.fwd_fidelity.at[x],
+                        ggdata.fwd_fidelity.at[x[::-1]],
+                    ),
+                    product(
+                        filter(None, d1.get_hang_dna_rev()),
+                        filter(None, d2.get_hang_dna_rev()),
+                    ),
                 )
-                yield d1, d2, rgea._asdict()
-                break
+            )
+        )
+        if fidelity >= 10:
+            rgea = ReactionGraphEdgeAttr(
+                id="-".join(
+                    map(
+                        lambda x: f"({x[0]},{x[1]})",
+                        sorted(
+                            [(d1.fwd.start, d1.fwd.end), (d2.fwd.start, d2.fwd.end)]
+                        ),
+                    )
+                ),
+                score=fidelity,
+            )
+            yield d1, d2, rgea._asdict()
 
 
 def get_ddna_sections(

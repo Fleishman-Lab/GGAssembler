@@ -39,11 +39,6 @@ class GGData:
         min_fidelity: float = MIN_FIDELITY,
     ) -> None:
         self.lig_df: pd.DataFrame
-        # Efficiency is proportional to the "best" overhang in the data.
-        # It is the proportion of an overhang from the "best" overhang
-        self.efficiency: pd.Series
-        # Fidelity is the probability of an overhang to connect to it's reverse complement
-        self.fidelity: pd.DataFrame
 
         self._min_efficiency: float = min_efficiency
         self._min_fidelity: float = min_fidelity
@@ -162,6 +157,14 @@ class GGData:
     def reaction_fidelity(self, *args) -> Tuple[float, float, float]:
         fwds = sorted(map(str, args))
         revs = list(map(reverse_complement, fwds))
+        fwds_set = set(fwds)
+        revs_set = set(revs)
+        if len(fwds) != len(fwds_set):
+            raise ValueError("At least one overhangs appears more than once.")
+        if fwds_set.intersection(revs_set):
+            raise ValueError(
+                "At least one overhang and it's reverse complement are present."
+            )
 
         fwd_fidelity = self._directional_fidelity(fwds, revs, True)
         rev_fidelity = self._directional_fidelity(revs, fwds, False)
