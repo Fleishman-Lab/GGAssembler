@@ -13,6 +13,8 @@ from typing import DefaultDict, Dict, FrozenSet, Iterable, List, NamedTuple, Tup
 
 import pandas as pd
 
+import dawdlib.golden_gate.resources as gg_resources
+
 
 class FidelityResults(NamedTuple):
     NEB: float
@@ -72,8 +74,11 @@ class GGData:
         self.rev_fidelity = self.lig_df
         self.initialized = True
 
-    def set_default_df(self, csv_path: str) -> None:
-        self.default_df = csv_path
+    def set_default_df(self, csv: str) -> None:
+        if os.path.exists(csv):
+            self.default_df = csv
+        else:
+            self.default_df = gg_resources.ligation_data[csv]
 
     def get_efficiency(self) -> float:
         return self._min_efficiency
