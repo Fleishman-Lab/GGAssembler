@@ -84,7 +84,7 @@ setup(
     rust_extensions=[
         RustExtension("dawdlib.dijkstra.colourful_dijkstra", "Cargo.toml", debug=False)
     ],
-    python_requires=">=3.7",
+    python_requires=">=3.10",
     setup_requires=["setuptools", "setuptools-rust", "numpy"],
     include_package_data=True,
     entry_points={"console_scripts": ["dawdlib=dawdlib.__main__:main"]},
