@@ -2,7 +2,7 @@
 Create a cost sensitive degenerate codon sequence
 
 ## Requirments
-* python >= 3.10
+* python >= 3.7
 
 ## Install
 
