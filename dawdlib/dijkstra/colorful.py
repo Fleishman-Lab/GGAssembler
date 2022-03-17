@@ -7,7 +7,7 @@ import networkx as nx
 import numpy as np
 from networkx.algorithms.shortest_paths.weighted import _weight_function
 
-from dawdlib.dijkstra import colorful_algorithm  # pytype: disable=import-error
+# from dawdlib.dijkstra import colorful_algorithm  # pytype: disable=import-error
 from dawdlib.dijkstra import colourful_dijkstra  # pytype: disable=import-error
 from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.gate_restriction import gen_gate_restriction_graph
