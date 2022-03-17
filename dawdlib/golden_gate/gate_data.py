@@ -130,12 +130,13 @@ class GGData:
         self.rev_fidelity = sub_lig_df.T.sort_index(axis=0)
 
     def restriction_edges(self, fwd_overhangs: List[str]) -> Iterable[Tuple[str, str]]:
+        allowed_mismatch = 10 * (1 - self.min_fidelity)
         rev_overhangs = list(map(reverse_complement, fwd_overhangs))
         overhangs = fwd_overhangs + rev_overhangs
         for over in overhangs:
             for fid_df in [self.fwd_fidelity, self.rev_fidelity]:
                 fidelity = fid_df[over]
-                for ligating_over in fidelity[fidelity > 10].index:
+                for ligating_over in fidelity[fidelity > allowed_mismatch].index:
                     yield over, ligating_over
 
     def overhangs_fidelity(self, *args) -> Iterable[float]:
