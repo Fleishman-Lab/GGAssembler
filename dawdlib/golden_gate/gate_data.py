@@ -11,6 +11,7 @@ from collections import defaultdict
 from functools import lru_cache
 from typing import DefaultDict, Dict, FrozenSet, Iterable, List, NamedTuple, Tuple
 
+import numpy as np
 import pandas as pd
 
 import dawdlib.golden_gate.resources as gg_resources
@@ -174,21 +175,29 @@ class GGData:
 
         fwd_fidelity = self._directional_fidelity(fwds, revs, True)
         rev_fidelity = self._directional_fidelity(revs, fwds, False)
+        reaction_fidelity = self._bidirectional_fidelity(fwds, revs)
 
-        return FidelityResults(
-            1 - (fwd_fidelity + rev_fidelity) / 2,
-            1 - fwd_fidelity,
-            1 - rev_fidelity,
-        )
+        return FidelityResults(fwd_fidelity, rev_fidelity, reaction_fidelity)
 
     def _directional_fidelity(self, fwds: List[str], revs: List[str], fwd=True):
         fidelity_df = self.fwd_fidelity if fwd else self.rev_fidelity
         overhangs = fwds + revs
-        all_fid = (
-            fidelity_df.loc[fwds, overhangs][fidelity_df.loc[fwds, overhangs] >= 10]
-        ).sum(axis=1, skipna=True)
+        all_fid = (fidelity_df.loc[fwds, overhangs]).sum(axis=1, skipna=True)
         complement = fidelity_df.loc[fwds, revs].values.diagonal()
-        return (all_fid - complement).divide(all_fid).sum()
+        return complement.divide(all_fid).prod()
+
+    def _bidirectional_fidelity(self, fwds: List[str], revs: List[str]):
+        fidelity_df = self.fwd_fidelity
+        over_pairs = list(zip(fwds, revs))
+        overhangs = fwds + revs
+        pair_ligations = np.array(
+            [
+                (fidelity_df.loc[over_pair, overhangs]).sum(skipna=True)
+                for over_pair in over_pairs
+            ]
+        )
+        complement = fidelity_df.loc[fwds, revs].values.diagonal()
+        return complement.divide(pair_ligations - complement).prod()
 
     def create_subreactions(
         self, overhangs: List[str], max_reactions: int
