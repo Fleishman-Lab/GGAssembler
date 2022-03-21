@@ -184,7 +184,7 @@ class GGData:
         overhangs = fwds + revs
         all_fid = (fidelity_df.loc[fwds, overhangs]).sum(axis=1, skipna=True)
         complement = fidelity_df.loc[fwds, revs].values.diagonal()
-        return complement.divide(all_fid).prod()
+        return (complement / all_fid).prod()
 
     def _bidirectional_fidelity(self, fwds: List[str], revs: List[str]):
         fidelity_df = self.fwd_fidelity
@@ -197,7 +197,7 @@ class GGData:
             ]
         )
         complement = fidelity_df.loc[fwds, revs].values.diagonal()
-        return complement.divide(pair_ligations - complement).prod()
+        return (complement / (pair_ligations - complement)).prod()
 
     def create_subreactions(
         self, overhangs: List[str], max_reactions: int
