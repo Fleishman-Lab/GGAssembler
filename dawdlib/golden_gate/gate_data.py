@@ -192,7 +192,7 @@ class GGData:
         overhangs = fwds + revs
         pair_ligations = np.array(
             [
-                (fidelity_df.loc[over_pair, overhangs]).sum(skipna=True)
+                np.nansum(fidelity_df.loc[over_pair, overhangs].values)
                 for over_pair in over_pairs
             ]
         )
