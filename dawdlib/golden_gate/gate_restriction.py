@@ -7,7 +7,7 @@ from dawdlib.golden_gate.gate_data import GGData
 
 
 def gen_gate_restriction_graph(ggdata: GGData) -> nx.Graph:
-    nodes = ggdata.filter_self_binding_gates()
+    nodes = ggdata.filter_self_binding_gates(filter_gc=False)
     edges = ggdata.restriction_edges(nodes)
 
     incomp_graph = nx.Graph()

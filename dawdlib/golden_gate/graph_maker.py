@@ -46,9 +46,9 @@ class GraphMaker:
             else:
                 if not psuedogates and (nd2 - nd1 < min_const_oligo_length):
                     return False
-            if not psuedogates and any(
-                f < min_fidelity
-                for f in self.ggdata.overhangs_fidelity(nd1.bps, nd2.bps)
+            if (
+                not psuedogates
+                and self.ggdata.overhangs_fidelity(nd1.bps, nd2.bps) < min_fidelity
             ):
                 return False
             return True

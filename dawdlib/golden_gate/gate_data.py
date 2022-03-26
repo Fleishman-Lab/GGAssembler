@@ -132,34 +132,37 @@ class GGData:
 
     def restriction_edges(self, fwd_overhangs: List[str]) -> Iterable[Tuple[str, str]]:
         allowed_mismatch = 10 * (1 - self.min_fidelity)
-        rev_overhangs = list(map(reverse_complement, fwd_overhangs))
-        overhangs = fwd_overhangs + rev_overhangs
-        for over in overhangs:
-            for fid_df in [self.fwd_fidelity, self.rev_fidelity]:
-                fidelity = fid_df[over]
-                for ligating_over in fidelity[fidelity > allowed_mismatch].index:
-                    yield over, ligating_over
+        # rev_overhangs = list(map(reverse_complement, fwd_overhangs))
+        # overhangs = fwd_overhangs + rev_overhangs
+        for over in fwd_overhangs:
+            rev_over = reverse_complement(over)
+            over_fid = self.fwd_fidelity[over]
+            rev_fid = self.fwd_fidelity[rev_over]
+            for ligating_over in over_fid[
+                (over_fid > allowed_mismatch) | (rev_fid > allowed_mismatch)
+            ].index:
+                lig_rev = reverse_complement(ligating_over)
+                yield over, ligating_over
+                yield over, lig_rev
+                yield rev_over, ligating_over
+                yield rev_over, lig_rev
+            # for fid_df in [self.fwd_fidelity, self.rev_fidelity]:
+            #     fidelity = fid_df[over]
+            #     for ligating_over in fidelity[fidelity > allowed_mismatch].index:
+            #         yield over, ligating_over
 
-    def overhangs_fidelity(self, *args) -> Iterable[float]:
-        fwds = list(map(str, args))
+    @lru_cache(maxsize=1024)
+    def overhangs_fidelity(self, over1: str, over2: str) -> float:
+        fwds = [over1, over2]
         revs = list(map(reverse_complement, fwds))
-        overhangs = fwds + revs
-        for over, rev in zip(fwds, revs):
-            if fwds.count(over) > 1:
-                yield 0.0
-            elif rev in fwds:
-                yield 0.0
-            else:
-                yield min(
-                    self.fwd_fidelity.loc[over, rev]
-                    / self.fwd_fidelity.loc[over, overhangs].sum(),
-                    self.fwd_fidelity.loc[rev, over]
-                    / self.fwd_fidelity.loc[rev, overhangs].sum(),
-                    self.rev_fidelity.loc[over, rev]
-                    / self.rev_fidelity.loc[over, overhangs].sum(),
-                    self.rev_fidelity.loc[rev, over]
-                    / self.rev_fidelity.loc[rev, overhangs].sum(),
-                )
+        fwds_set = set(fwds)
+        revs_set = set(revs)
+        if len(fwds) != len(fwds_set):
+            return 0.0
+        if fwds_set.intersection(revs_set):
+            return 0.0
+        over1_ser = self.fwd_fidelity.loc[over1]
+        return 1 - over1_ser[over2] / over1_ser.sum(skipna=True)
 
     def reaction_fidelity(self, *args) -> Tuple[float, float, float]:
         fwds = sorted(map(str, args))

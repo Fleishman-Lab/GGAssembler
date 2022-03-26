@@ -474,8 +474,12 @@ def color_gates(
 ) -> tp.Tuple[tp.Dict[tp.Any, tp.FrozenSet[int]], tp.List[int]]:
     if r_graph is None:
         r_graph = gen_gate_restriction_graph(ggdata)
-    vertex_cliques = nx.make_clique_bipartite(r_graph)
-    return _color_gates(graph, vertex_cliques), num_of_colors(r_graph, vertex_cliques)
+    graph_bps = set([g.bps for g in graph.nodes])
+    subr_graph = r_graph.subgraph(graph_bps)
+    vertex_cliques = nx.make_clique_bipartite(subr_graph)
+    return _color_gates(graph, vertex_cliques), num_of_colors(
+        subr_graph, vertex_cliques
+    )
 
 
 def num_of_colors(r_graph: nx.Graph, vertex_cliques: nx.Graph) -> tp.List[int]:
