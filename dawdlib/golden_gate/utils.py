@@ -35,16 +35,16 @@ class OligoTableEntry(NamedTuple):
 
 
 class Requirements(NamedTuple):
-    gg_temp: int
-    gg_hours: int
     min_oligo_length: int
     max_oligo_length: int
     min_const_oligo_length: int
     min_efficiency: float
-    min_fidelity: float
     oligo_prefix: str  # = OLIGO_PREFIX
     oligo_suffix: str  # = OLIGO_SUFFIX
     const_cost: int  # = CONST_COST
+    gg_temp: int = 37
+    gg_hours: int = 18
+    min_fidelity: float = 0.1
     oligo_addition: int = 0
     re_calc_lengths: bool = True
     filter_gc_overhangs: bool = True

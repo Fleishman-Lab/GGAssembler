@@ -123,7 +123,7 @@ def make_edges(
     d_graph.add_weighted_edges_from(
         map(
             lambda x: x + (edge_weight(x[0], x[1]),),
-            filter(lambda x: is_valid_edge(x[0], x[1]), combinations(d_graph.nodes, 2)),
+            filter(lambda x: x[0].idx < x[1].idx and is_valid_edge(x[0], x[1]), combinations(sorted(d_graph.nodes, key=lambda x: x.idx), 2)),
         )
     )
 
@@ -135,7 +135,7 @@ def build_custom_graph(
     edge_weight: Callable[[Gate, Gate], Union[float, int]],
     gate_length: int = 4,
 ) -> Tuple[nx.Graph, Gate, Gate]:
-    d_graph: nx.Graph = nx.Graph()
+    d_graph: nx.DiGraph = nx.DiGraph()
     src = SOURCE
     target = TARGET._replace(idx=TARGET.idx + len(dna))
 

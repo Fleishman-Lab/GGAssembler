@@ -73,6 +73,7 @@ class GGData:
         self.rev_efficiency = rev_efficiency / rev_efficiency.max()
         self.fwd_fidelity = self.lig_df
         self.rev_fidelity = self.lig_df
+        self.filter_self_binding_gates(filter_gc=False)
         self.initialized = True
 
     def set_default_df(self, csv: str) -> None:
@@ -107,17 +108,20 @@ class GGData:
         return (df * 1e5) / df.values.sum()
 
     def filter_self_binding_gates(self, filter_gc: bool = True) -> List[str]:
-        if not self._efficient_overhangs:
-            overhangs = self.fwd_efficiency
-            if filter_gc:
-                overhangs = self.fwd_efficiency.filter(regex=r"[A|T]")
-            revs = sorted(overhangs.index.map(reverse_complement))
-            overhangs = overhangs[
-                (overhangs > self.min_efficiency).values
-                & (self.rev_efficiency.loc[revs] > self.min_efficiency).values
-            ]
-            self._efficient_overhangs = list(overhangs.index)
-            self._update_fidelity()
+        overhangs = set(self.fwd_efficiency.index)
+        if filter_gc:
+            overhangs = set(self.fwd_efficiency.filter(regex=r"[A|T]").index)
+        # revs = sorted(map(reverse_complement, overhangs))
+        fwd_efficient = set(self.fwd_efficiency.index[self.fwd_efficiency > self.min_efficiency])
+        rev_efficient = set(self.rev_efficiency.index[self.rev_efficiency > self.min_efficiency])
+        # overhangs = overhangs[
+        #     (overhangs > self.min_efficiency).values
+        #     & (self.rev_efficiency.loc[revs] > self.min_efficiency).values
+        # ]
+        # self._efficient_overhangs = list(overhangs.index)
+        efficient_overhangs = sorted(overhangs.intersection(fwd_efficient).intersection(rev_efficient))
+        self._efficient_overhangs = sorted(fwdo for fwdo in efficient_overhangs if reverse_complement(fwdo) in efficient_overhangs)
+        self._update_fidelity()
         return self._efficient_overhangs
 
     def _update_fidelity(self):
@@ -128,7 +132,9 @@ class GGData:
             self._efficient_overhangs, self._efficient_overhangs
         ]
         self.fwd_fidelity = sub_lig_df.sort_index(axis=0)
+        # self.fwd_fidelity = self.fwd_fidelity * 1e5 / self.fwd_fidelity.values.sum()
         self.rev_fidelity = sub_lig_df.T.sort_index(axis=0)
+        # self.rev_fidelity = self.rev_fidelity * 1e5 / self.rev_fidelity.values.sum()
 
     def restriction_edges(self, fwd_overhangs: List[str]) -> Iterable[Tuple[str, str]]:
         allowed_mismatch = 10 * (1 - self.min_fidelity)

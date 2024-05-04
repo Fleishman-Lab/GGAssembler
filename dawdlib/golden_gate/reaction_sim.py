@@ -123,7 +123,7 @@ class ReactionGraph(nx.Graph):
         fwd=SDNASection(start=-1, end=0), is_wt=True, is_const=True
     )
     target: DDNASection = DDNASection(
-        fwd=SDNASection(start=np.iinfo(np.int).max, end=np.iinfo(np.int).max),
+        fwd=SDNASection(start=np.iinfo(int).max, end=np.iinfo(int).max),
         is_wt=True,
         is_const=True,
     )
