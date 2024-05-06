@@ -12,6 +12,9 @@ Create a cost sensitive degenerate codon sequence
 - In case it's not you try `module load rust` or install following: [How to install Rust](https://www.rust-lang.org/tools/install) 
 3. Install using pip: `pip install dawdlib/`
 
+## Run in colab
+Follow the instructions in: [colab oligo design](https://github.com/Fleishman-Lab/GGAssembler/blob/master/example/colab_oligos_design.ipynb)
+
 ## Usage
 Please follow the example notebook in example/gg_oligo_design.ipynb
 If you have any questions you know where to find me :)
