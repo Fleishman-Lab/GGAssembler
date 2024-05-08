@@ -1,5 +1,5 @@
 ![golden-gator_75](https://user-images.githubusercontent.com/574349/208824637-1490624e-e7f9-4643-9ea6-b16594b652f3.png)
-# GoldenGator
+# GoldenGateAssembler
 Create a cost sensitive degenerate codon sequence
 
 ## Requirments
