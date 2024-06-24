@@ -1,23 +1,26 @@
 ![golden-gator_75](https://user-images.githubusercontent.com/574349/208824637-1490624e-e7f9-4643-9ea6-b16594b652f3.png)
 # GoldenGateAssembler
-Create a cost sensitive degenerate codon sequence
+Create a cost sensitive degenerate codon sequence. You have two options:
+1. Run in Colab
+2. Use a local installation.
 
-## Requirments
+## Run in colab
+Follow the instructions in: [colab oligo design](https://github.com/Fleishman-Lab/GGAssembler/blob/master/example/colab_oligos_design.ipynb)
+
+## Local Instllation
+
+### Requirments
 * python >= 3.7
 
-## Install
+### Install
 
 1. clone the repo: `git clone https://github.com/Fleishman-Lab/dawdlib.git`
 2. Make sure the rust compiler is available with `rustc --version`
 - In case it's not you try `module load rust` or install following: [How to install Rust](https://www.rust-lang.org/tools/install) 
 3. Install using pip: `pip install dawdlib/`
 
-## Run in colab
-Follow the instructions in: [colab oligo design](https://github.com/Fleishman-Lab/GGAssembler/blob/master/example/colab_oligos_design.ipynb)
-
 ## Usage
-Please follow the example notebook in example/gg_oligo_design.ipynb
-If you have any questions you know where to find me :)
+Please follow the example notebook in (example/gg_oligo_design.ipynb if you're running locally).
 
 *General instructions*
 1. set the variable GG_temp in box 1.2 to 25 in order to follow the GGA reaction conditions in NEB's paper (ADD_REF) 
