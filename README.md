@@ -1,5 +1,10 @@
 ![golden-gator_75](https://user-images.githubusercontent.com/574349/208824637-1490624e-e7f9-4643-9ea6-b16594b652f3.png)
 # GoldenGateAssembler
+
+## For the paper visit:
+[GGAssembler: precise and economical design and synthesis of combinatorial mutation libraries](https://www.biorxiv.org/content/10.1101/2023.05.18.541394v3)
+
+## Running the code
 Create a cost sensitive degenerate codon sequence. You have two options:
 1. Run in Colab
 2. Use a local installation.
