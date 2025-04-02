@@ -16,5 +16,5 @@ name = "colourful_dijksta"
 crate-type = ["cdylib"]
 
 [dependencies.pyo3]
-version = "0.12.4"
+version = "0.24.1"
 features = ["extension-module"]
