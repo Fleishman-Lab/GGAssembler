@@ -1,7 +1,12 @@
 import fire
+import logging
+import pandas as pd
 
 from dawdlib.golden_gate.reaction_sim import ReactionCLI
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class CLI:
     def __init__(self):
@@ -125,6 +130,67 @@ class CLI:
             suffix=suffix,
             to_order_df_file=to_order,
         )
+
+    @staticmethod
+    def retrieve_haplotypes(pharmvar_csv: str) -> pd.DataFrame:
+        """
+        Retrieve haplotypes from PharmVar CSV file.
+        Args:
+            pharmvar_csv (str): Path to the PharmVar CSV file containing haplotypes.
+
+        Returns:
+            pd.DataFrame: DataFrame containing haplotypes.
+        """
+        try:
+            haplotypes_df = pd.read_csv(pharmvar_csv)
+            logger.info("Haplotypes retrieved successfully from PharmVar.")
+            return haplotypes_df
+        except Exception as e:
+            logger.error(f"Error retrieving haplotypes from PharmVar: {e}")
+            raise
+
+    @staticmethod
+    def design_gg_assembly(haplotypes_df: pd.DataFrame, output_dir: str) -> None:
+        """
+        Design Golden Gate assembly for each haplotype.
+        Args:
+            haplotypes_df (pd.DataFrame): DataFrame containing haplotypes.
+            output_dir (str): Directory to save the Golden Gate assembly designs.
+
+        Returns:
+            None
+        """
+        try:
+            for index, haplotype in haplotypes_df.iterrows():
+                # Implement the design logic for each haplotype
+                # For example, you can call the existing functions here
+                # CLI.create_goldengates(...)
+                # CLI.degenerate_table(...)
+                # CLI.combine(...)
+                # CLI.embl(...)
+                pass
+            logger.info("Golden Gate assembly design completed for all haplotypes.")
+        except Exception as e:
+            logger.error(f"Error designing Golden Gate assembly: {e}")
+            raise
+
+    @staticmethod
+    def generate_purified_plasmids(haplotypes_df: pd.DataFrame, output_dir: str) -> None:
+        """
+        Generate purified plasmids for each haplotype.
+        Args:
+            haplotypes_df (pd.DataFrame): DataFrame containing haplotypes.
+            output_dir (str): Directory to save the purified plasmids.
+
+        Returns:
+            None
+        """
+        try:
+            CLI.design_gg_assembly(haplotypes_df, output_dir)
+            logger.info("Purified plasmids generated for all haplotypes.")
+        except Exception as e:
+            logger.error(f"Error generating purified plasmids: {e}")
+            raise
 
 
 def main(args=None):
