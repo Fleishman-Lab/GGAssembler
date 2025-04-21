@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "test": "pytest",
+    "build": "pip install .",
+    "launch": "pip install jupyter && jupyter notebook example/gg_oligo_design.ipynb"
+  }
+}

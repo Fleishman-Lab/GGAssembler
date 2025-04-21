@@ -89,6 +89,31 @@ class IntegrationTests(unittest.TestCase):
                 continue
             self.assertTrue(all(out_df[col] == ref_df[col]))
 
+    def test_fetch_cyp2d6_haplotypes(self):
+        from dawdlib.golden_gate.utils import fetch_cyp2d6_haplotypes
+
+        haplotypes = fetch_cyp2d6_haplotypes()
+        self.assertIsInstance(haplotypes, list)
+        self.assertGreater(len(haplotypes), 0)
+
+    def test_design_golden_gate_assemblies(self):
+        from dawdlib.golden_gate.utils import design_golden_gate_assemblies, fetch_cyp2d6_haplotypes
+
+        haplotypes = fetch_cyp2d6_haplotypes()
+        output_dir = os.path.join(self.here, "test_output", "golden_gate_assemblies")
+        os.makedirs(output_dir, exist_ok=True)
+        design_golden_gate_assemblies(haplotypes, output_dir)
+        # Add assertions to verify the generated Golden Gate assemblies
+
+    def test_generate_purified_plasmids(self):
+        from dawdlib.golden_gate.utils import generate_purified_plasmids, fetch_cyp2d6_haplotypes
+
+        haplotypes = fetch_cyp2d6_haplotypes()
+        output_dir = os.path.join(self.here, "test_output", "purified_plasmids")
+        os.makedirs(output_dir, exist_ok=True)
+        generate_purified_plasmids(haplotypes, output_dir)
+        # Add assertions to verify the generated purified plasmids
+
 
 if __name__ == "__main__":
     unittest.main()

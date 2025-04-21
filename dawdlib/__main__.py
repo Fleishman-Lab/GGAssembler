@@ -1,4 +1,6 @@
 import fire
+import ggassembly
+from ggassembly import GGAssembler
 
 from dawdlib.golden_gate.reaction_sim import ReactionCLI
 
@@ -39,47 +41,41 @@ class CLI:
         max_oligos: int = None,
     ) -> None:
         """
-
         Args:
-            dna_file (str):
-            deg_table_file (str):
-            out_dir (str):
-            min_var_oligo_length (int):
-            max_var_oligo_length (int):
-            min_const_oligo_length (int):
-            gg_temp:
-            gg_time:
-            gg_min_efficiency:
-            gg_min_fidelity:
-            no_solutions (int):
-            min_oligos (int):
-            max_oligos (int):
-
-        Returns:
-            object:
+            dna_file (str): Path to the input DNA file.
+            deg_table_file (str): Path to the degenerate codon table file.
+            out_dir (str): Path to the output directory.
+            min_var_oligo_length (int): Minimum length for variable oligos.
+            max_var_oligo_length (int): Maximum length for variable oligos.
+            min_const_oligo_length (int): Minimum length for constant oligos.
+            gg_temp (int): Temperature for the Golden Gate reaction.
+            gg_time (int): Time for the Golden Gate reaction.
+            gg_min_efficiency (float): Minimum efficiency for the Golden Gate reaction.
+            gg_min_fidelity (float): Minimum fidelity for the Golden Gate reaction.
+            no_solutions (int): Number of solutions to generate.
+            min_oligos (int): Minimum number of oligos (optional).
+            max_oligos (int): Maximum number of oligos (optional).
         """
-        from dawdlib.golden_gate.find_gg import create_goldengates as cg_main
-
-        cg_main(
-            dna_file,
-            deg_table_file,
-            out_dir,
-            min_var_oligo_length,
-            max_var_oligo_length,
-            min_const_oligo_length,
-            gg_temp,
-            gg_time,
-            gg_min_efficiency,
-            gg_min_fidelity,
-            no_solutions,
-            min_oligos,
-            max_oligos,
+        assembler = GGAssembler(
+            dna_file=dna_file,
+            degenerate_codon_table=deg_table_file,
+            output_dir=out_dir,
+            min_var_oligo_length=min_var_oligo_length,
+            max_var_oligo_length=max_var_oligo_length,
+            min_const_oligo_length=min_const_oligo_length,
+            gg_temp=gg_temp,
+            gg_time=gg_time,
+            gg_min_efficiency=gg_min_efficiency,
+            gg_min_fidelity=gg_min_fidelity,
+            no_solutions=no_solutions,
+            min_oligos=min_oligos,
+            max_oligos=max_oligos,
         )
+        assembler.design()
 
     @staticmethod
     def embl(embl_in: str, embl_out: str, deg_table: str = "", gate_path: str = ""):
         """
-
         ArgsReactionCLI:
             embl_in (str): file in embl format to write features to
             embl_out (str): file where to write embl file with all features

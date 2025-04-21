@@ -206,3 +206,37 @@ def check_for_restriction_sites(
             if sites:
                 return False, enzyme, sites
     return True, None, []
+
+def fetch_cyp2d6_haplotypes() -> List[str]:
+    """
+    Fetch all known CYP2D6 haplotypes from PharmVar.
+    
+    Returns:
+        List[str]: A list of CYP2D6 haplotype sequences.
+    """
+    # Placeholder implementation, replace with actual code to fetch haplotypes from PharmVar
+    return ["haplotype1_sequence", "haplotype2_sequence", "haplotype3_sequence"]
+
+def design_golden_gate_assemblies(haplotypes: List[str], output_dir: str) -> None:
+    """
+    Design Golden Gate assemblies for each CYP2D6 haplotype using the GGAssembly library.
+    
+    Args:
+        haplotypes (List[str]): A list of CYP2D6 haplotype sequences.
+        output_dir (str): Path to the output directory.
+    """
+    for haplotype in haplotypes:
+        # Placeholder implementation, replace with actual code to design Golden Gate assemblies using GGAssembly
+        pass
+
+def generate_purified_plasmids(haplotypes: List[str], output_dir: str) -> None:
+    """
+    Generate purified plasmids for each CYP2D6 haplotype using the GGAssembly library.
+    
+    Args:
+        haplotypes (List[str]): A list of CYP2D6 haplotype sequences.
+        output_dir (str): Path to the output directory.
+    """
+    for haplotype in haplotypes:
+        # Placeholder implementation, replace with actual code to generate purified plasmids using GGAssembly
+        pass
