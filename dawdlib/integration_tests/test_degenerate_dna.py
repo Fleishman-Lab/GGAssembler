@@ -103,7 +103,31 @@ class IntegrationTests(unittest.TestCase):
         output_dir = os.path.join(self.here, "test_output", "golden_gate_assemblies")
         os.makedirs(output_dir, exist_ok=True)
         design_golden_gate_assemblies(haplotypes, output_dir)
-        # Add assertions to verify the generated Golden Gate assemblies
+        # Verify the output directory exists
+        self.assertTrue(os.path.exists(output_dir))
+        
+        # Verify that at least one file is generated in the output directory
+        generated_files = os.listdir(output_dir)
+        self.assertGreater(len(generated_files), 0, "No files were generated in the output directory.")
+        
+        # Optionally, verify the contents of one of the generated files
+        for file_name in generated_files:
+            # Verify the output directory exists
+            self.assertTrue(os.path.exists(output_dir))
+
+        # Verify that at least one plasmid file is generated
+        generated_files = os.listdir(output_dir)
+        self.assertGreater(len(generated_files), 0)
+
+        # Optionally, verify the content of one of the generated files
+        for file in generated_files:
+            with open(os.path.join(output_dir, file), 'r') as f:
+                content = f.read()
+                self.assertIn("expected_sequence_or_keyword", content)  # Replace with actual expected content
+            self.assertTrue(os.path.isfile(file_path), f"{file_name} is not a valid file.")
+            with open(file_path, 'r') as f:
+                content = f.read()
+                self.assertGreater(len(content), 0, f"{file_name} is empty.")
 
     def test_generate_purified_plasmids(self):
         from dawdlib.golden_gate.utils import generate_purified_plasmids, fetch_cyp2d6_haplotypes

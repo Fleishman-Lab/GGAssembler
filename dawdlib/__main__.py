@@ -76,7 +76,7 @@ class CLI:
     @staticmethod
     def embl(embl_in: str, embl_out: str, deg_table: str = "", gate_path: str = ""):
         """
-        ArgsReactionCLI:
+        Args:
             embl_in (str): file in embl format to write features to
             embl_out (str): file where to write embl file with all features
             deg_table (str): (optional) degenerate codon table file in csv format
