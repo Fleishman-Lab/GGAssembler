@@ -107,7 +107,7 @@ def create_default_weight_func(
         psuedogates = isinstance(nd1, PseudoGate) or isinstance(nd2, PseudoGate)
         var_pos = var_pos_arr[np.logical_and(start < var_pos_arr, var_pos_arr < end)]
         if var_pos.size:
-            return (nd2 - nd1 + oligo_addition) * np.product(
+            return (nd2 - nd1 + oligo_addition) * np.prod(
                 list(len(dna_pos_n_codons[pos]) for pos in var_pos)
             )
         return const_cost if not psuedogates else 0

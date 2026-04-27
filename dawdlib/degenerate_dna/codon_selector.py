@@ -328,7 +328,7 @@ def _optimise_codons_exact(
     amino_acids: tp.Iterable[str], codons: tp.Iterable[PosCodon]
 ) -> PosCodon:
     best_codon: PosCodon = PosCodon()
-    best_codon_score = np.NINF
+    best_codon_score = -np.inf
     best_codon_len = np.inf
     req_aas = set(amino_acids)
 

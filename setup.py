@@ -2,7 +2,7 @@
 
 from distutils.command.build import build as build_orig
 
-import pkg_resources
+# import pkg_resources
 # from distutils.extension import Extension
 from setuptools import Extension, find_packages, setup
 from setuptools_rust import RustExtension
