@@ -1,5 +1,5 @@
 [package]
-name = "colourful-dijksta"
+name = "colourful_dijksta"
 version = "0.1.0"
 authors = ["hochshi <hochshi@users.noreply.github.com>"]
 edition = "2018"
@@ -16,5 +16,5 @@ name = "colourful_dijksta"
 crate-type = ["cdylib"]
 
 [dependencies.pyo3]
-version = "0.12.4"
+version = "0.25.1"
 features = ["extension-module"]

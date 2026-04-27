@@ -1,12 +1,12 @@
 use pyo3::prelude::*;
-use pyo3::wrap_pyfunction;
-mod colourful_dijkstra;
+// use pyo3::wrap_pyfunction;
+mod colourful_dijkstra_impl;
 mod scored;
 
 use std::collections::HashMap;
 
 use petgraph::graphmap::DiGraphMap;
-use crate::colourful_dijkstra::dijkstra;
+use crate::colourful_dijkstra_impl::dijkstra;
 
 /// Finds shortest path between source and target and an optional path length limit.
 /// ----------
@@ -54,7 +54,7 @@ fn colourful_shortest_path(
 
 /// A Python module implemented in Rust.
 #[pymodule]
-fn colourful_dijkstra(_py: Python, m: &PyModule) -> PyResult<()> {
+fn colourful_dijkstra(m: &Bound<'_, PyModule>) -> PyResult<()> {
     //m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
     m.add_function(wrap_pyfunction!(colourful_shortest_path, m)?)?;
     Ok(())
