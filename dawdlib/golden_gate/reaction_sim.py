@@ -514,7 +514,7 @@ def find_sources_targets(
         Tuple[Iterable[DDNASection], Iterable[DDNASection]]: A tuple of the sources, targets.
 
     """
-    min_source_start = np.Inf
+    min_source_start = np.inf
     max_target_end = np.NINF
     sources: List[DDNASection] = []
     targets: List[DDNASection] = []
