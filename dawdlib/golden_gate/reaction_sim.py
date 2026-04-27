@@ -515,7 +515,7 @@ def find_sources_targets(
 
     """
     min_source_start = np.inf
-    max_target_end = np.NINF
+    max_target_end = -np.inf
     sources: List[DDNASection] = []
     targets: List[DDNASection] = []
     for ddna in ddnas:
