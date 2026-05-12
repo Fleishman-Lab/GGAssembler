@@ -131,8 +131,8 @@ def compact_summary(all_summaries):
     ]
     return {
         "found_count": len(all_summaries),
-        "best_cost": min((summary["cost"] for summary in all_summaries), default=None),
-        "best_fidelity": max(valid_fidelities) if valid_fidelities else None,
+        "best_cost": float(min((summary["cost"] for summary in all_summaries), default=None)),
+        "best_fidelity": float(max(valid_fidelities)) if valid_fidelities else None,
         "shortest_gate_count": min(
             (summary["gate_count"] for summary in all_summaries), default=None
         ),
@@ -144,8 +144,8 @@ def main():
     parser.add_argument("--fasta", type=Path, default=DEFAULT_FASTA)
     parser.add_argument("--resfile", type=Path, default=DEFAULT_RESFILE)
     parser.add_argument("--deg-table", type=Path, default=DEFAULT_DEG_TABLE)
-    parser.add_argument("--min-gates", type=int, default=26)
-    parser.add_argument("--max-gates", type=int, default=26)
+    parser.add_argument("--min-gates", type=int, default=14)
+    parser.add_argument("--max-gates", type=int, default=15)
     parser.add_argument("--retries", type=int, default=1)
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--seed", type=int, default=1)
