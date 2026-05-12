@@ -59,15 +59,13 @@ class ShortestPathFinder:
             (k, np.random.choice(selected_colors).astype(dtype))
             for k in self.all_gate_colors
         )
-        return dict(
-            (
-                self.node_map[n],
-                np.sum(
-                    [color_mapping[c] for c in self.gate_colors[n]], dtype=dtype
-                ).item(),
-            )
-            for n in self.graph.nodes
-        )
+        node_colors = {}
+        for n in self.graph.nodes:
+            mask = dtype(0)
+            for c in self.gate_colors[n]:
+                mask |= color_mapping[c]
+            node_colors[self.node_map[n]] = mask.item()
+        return node_colors
 
     def find_shortest_path(
         self, len_cutoff: tp.Optional[int] = None, no_colors: tp.Optional[int] = None

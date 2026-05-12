@@ -3,7 +3,7 @@ use std::collections::{BinaryHeap, HashMap};
 
 use std::hash::Hash;
 
-use petgraph::visit::{EdgeRef, IntoEdges, VisitMap, Visitable};
+use petgraph::visit::{EdgeRef, IntoEdges, Visitable};
 use petgraph::algo::Measure;
 use crate::scored::MinScored;
 
@@ -85,7 +85,6 @@ pub fn dijkstra<G, F, K, C>(
         C: num_traits::PrimInt + num_traits::Unsigned + Hash + std::fmt::Display,
 {
     let limit = limit.unwrap_or(0);
-    let mut visited = graph.visit_map();
     let mut scores: HashMap<(G::NodeId, C), K> = HashMap::new();
     let mut predecessor: HashMap<(G::NodeId,C), (G::NodeId,C)> = HashMap::new();
     let mut visit_next: BinaryHeap<MinScored<K, (C, usize, G::NodeId)>> = BinaryHeap::new();
@@ -94,7 +93,7 @@ pub fn dijkstra<G, F, K, C>(
     scores.insert((start, start_color), zero_score);
     visit_next.push(MinScored(zero_score, (start_color, 0 as usize, start)));
     while let Some(MinScored(node_score, (node_color, node_depth, node))) = visit_next.pop() {
-        if visited.is_visited(&node) {
+        if scores.get(&(node, node_color)) != Some(&node_score) {
             continue;
         }
         if goal == node {
@@ -106,9 +105,6 @@ pub fn dijkstra<G, F, K, C>(
         for edge in graph.edges(node) {
             let next = edge.target();
             let next_color = node_color_map[&next];
-            if visited.is_visited(&next) {
-                continue;
-            }
             if (next_color & node_color) != C::min_value() {
                 continue;
             }
@@ -129,7 +125,6 @@ pub fn dijkstra<G, F, K, C>(
                 }
             }
         }
-        visited.visit(node);
     }
     (predecessor, start.clone(), start_color)
 }
