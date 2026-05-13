@@ -7,7 +7,9 @@ mod scored;
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, VecDeque};
 
-use crate::colourful_dijkstra_impl::{dijkstra, dijkstra_with_node_colors_and_bounds};
+use crate::colourful_dijkstra_impl::{
+    dijkstra, dijkstra_with_node_colors_and_bounds_options, Predecessor, SearchOptions,
+};
 use petgraph::graph::{DiGraph, NodeIndex};
 use petgraph::graphmap::DiGraphMap;
 use rand::rngs::StdRng;
@@ -23,7 +25,7 @@ fn node_count_from_edges(edges: &[(usize, usize, usize)], start: usize, goal: us
 }
 
 fn reconstruct_usize_path(
-    predecessor: &HashMap<(usize, usize), (usize, usize)>,
+    predecessor: &Predecessor<usize, usize>,
     goal: usize,
     node: usize,
     node_color: usize,
@@ -45,7 +47,7 @@ fn reconstruct_usize_path(
 }
 
 fn reconstruct_node_index_path(
-    predecessor: &HashMap<(NodeIndex, usize), (NodeIndex, usize)>,
+    predecessor: &Predecessor<NodeIndex, usize>,
     goal: NodeIndex,
     node: NodeIndex,
     node_color: usize,
@@ -111,7 +113,20 @@ fn recolor_node_masks(
     node_masks
 }
 
-fn validate_find_many_args(min_gates: usize, max_gates: usize) -> PyResult<()> {
+fn validate_no_colors(no_colors: usize) -> PyResult<()> {
+    if no_colors == 0 || no_colors > usize::BITS as usize {
+        return Err(PyValueError::new_err(
+            "no_colors must be between 1 and the number of bits in usize",
+        ));
+    }
+    Ok(())
+}
+
+fn validate_find_many_args(
+    min_gates: usize,
+    max_gates: usize,
+    no_colors: Option<usize>,
+) -> PyResult<()> {
     if min_gates > max_gates {
         return Err(PyValueError::new_err("min_gates must be <= max_gates"));
     }
@@ -123,7 +138,17 @@ fn validate_find_many_args(min_gates: usize, max_gates: usize) -> PyResult<()> {
             "max_gates + 1 must fit in the number of bits in usize",
         ));
     }
+    if let Some(no_colors) = no_colors {
+        validate_no_colors(no_colors)?;
+    }
     Ok(())
+}
+
+fn search_options(use_a_star: bool, use_dominance: bool) -> SearchOptions {
+    SearchOptions {
+        use_a_star,
+        use_dominance,
+    }
 }
 
 fn reverse_bounds_from_edges(
@@ -205,12 +230,9 @@ impl ColourfulPathFinder {
         &self,
         node_color_map: HashMap<usize, usize>,
         limit: Option<usize>,
+        options: SearchOptions,
     ) -> Vec<usize> {
-        let (predecessor, node, node_color): (
-            HashMap<(usize, usize), (usize, usize)>,
-            usize,
-            usize,
-        ) = dijkstra_with_node_colors_and_bounds(
+        let (predecessor, node, node_color) = dijkstra_with_node_colors_and_bounds_options(
             &self.graph,
             self.start,
             self.goal,
@@ -218,6 +240,7 @@ impl ColourfulPathFinder {
             |node| node_color_map[node],
             |node| self.lower_bound_for_node(*node),
             limit,
+            options,
         );
         reconstruct_usize_path(&predecessor, self.goal, node, node_color)
     }
@@ -226,12 +249,9 @@ impl ColourfulPathFinder {
         &self,
         node_colors: &[usize],
         limit: Option<usize>,
+        options: SearchOptions,
     ) -> Vec<usize> {
-        let (predecessor, node, node_color): (
-            HashMap<(usize, usize), (usize, usize)>,
-            usize,
-            usize,
-        ) = dijkstra_with_node_colors_and_bounds(
+        let (predecessor, node, node_color) = dijkstra_with_node_colors_and_bounds_options(
             &self.graph,
             self.start,
             self.goal,
@@ -239,6 +259,7 @@ impl ColourfulPathFinder {
             |node| node_colors[*node],
             |node| self.lower_bound_for_node(*node),
             limit,
+            options,
         );
         reconstruct_usize_path(&predecessor, self.goal, node, node_color)
     }
@@ -250,12 +271,14 @@ impl ColourfulPathFinder {
         max_gates: usize,
         retries: usize,
         rng_seed: u64,
+        no_colors: Option<usize>,
+        options: SearchOptions,
     ) -> Vec<(usize, usize, Vec<usize>)> {
         let mut rng = StdRng::seed_from_u64(rng_seed);
         let mut results = Vec::new();
 
         for max_gates_for_run in min_gates..=max_gates {
-            let no_colors = max_gates_for_run + 1;
+            let no_colors = no_colors.unwrap_or(max_gates_for_run + 1);
             for retry_index in 0..retries {
                 let node_colors = recolor_node_masks(
                     gate_color_ids_by_node,
@@ -263,8 +286,11 @@ impl ColourfulPathFinder {
                     no_colors,
                     &mut rng,
                 );
-                let path =
-                    self.find_shortest_path_from_node_colors(&node_colors, Some(max_gates_for_run));
+                let path = self.find_shortest_path_from_node_colors(
+                    &node_colors,
+                    Some(max_gates_for_run),
+                    options,
+                );
                 if !path.is_empty() {
                     results.push((max_gates_for_run, retry_index, path));
                 }
@@ -317,24 +343,35 @@ impl ColourfulPathFinder {
         })
     }
 
+    #[pyo3(signature = (node_color_map, limit=None, use_a_star=true, use_dominance=true))]
     fn find_shortest_path(
         &self,
         py: Python<'_>,
         node_color_map: HashMap<usize, usize>,
         limit: Option<usize>,
+        use_a_star: bool,
+        use_dominance: bool,
     ) -> Vec<usize> {
-        py.allow_threads(move || self.find_shortest_path_from_map(node_color_map, limit))
+        let options = search_options(use_a_star, use_dominance);
+        py.allow_threads(move || self.find_shortest_path_from_map(node_color_map, limit, options))
     }
 
+    #[pyo3(signature = (node_colors, limit=None, use_a_star=true, use_dominance=true))]
     fn find_shortest_path_with_node_colors(
         &self,
         py: Python<'_>,
         node_colors: Vec<usize>,
         limit: Option<usize>,
+        use_a_star: bool,
+        use_dominance: bool,
     ) -> Vec<usize> {
-        py.allow_threads(move || self.find_shortest_path_from_node_colors(&node_colors, limit))
+        let options = search_options(use_a_star, use_dominance);
+        py.allow_threads(move || {
+            self.find_shortest_path_from_node_colors(&node_colors, limit, options)
+        })
     }
 
+    #[pyo3(signature = (min_gates, max_gates, retries, seed=None, use_a_star=true, use_dominance=true, no_colors=None))]
     fn find_many(
         &self,
         py: Python<'_>,
@@ -342,13 +379,17 @@ impl ColourfulPathFinder {
         max_gates: usize,
         retries: usize,
         seed: Option<u64>,
+        use_a_star: bool,
+        use_dominance: bool,
+        no_colors: Option<usize>,
     ) -> PyResult<Vec<(usize, usize, Vec<usize>)>> {
-        validate_find_many_args(min_gates, max_gates)?;
+        validate_find_many_args(min_gates, max_gates, no_colors)?;
         let gate_color_ids_by_node = self
             .gate_color_ids_by_node
             .as_ref()
             .ok_or_else(|| PyValueError::new_err("finder was not constructed with gate colors"))?;
         let rng_seed = seed.unwrap_or_else(|| rand::thread_rng().gen());
+        let options = search_options(use_a_star, use_dominance);
         Ok(py.allow_threads(move || {
             self.find_many_inner(
                 gate_color_ids_by_node,
@@ -356,6 +397,8 @@ impl ColourfulPathFinder {
                 max_gates,
                 retries,
                 rng_seed,
+                no_colors,
+                options,
             )
         }))
     }
@@ -388,16 +431,13 @@ impl ColourfulPathFinderDiGraph {
         &self,
         node_color_map: HashMap<usize, usize>,
         limit: Option<usize>,
+        options: SearchOptions,
     ) -> Vec<usize> {
         let indexed_node_color_map: HashMap<NodeIndex, usize> = node_color_map
             .into_iter()
             .map(|(node, color)| (NodeIndex::new(node), color))
             .collect();
-        let (predecessor, node, node_color): (
-            HashMap<(NodeIndex, usize), (NodeIndex, usize)>,
-            NodeIndex,
-            usize,
-        ) = dijkstra_with_node_colors_and_bounds(
+        let (predecessor, node, node_color) = dijkstra_with_node_colors_and_bounds_options(
             &self.graph,
             self.start,
             self.goal,
@@ -405,6 +445,7 @@ impl ColourfulPathFinderDiGraph {
             |node| indexed_node_color_map[node],
             |node| self.lower_bound_for_node(*node),
             limit,
+            options,
         );
         reconstruct_node_index_path(&predecessor, self.goal, node, node_color)
     }
@@ -413,12 +454,9 @@ impl ColourfulPathFinderDiGraph {
         &self,
         node_colors: &[usize],
         limit: Option<usize>,
+        options: SearchOptions,
     ) -> Vec<usize> {
-        let (predecessor, node, node_color): (
-            HashMap<(NodeIndex, usize), (NodeIndex, usize)>,
-            NodeIndex,
-            usize,
-        ) = dijkstra_with_node_colors_and_bounds(
+        let (predecessor, node, node_color) = dijkstra_with_node_colors_and_bounds_options(
             &self.graph,
             self.start,
             self.goal,
@@ -426,6 +464,7 @@ impl ColourfulPathFinderDiGraph {
             |node| node_colors[node.index()],
             |node| self.lower_bound_for_node(*node),
             limit,
+            options,
         );
         reconstruct_node_index_path(&predecessor, self.goal, node, node_color)
     }
@@ -437,12 +476,14 @@ impl ColourfulPathFinderDiGraph {
         max_gates: usize,
         retries: usize,
         rng_seed: u64,
+        no_colors: Option<usize>,
+        options: SearchOptions,
     ) -> Vec<(usize, usize, Vec<usize>)> {
         let mut rng = StdRng::seed_from_u64(rng_seed);
         let mut results = Vec::new();
 
         for max_gates_for_run in min_gates..=max_gates {
-            let no_colors = max_gates_for_run + 1;
+            let no_colors = no_colors.unwrap_or(max_gates_for_run + 1);
             for retry_index in 0..retries {
                 let node_colors = recolor_node_masks(
                     gate_color_ids_by_node,
@@ -450,8 +491,11 @@ impl ColourfulPathFinderDiGraph {
                     no_colors,
                     &mut rng,
                 );
-                let path =
-                    self.find_shortest_path_from_node_colors(&node_colors, Some(max_gates_for_run));
+                let path = self.find_shortest_path_from_node_colors(
+                    &node_colors,
+                    Some(max_gates_for_run),
+                    options,
+                );
                 if !path.is_empty() {
                     results.push((max_gates_for_run, retry_index, path));
                 }
@@ -522,24 +566,35 @@ impl ColourfulPathFinderDiGraph {
         })
     }
 
+    #[pyo3(signature = (node_color_map, limit=None, use_a_star=true, use_dominance=true))]
     fn find_shortest_path(
         &self,
         py: Python<'_>,
         node_color_map: HashMap<usize, usize>,
         limit: Option<usize>,
+        use_a_star: bool,
+        use_dominance: bool,
     ) -> Vec<usize> {
-        py.allow_threads(move || self.find_shortest_path_from_map(node_color_map, limit))
+        let options = search_options(use_a_star, use_dominance);
+        py.allow_threads(move || self.find_shortest_path_from_map(node_color_map, limit, options))
     }
 
+    #[pyo3(signature = (node_colors, limit=None, use_a_star=true, use_dominance=true))]
     fn find_shortest_path_with_node_colors(
         &self,
         py: Python<'_>,
         node_colors: Vec<usize>,
         limit: Option<usize>,
+        use_a_star: bool,
+        use_dominance: bool,
     ) -> Vec<usize> {
-        py.allow_threads(move || self.find_shortest_path_from_node_colors(&node_colors, limit))
+        let options = search_options(use_a_star, use_dominance);
+        py.allow_threads(move || {
+            self.find_shortest_path_from_node_colors(&node_colors, limit, options)
+        })
     }
 
+    #[pyo3(signature = (min_gates, max_gates, retries, seed=None, use_a_star=true, use_dominance=true, no_colors=None))]
     fn find_many(
         &self,
         py: Python<'_>,
@@ -547,13 +602,17 @@ impl ColourfulPathFinderDiGraph {
         max_gates: usize,
         retries: usize,
         seed: Option<u64>,
+        use_a_star: bool,
+        use_dominance: bool,
+        no_colors: Option<usize>,
     ) -> PyResult<Vec<(usize, usize, Vec<usize>)>> {
-        validate_find_many_args(min_gates, max_gates)?;
+        validate_find_many_args(min_gates, max_gates, no_colors)?;
         let gate_color_ids_by_node = self
             .gate_color_ids_by_node
             .as_ref()
             .ok_or_else(|| PyValueError::new_err("finder was not constructed with gate colors"))?;
         let rng_seed = seed.unwrap_or_else(|| rand::thread_rng().gen());
+        let options = search_options(use_a_star, use_dominance);
         Ok(py.allow_threads(move || {
             self.find_many_inner(
                 gate_color_ids_by_node,
@@ -561,6 +620,8 @@ impl ColourfulPathFinderDiGraph {
                 max_gates,
                 retries,
                 rng_seed,
+                no_colors,
+                options,
             )
         }))
     }
@@ -593,11 +654,7 @@ fn colourful_shortest_path(
 ) -> Vec<usize> {
     py.allow_threads(move || {
         let graph = DiGraphMap::<usize, usize>::from_edges(&edges);
-        let (predecessor, node, node_color): (
-            HashMap<(usize, usize), (usize, usize)>,
-            usize,
-            usize,
-        ) = dijkstra(
+        let (predecessor, node, node_color) = dijkstra(
             &graph,
             start.into(),
             goal.into(),

@@ -24,6 +24,22 @@ Use `--mode legacy-loop` to time the Colab-shaped Python retry loop and
 `--mode find-many` to time the Rust-side retry loop. Both modes accept
 `--resident-graph graphmap` and `--resident-graph digraph`.
 
+Search algorithm mode:
+
+```sh
+python benchmarks/bench_colorful_real_data.py \
+  --mode find-many \
+  --resident-graph digraph \
+  --search-mode plain
+```
+
+`--search-mode` controls A* lower-bound priority and dominance pruning:
+
+- `plain`: no A* priority and no dominance pruning
+- `astar`: A* priority only
+- `dominance`: dominance pruning only
+- `astar-dominance`: both enabled, matching the default optimized path
+
 Larger run:
 
 ```sh

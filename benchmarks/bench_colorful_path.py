@@ -17,6 +17,14 @@ import numpy as np
 from dawdlib.dijkstra import colorful, colourful_dijkstra
 
 
+SEARCH_MODE_FLAGS = {
+    "plain": (False, False),
+    "astar": (True, False),
+    "dominance": (False, True),
+    "astar-dominance": (True, True),
+}
+
+
 def build_finder(nodes, edge_probability, colors, seed, resident_graph):
     rng = random.Random(seed)
     graph = nx.DiGraph()
@@ -78,22 +86,36 @@ def build_finder(nodes, edge_probability, colors, seed, resident_graph):
     return finder
 
 
-def time_colab_loop(finder, min_gates, max_gates, retries):
+def time_colab_loop(
+    finder, min_gates, max_gates, retries, use_a_star, use_dominance, no_colors
+):
     started = time.perf_counter()
     found = 0
     for max_gates_for_run in range(min_gates, max_gates + 1):
         for _ in range(retries):
             path = finder.find_shortest_path(
                 len_cutoff=max_gates_for_run,
-                no_colors=max_gates_for_run + 1,
+                no_colors=no_colors or max_gates_for_run + 1,
+                use_a_star=use_a_star,
+                use_dominance=use_dominance,
             )
             found += bool(path)
     return time.perf_counter() - started, found
 
 
-def time_find_many(finder, min_gates, max_gates, retries, seed):
+def time_find_many(
+    finder, min_gates, max_gates, retries, seed, use_a_star, use_dominance, no_colors
+):
     started = time.perf_counter()
-    results = finder.find_many(min_gates, max_gates, retries, seed=seed)
+    results = finder.find_many(
+        min_gates,
+        max_gates,
+        retries,
+        seed=seed,
+        use_a_star=use_a_star,
+        use_dominance=use_dominance,
+        no_colors=no_colors,
+    )
     return time.perf_counter() - started, len(results)
 
 
@@ -108,6 +130,12 @@ def main():
     parser.add_argument("--runs", type=int, default=5)
     parser.add_argument("--seed", type=int, default=1)
     parser.add_argument(
+        "--no-colors",
+        type=int,
+        default=None,
+        help="Override the randomized color bit budget for find-many mode. Default is max_gates + 1 for each gate limit.",
+    )
+    parser.add_argument(
         "--resident-graph",
         choices=["graphmap", "digraph"],
         default="graphmap",
@@ -117,7 +145,13 @@ def main():
         choices=["legacy-loop", "find-many"],
         default="legacy-loop",
     )
+    parser.add_argument(
+        "--search-mode",
+        choices=sorted(SEARCH_MODE_FLAGS),
+        default="astar-dominance",
+    )
     args = parser.parse_args()
+    use_a_star, use_dominance = SEARCH_MODE_FLAGS[args.search_mode]
 
     finder = build_finder(
         nodes=args.nodes,
@@ -139,6 +173,9 @@ def main():
                 max_gates=args.max_gates,
                 retries=args.retries,
                 seed=args.seed + run,
+                use_a_star=use_a_star,
+                use_dominance=use_dominance,
+                no_colors=args.no_colors,
             )
         else:
             elapsed, found = time_colab_loop(
@@ -146,6 +183,9 @@ def main():
                 min_gates=args.min_gates,
                 max_gates=args.max_gates,
                 retries=args.retries,
+                use_a_star=use_a_star,
+                use_dominance=use_dominance,
+                no_colors=args.no_colors,
             )
         samples.append(elapsed)
         found_counts.append(found)
@@ -158,8 +198,12 @@ def main():
         "max_gates": args.max_gates,
         "retries": args.retries,
         "runs": args.runs,
+        "no_colors": args.no_colors,
         "resident_graph": args.resident_graph,
         "mode": args.mode,
+        "search_mode": args.search_mode,
+        "use_a_star": use_a_star,
+        "use_dominance": use_dominance,
         "seconds": samples,
         "mean_seconds": statistics.mean(samples),
         "median_seconds": statistics.median(samples),

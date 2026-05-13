@@ -13,6 +13,13 @@ from dawdlib.golden_gate.gate_data import GGData
 from dawdlib.golden_gate.gate_restriction import gen_gate_restriction_graph
 
 
+def _stable_color_order(colors):
+    try:
+        return sorted(colors)
+    except TypeError:
+        return sorted(colors, key=repr)
+
+
 class ShortestPathFinder:
     def __init__(self, graph: nx.Graph, ggdata: GGData, source: tp.Any, target: tp.Any):
         self.graph = graph
@@ -33,7 +40,7 @@ class ShortestPathFinder:
         self.all_gate_colors = set()
         for val in self.gate_colors.values():
             self.all_gate_colors.update(val)
-        self._all_gate_colors_order = list(self.all_gate_colors)
+        self._all_gate_colors_order = _stable_color_order(self.all_gate_colors)
         self._gate_color_id_map = {
             color: index for index, color in enumerate(self._all_gate_colors_order)
         }
@@ -83,7 +90,7 @@ class ShortestPathFinder:
         dtype = self._recolor_dtype(no_colors)
         selected_colors = (2 ** np.arange(no_colors)).astype(dtype)
         all_gate_colors_order = getattr(
-            self, "_all_gate_colors_order", list(self.all_gate_colors)
+            self, "_all_gate_colors_order", _stable_color_order(self.all_gate_colors)
         )
         color_mapping = dict(
             (k, np.random.choice(selected_colors).astype(dtype))
@@ -103,7 +110,7 @@ class ShortestPathFinder:
         no_colors = self._validate_recolor_args(len_cutoff, no_colors)
         selected_colors = [1 << idx for idx in range(no_colors)]
         all_gate_colors_order = getattr(
-            self, "_all_gate_colors_order", list(self.all_gate_colors)
+            self, "_all_gate_colors_order", _stable_color_order(self.all_gate_colors)
         )
         gate_color_id_map = getattr(
             self,
@@ -131,12 +138,18 @@ class ShortestPathFinder:
         return node_colors
 
     def find_shortest_path(
-        self, len_cutoff: tp.Optional[int] = None, no_colors: tp.Optional[int] = None
+        self,
+        len_cutoff: tp.Optional[int] = None,
+        no_colors: tp.Optional[int] = None,
+        use_a_star: bool = True,
+        use_dominance: bool = True,
     ):
         self._validate_recolor_args(len_cutoff, no_colors)
         path = self._rust_finder.find_shortest_path_with_node_colors(
             self._random_recolor_dense(len_cutoff, no_colors),
             len_cutoff,
+            use_a_star,
+            use_dominance,
         )
         return [self.idx_node_map[idx] for idx in path]
 
@@ -146,12 +159,18 @@ class ShortestPathFinder:
         max_gates: int,
         retries: int,
         seed: tp.Optional[int] = None,
+        use_a_star: bool = True,
+        use_dominance: bool = True,
+        no_colors: tp.Optional[int] = None,
     ) -> tp.List[tp.Tuple[int, int, tp.List[tp.Any]]]:
         raw_results = self._rust_finder.find_many(
             min_gates,
             max_gates,
             retries,
-            seed,
+            seed=seed,
+            use_a_star=use_a_star,
+            use_dominance=use_dominance,
+            no_colors=no_colors,
         )
         return [
             (

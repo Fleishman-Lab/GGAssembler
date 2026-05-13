@@ -1,5 +1,5 @@
 use std::collections::hash_map::Entry::{Occupied, Vacant};
-use std::collections::{BinaryHeap, HashMap};
+use std::collections::{BinaryHeap, HashMap, HashSet};
 
 use std::hash::Hash;
 
@@ -11,7 +11,25 @@ use petgraph::visit::{EdgeRef, IntoEdges, Visitable};
 struct Label<K, C> {
     mask: C,
     cost: K,
-    depth: usize,
+    // depth: usize,
+}
+
+pub type State<N, C> = (N, C);
+pub type Predecessor<N, C> = HashMap<State<N, C>, State<N, C>>;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct SearchOptions {
+    pub use_a_star: bool,
+    pub use_dominance: bool,
+}
+
+impl Default for SearchOptions {
+    fn default() -> Self {
+        Self {
+            use_a_star: true,
+            use_dominance: true,
+        }
+    }
 }
 
 fn label_dominates<K, C>(existing: &Label<K, C>, candidate: &Label<K, C>) -> bool
@@ -21,7 +39,7 @@ where
 {
     (existing.mask & candidate.mask) == existing.mask
         && existing.cost <= candidate.cost
-        && existing.depth <= candidate.depth
+        // && existing.depth <= candidate.depth
 }
 
 fn insert_nondominated_label<K, C>(labels: &mut Vec<Label<K, C>>, candidate: Label<K, C>) -> bool
@@ -110,7 +128,7 @@ pub fn dijkstra<G, F, K, C>(
     edge_cost: F,
     node_color_map: HashMap<G::NodeId, C>,
     limit: Option<usize>,
-) -> (HashMap<(G::NodeId, C), (G::NodeId, C)>, G::NodeId, C)
+) -> (Predecessor<G::NodeId, C>, G::NodeId, C)
 where
     G: IntoEdges + Visitable,
     G::NodeId: Eq + Hash,
@@ -135,7 +153,7 @@ pub fn dijkstra_with_node_colors<G, F, K, C, ColorFn>(
     edge_cost: F,
     node_color_fn: ColorFn,
     limit: Option<usize>,
-) -> (HashMap<(G::NodeId, C), (G::NodeId, C)>, G::NodeId, C)
+) -> (Predecessor<G::NodeId, C>, G::NodeId, C)
 where
     G: IntoEdges + Visitable,
     G::NodeId: Eq + Hash,
@@ -159,11 +177,42 @@ pub fn dijkstra_with_node_colors_and_bounds<G, F, K, C, ColorFn, BoundFn>(
     graph: G,
     start: G::NodeId,
     goal: G::NodeId,
+    edge_cost: F,
+    node_color_fn: ColorFn,
+    lower_bound_fn: BoundFn,
+    limit: Option<usize>,
+) -> (Predecessor<G::NodeId, C>, G::NodeId, C)
+where
+    G: IntoEdges + Visitable,
+    G::NodeId: Eq + Hash,
+    F: FnMut(G::EdgeRef) -> K,
+    ColorFn: FnMut(&G::NodeId) -> C,
+    BoundFn: FnMut(&G::NodeId) -> Option<(K, usize)>,
+    K: Measure + Copy,
+    C: num_traits::PrimInt + num_traits::Unsigned + Hash + std::fmt::Display,
+{
+    dijkstra_with_node_colors_and_bounds_options(
+        graph,
+        start,
+        goal,
+        edge_cost,
+        node_color_fn,
+        lower_bound_fn,
+        limit,
+        SearchOptions::default(),
+    )
+}
+
+pub fn dijkstra_with_node_colors_and_bounds_options<G, F, K, C, ColorFn, BoundFn>(
+    graph: G,
+    start: G::NodeId,
+    goal: G::NodeId,
     mut edge_cost: F,
     mut node_color_fn: ColorFn,
     mut lower_bound_fn: BoundFn,
     limit: Option<usize>,
-) -> (HashMap<(G::NodeId, C), (G::NodeId, C)>, G::NodeId, C)
+    options: SearchOptions,
+) -> (Predecessor<G::NodeId, C>, G::NodeId, C)
 where
     G: IntoEdges + Visitable,
     G::NodeId: Eq + Hash,
@@ -174,57 +223,76 @@ where
     C: num_traits::PrimInt + num_traits::Unsigned + Hash + std::fmt::Display,
 {
     let limit = limit.unwrap_or(0);
-    let mut scores: HashMap<(G::NodeId, C), K> = HashMap::new();
-    let mut predecessor: HashMap<(G::NodeId, C), (G::NodeId, C)> = HashMap::new();
+    let mut scores: HashMap<State<G::NodeId, C>, K> = HashMap::new();
+    let mut visited: HashSet<State<G::NodeId, C>> = HashSet::new();
+    let mut predecessor: Predecessor<G::NodeId, C> = HashMap::new();
     let mut labels: HashMap<G::NodeId, Vec<Label<K, C>>> = HashMap::new();
     let mut visit_next: BinaryHeap<MinScored<K, (K, C, usize, G::NodeId)>> = BinaryHeap::new();
     let zero_score = K::default();
     let start_color = node_color_fn(&start);
-    let start_bound = match lower_bound_fn(&start) {
-        Some(bound) => bound,
-        None => return (predecessor, start.clone(), start_color),
+    let start_bound = if options.use_a_star {
+        match lower_bound_fn(&start) {
+            Some(bound) => bound,
+            None => return (predecessor, start.clone(), start_color),
+        }
+    } else {
+        (K::default(), 0)
     };
     scores.insert((start, start_color), zero_score);
-    labels.entry(start).or_default().push(Label {
-        mask: start_color,
-        cost: zero_score,
-        depth: 0,
-    });
+    if options.use_dominance {
+        labels.entry(start).or_default().push(Label {
+            mask: start_color,
+            cost: zero_score,
+            // depth: 0,
+        });
+    }
     visit_next.push(MinScored(
-        zero_score + start_bound.0,
+        if options.use_a_star {
+            zero_score + start_bound.0
+        } else {
+            zero_score
+        },
         (zero_score, start_color, 0 as usize, start),
     ));
     while let Some(MinScored(_priority, (node_score, current_color, node_depth, node))) =
         visit_next.pop()
     {
-        if scores.get(&(node, current_color)) != Some(&node_score) {
+        let current_state = (node, current_color);
+        if visited.contains(&current_state) {
             continue;
         }
-        let current_label = Label {
-            mask: current_color,
-            cost: node_score,
-            depth: node_depth,
-        };
-        if !labels
-            .get(&node)
-            .map(|node_labels| node_labels.contains(&current_label))
-            .unwrap_or(false)
-        {
+        if scores.get(&current_state) != Some(&node_score) {
             continue;
-        }
-        if goal == node {
-            return (predecessor, node.clone(), current_color);
-        }
-        match lower_bound_fn(&node) {
-            Some((_min_cost, min_hops)) => {
-                if limit > 0 && node_depth + min_hops > limit {
-                    continue;
-                }
-            }
-            None => continue,
         }
         if limit > 0 && node_depth + 1 > limit {
             continue;
+        }
+        if options.use_dominance {
+            let current_label = Label {
+                mask: current_color,
+                cost: node_score,
+                // depth: node_depth,
+            };
+            if !labels
+                .get(&node)
+                .map(|node_labels| node_labels.contains(&current_label))
+                .unwrap_or(false)
+            {
+                continue;
+            }
+        }
+        if options.use_a_star {
+            match lower_bound_fn(&node) {
+                Some((_min_cost, min_hops)) => {
+                    if limit > 0 && node_depth + min_hops > limit {
+                        continue;
+                    }
+                }
+                None => continue,
+            }
+        }
+        if goal == node {
+            return (predecessor, node.clone(), current_color);
         }
         for edge in graph.edges(node) {
             let next = edge.target();
@@ -233,25 +301,43 @@ where
                 continue;
             }
             let next_depth = node_depth + 1;
-            let next_bound = match lower_bound_fn(&next) {
-                Some(bound) => bound,
-                None => continue,
+            let next_bound = if options.use_a_star {
+                let bound = match lower_bound_fn(&next) {
+                    Some(bound) => bound,
+                    None => continue,
+                };
+                if limit > 0 && next_depth + bound.1 > limit {
+                    continue;
+                }
+                bound
+            } else {
+                (K::default(), 0)
             };
-            if limit > 0 && next_depth + next_bound.1 > limit {
-                continue;
-            }
             let next_score = node_score + edge_cost(edge);
             let next_color = current_color | next_color;
-            let next_priority = next_score + next_bound.0;
+            let next_state = (next, next_color);
+            if visited.contains(&next_state) {
+                continue;
+            }
+            let next_priority = if options.use_a_star {
+                next_score + next_bound.0
+            } else {
+                next_score
+            };
             let next_label = Label {
                 mask: next_color,
                 cost: next_score,
-                depth: next_depth,
+                // depth: next_depth,
             };
-            match scores.entry((next, next_color)) {
+            match scores.entry(next_state) {
                 Occupied(ent) => {
                     if next_score < *ent.get() {
-                        if !insert_nondominated_label(labels.entry(next).or_default(), next_label) {
+                        if options.use_dominance
+                            && !insert_nondominated_label(
+                                labels.entry(next).or_default(),
+                                next_label,
+                            )
+                        {
                             continue;
                         }
                         *ent.into_mut() = next_score;
@@ -264,7 +350,9 @@ where
                     }
                 }
                 Vacant(ent) => {
-                    if !insert_nondominated_label(labels.entry(next).or_default(), next_label) {
+                    if options.use_dominance
+                        && !insert_nondominated_label(labels.entry(next).or_default(), next_label)
+                    {
                         continue;
                     }
                     ent.insert(next_score);
@@ -276,6 +364,7 @@ where
                 }
             }
         }
+        visited.insert(current_state);
     }
     (predecessor, start.clone(), start_color)
 }
@@ -284,10 +373,9 @@ where
 mod tests {
     use super::{
         dijkstra_with_node_colors, dijkstra_with_node_colors_and_bounds, insert_nondominated_label,
-        Label,
+        Label, Predecessor,
     };
     use petgraph::graphmap::DiGraphMap;
-    use std::collections::HashMap;
 
     #[test]
     fn insert_nondominated_label_rejects_dominated_candidate() {
@@ -375,7 +463,7 @@ mod tests {
     }
 
     fn reconstruct_path(
-        predecessor: &HashMap<(usize, usize), (usize, usize)>,
+        predecessor: &Predecessor<usize, usize>,
         goal: usize,
         node: usize,
         mask: usize,
@@ -435,7 +523,7 @@ mod tests {
 
         assert_eq!(
             reconstruct_path(&bounded_predecessor, 4, bounded_node, bounded_mask),
-            reconstruct_path(&unbounded_predecessor, 4, unbounded_node, unbounded_mask)
+            reconstruct_path(&unbounded_predecessor, 4, unbounded_node, unbounded_mask,)
         );
     }
 

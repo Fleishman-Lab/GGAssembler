@@ -145,6 +145,28 @@ def test_rust_resident_finders_accept_dense_node_colors():
     )
 
 
+def test_rust_resident_search_modes_match_on_simple_path():
+    edges = [
+        (0, 1, 10),
+        (1, 4, 10),
+        (0, 2, 1),
+        (2, 3, 1),
+        (3, 4, 1),
+    ]
+    node_colors = [1, 2, 4, 8, 16]
+    expected = [0, 2, 3, 4]
+    finder = colourful_dijkstra.ColourfulPathFinderDiGraph(edges, 0, 4, 5)
+
+    for use_a_star in (False, True):
+        for use_dominance in (False, True):
+            assert finder.find_shortest_path_with_node_colors(
+                node_colors,
+                4,
+                use_a_star,
+                use_dominance,
+            ) == expected
+
+
 def test_colourful_shortest_path_keeps_existing_public_api(monkeypatch):
     graph = nx.DiGraph()
     graph.add_edge("source", "a", weight=1)

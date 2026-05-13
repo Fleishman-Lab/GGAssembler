@@ -41,6 +41,13 @@ DEFAULT_FIXED_COLORMAP = (
     / "real_data_fixed_colormap_gates_15_seed_1500001.json"
 )
 
+SEARCH_MODE_FLAGS = {
+    "plain": (False, False),
+    "astar": (True, False),
+    "dominance": (False, True),
+    "astar-dominance": (True, True),
+}
+
 
 def example_requirements():
     return RequirementsFactory(
@@ -180,7 +187,19 @@ def build_resident_finder_with_gate_colors(finder, resident_graph):
     )
 
 
-def time_legacy_loop(finder, graph, ggdata, min_gates, max_gates, retries, seed, run):
+def time_legacy_loop(
+    finder,
+    graph,
+    ggdata,
+    min_gates,
+    max_gates,
+    retries,
+    seed,
+    run,
+    use_a_star,
+    use_dominance,
+    no_colors,
+):
     started = time.perf_counter()
     summaries = []
     for max_gates_for_run in range(min_gates, max_gates + 1):
@@ -190,27 +209,42 @@ def time_legacy_loop(finder, graph, ggdata, min_gates, max_gates, retries, seed,
             )
             path = finder.find_shortest_path(
                 len_cutoff=max_gates_for_run,
-                no_colors=max_gates_for_run + 1,
+                no_colors=no_colors or max_gates_for_run + 1,
+                use_a_star=use_a_star,
+                use_dominance=use_dominance,
             )
             if path:
                 summaries.append(summarize_path(graph, ggdata, path))
     return time.perf_counter() - started, summaries
 
 
-def time_fixed_colormap(finder, graph, ggdata, fixed_colormap, resident_graph):
+def time_fixed_colormap(
+    finder,
+    graph,
+    ggdata,
+    fixed_colormap,
+    resident_graph,
+    use_a_star,
+    use_dominance,
+):
     resident_finder = build_resident_finder(finder, resident_graph)
     node_colors = node_color_list_from_fixed_colormap(fixed_colormap)
     max_gates = fixed_colormap["max_gates"]
 
     started = time.perf_counter()
     dense_path = resident_finder.find_shortest_path_with_node_colors(
-        node_colors, max_gates
+        node_colors,
+        max_gates,
+        use_a_star,
+        use_dominance,
     )
     elapsed = time.perf_counter() - started
     return elapsed, summarize_dense_path(finder, graph, ggdata, dense_path)
 
 
-def time_fixed_colormap_comparison(finder, graph, ggdata, fixed_colormap):
+def time_fixed_colormap_comparison(
+    finder, graph, ggdata, fixed_colormap, use_a_star, use_dominance
+):
     node_colors = node_color_list_from_fixed_colormap(fixed_colormap)
     max_gates = fixed_colormap["max_gates"]
     results = {}
@@ -218,7 +252,10 @@ def time_fixed_colormap_comparison(finder, graph, ggdata, fixed_colormap):
         resident_finder = build_resident_finder(finder, resident_graph)
         started = time.perf_counter()
         dense_path = resident_finder.find_shortest_path_with_node_colors(
-            node_colors, max_gates
+            node_colors,
+            max_gates,
+            use_a_star,
+            use_dominance,
         )
         elapsed = time.perf_counter() - started
         results[resident_graph] = {
@@ -238,12 +275,31 @@ def time_fixed_colormap_comparison(finder, graph, ggdata, fixed_colormap):
     return results, comparison
 
 
-def time_find_many(finder, graph, ggdata, min_gates, max_gates, retries, seed):
+def time_find_many(
+    finder,
+    graph,
+    ggdata,
+    min_gates,
+    max_gates,
+    retries,
+    seed,
+    use_a_star,
+    use_dominance,
+    no_colors,
+):
     if not hasattr(finder, "find_many"):
         raise RuntimeError("ShortestPathFinder.find_many is not implemented yet")
 
     started = time.perf_counter()
-    raw_results = finder.find_many(min_gates, max_gates, retries, seed=seed)
+    raw_results = finder.find_many(
+        min_gates,
+        max_gates,
+        retries,
+        seed=seed,
+        use_a_star=use_a_star,
+        use_dominance=use_dominance,
+        no_colors=no_colors,
+    )
     summaries = [
         summarize_path(graph, ggdata, path)
         for _max_gates, _retry_index, path in raw_results
@@ -278,6 +334,12 @@ def main():
     parser.add_argument("--retries", type=int, default=1)
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument(
+        "--no-colors",
+        type=int,
+        default=None,
+        help="Override the randomized color bit budget for find-many mode. Default is max_gates + 1 for each gate limit.",
+    )
     parser.add_argument("--fixed-colormap", type=Path, default=DEFAULT_FIXED_COLORMAP)
     parser.add_argument(
         "--resident-graph",
@@ -294,7 +356,13 @@ def main():
         ],
         default="legacy-loop",
     )
+    parser.add_argument(
+        "--search-mode",
+        choices=sorted(SEARCH_MODE_FLAGS),
+        default="astar-dominance",
+    )
     args = parser.parse_args()
+    use_a_star, use_dominance = SEARCH_MODE_FLAGS[args.search_mode]
 
     setup_started = time.perf_counter()
     graph, ggdata, source, target = build_real_example(
@@ -314,7 +382,12 @@ def main():
             for _run in range(args.runs):
                 comparison_samples.append(
                     time_fixed_colormap_comparison(
-                        finder, graph, ggdata, fixed_colormap
+                        finder,
+                        graph,
+                        ggdata,
+                        fixed_colormap,
+                        use_a_star,
+                        use_dominance,
                     )
                 )
             graphmap_seconds = [
@@ -333,6 +406,9 @@ def main():
                 "nodes": graph.number_of_nodes(),
                 "edges": graph.number_of_edges(),
                 "mode": args.mode,
+                "search_mode": args.search_mode,
+                "use_a_star": use_a_star,
+                "use_dominance": use_dominance,
                 "runs": args.runs,
                 "setup_seconds": setup_seconds,
                 "graphmap_seconds": graphmap_seconds,
@@ -351,7 +427,13 @@ def main():
         summaries = []
         for _run in range(args.runs):
             elapsed, summary = time_fixed_colormap(
-                finder, graph, ggdata, fixed_colormap, args.resident_graph
+                finder,
+                graph,
+                ggdata,
+                fixed_colormap,
+                args.resident_graph,
+                use_a_star,
+                use_dominance,
             )
             samples.append(elapsed)
             summaries.append(summary)
@@ -366,6 +448,9 @@ def main():
             "max_gates": fixed_colormap["max_gates"],
             "no_colors": fixed_colormap["no_colors"],
             "mode": args.mode,
+            "search_mode": args.search_mode,
+            "use_a_star": use_a_star,
+            "use_dominance": use_dominance,
             "resident_graph": args.resident_graph,
             "runs": args.runs,
             "setup_seconds": setup_seconds,
@@ -391,6 +476,9 @@ def main():
                 args.retries,
                 args.seed,
                 run,
+                use_a_star,
+                use_dominance,
+                args.no_colors,
             )
         else:
             elapsed, summaries = time_find_many(
@@ -401,6 +489,9 @@ def main():
                 args.max_gates,
                 args.retries,
                 args.seed + run,
+                use_a_star,
+                use_dominance,
+                args.no_colors,
             )
         samples.append(elapsed)
         all_run_summaries.extend(summaries)
@@ -416,7 +507,11 @@ def main():
         "retries": args.retries,
         "runs": args.runs,
         "seed": args.seed,
+        "no_colors": args.no_colors,
         "mode": args.mode,
+        "search_mode": args.search_mode,
+        "use_a_star": use_a_star,
+        "use_dominance": use_dominance,
         "resident_graph": args.resident_graph,
         "setup_seconds": setup_seconds,
         "seconds": samples,
