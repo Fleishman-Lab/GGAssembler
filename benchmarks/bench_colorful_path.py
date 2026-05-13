@@ -14,10 +14,10 @@ import time
 import networkx as nx
 import numpy as np
 
-from dawdlib.dijkstra import colorful
+from dawdlib.dijkstra import colorful, colourful_dijkstra
 
 
-def build_finder(nodes, edge_probability, colors, seed):
+def build_finder(nodes, edge_probability, colors, seed, resident_graph):
     rng = random.Random(seed)
     graph = nx.DiGraph()
     graph.add_nodes_from(range(nodes))
@@ -46,6 +46,35 @@ def build_finder(nodes, edge_probability, colors, seed):
     }
     finder.num_of_colors = [colors]
     finder.all_gate_colors = set(range(colors))
+    finder._all_gate_colors_order = list(finder.all_gate_colors)
+    finder._gate_color_id_map = {
+        color: index for index, color in enumerate(finder._all_gate_colors_order)
+    }
+    finder._gate_color_ids_by_node = [
+        tuple(finder._gate_color_id_map[color] for color in finder.gate_colors[node])
+        for node in graph.nodes
+    ]
+    gate_color_ids_by_node = [
+        list(color_ids) for color_ids in finder._gate_color_ids_by_node
+    ]
+    if resident_graph == "digraph":
+        finder._rust_finder = colourful_dijkstra.ColourfulPathFinderDiGraph.with_gate_colors(
+            finder.graph_edges,
+            finder.node_map[finder.source],
+            finder.node_map[finder.target],
+            len(finder.node_map),
+            gate_color_ids_by_node,
+            len(finder._gate_color_id_map),
+        )
+    else:
+        finder._rust_finder = colourful_dijkstra.ColourfulPathFinder.with_gate_colors(
+            finder.graph_edges,
+            finder.node_map[finder.source],
+            finder.node_map[finder.target],
+            len(finder.node_map),
+            gate_color_ids_by_node,
+            len(finder._gate_color_id_map),
+        )
     return finder
 
 
@@ -62,6 +91,12 @@ def time_colab_loop(finder, min_gates, max_gates, retries):
     return time.perf_counter() - started, found
 
 
+def time_find_many(finder, min_gates, max_gates, retries, seed):
+    started = time.perf_counter()
+    results = finder.find_many(min_gates, max_gates, retries, seed=seed)
+    return time.perf_counter() - started, len(results)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--nodes", type=int, default=300)
@@ -72,6 +107,16 @@ def main():
     parser.add_argument("--retries", type=int, default=20)
     parser.add_argument("--runs", type=int, default=5)
     parser.add_argument("--seed", type=int, default=1)
+    parser.add_argument(
+        "--resident-graph",
+        choices=["graphmap", "digraph"],
+        default="graphmap",
+    )
+    parser.add_argument(
+        "--mode",
+        choices=["legacy-loop", "find-many"],
+        default="legacy-loop",
+    )
     args = parser.parse_args()
 
     finder = build_finder(
@@ -79,6 +124,7 @@ def main():
         edge_probability=args.edge_probability,
         colors=args.colors,
         seed=args.seed,
+        resident_graph=args.resident_graph,
     )
 
     samples = []
@@ -86,12 +132,21 @@ def main():
     for run in range(args.runs):
         random.seed(args.seed + run)
         np.random.seed(args.seed + run)
-        elapsed, found = time_colab_loop(
-            finder,
-            min_gates=args.min_gates,
-            max_gates=args.max_gates,
-            retries=args.retries,
-        )
+        if args.mode == "find-many":
+            elapsed, found = time_find_many(
+                finder,
+                min_gates=args.min_gates,
+                max_gates=args.max_gates,
+                retries=args.retries,
+                seed=args.seed + run,
+            )
+        else:
+            elapsed, found = time_colab_loop(
+                finder,
+                min_gates=args.min_gates,
+                max_gates=args.max_gates,
+                retries=args.retries,
+            )
         samples.append(elapsed)
         found_counts.append(found)
 
@@ -103,6 +158,8 @@ def main():
         "max_gates": args.max_gates,
         "retries": args.retries,
         "runs": args.runs,
+        "resident_graph": args.resident_graph,
+        "mode": args.mode,
         "seconds": samples,
         "mean_seconds": statistics.mean(samples),
         "median_seconds": statistics.median(samples),

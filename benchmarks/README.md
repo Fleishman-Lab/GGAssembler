@@ -10,6 +10,20 @@ Baseline command:
 python benchmarks/bench_colorful_path.py --runs 5 --retries 20 --seed 1
 ```
 
+Rust-side retry timing:
+
+```sh
+python benchmarks/bench_colorful_path.py \
+  --runs 5 \
+  --retries 20 \
+  --seed 1 \
+  --mode find-many
+```
+
+Use `--mode legacy-loop` to time the Colab-shaped Python retry loop and
+`--mode find-many` to time the Rust-side retry loop. Both modes accept
+`--resident-graph graphmap` and `--resident-graph digraph`.
+
 Larger run:
 
 ```sh
@@ -51,3 +65,18 @@ separately opt-in:
 python -m pytest dawdlib/dijkstra/tests/test_colorful_real_data.py -q
 GGASSEMBLER_RUN_REAL_DATA_SEARCH=1 python -m pytest dawdlib/dijkstra/tests/test_colorful_real_data.py -q
 ```
+
+Fixed-colormap timing:
+
+```sh
+python benchmarks/bench_colorful_real_data.py \
+  --mode compare-fixed-colormap \
+  --runs 3
+```
+
+This loads
+`dawdlib/dijkstra/tests/fixtures/real_data_fixed_colormap_gates_15_seed_1500001.json`
+and times both resident graph implementations against the exact same node color
+masks. The JSON output includes per-implementation timings and correctness
+comparison fields such as `costs_equal`, `path_lengths_equal`, and
+`same_dense_path`.
