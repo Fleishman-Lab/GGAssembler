@@ -33,16 +33,40 @@ class ShortestPathFinder:
         self.all_gate_colors = set()
         for val in self.gate_colors.values():
             self.all_gate_colors.update(val)
+        self._all_gate_colors_order = list(self.all_gate_colors)
+        self._gate_color_id_map = {
+            color: index for index, color in enumerate(self._all_gate_colors_order)
+        }
+        self._gate_color_ids_by_node = [
+            tuple(self._gate_color_id_map[color] for color in self.gate_colors[node])
+            for node in self.graph.nodes
+        ]
+        self._rust_finder = colourful_dijkstra.ColourfulPathFinder.with_gate_colors(
+            self.graph_edges,
+            self.node_map[self.source],
+            self.node_map[self.target],
+            len(self.node_map),
+            [list(color_ids) for color_ids in self._gate_color_ids_by_node],
+            len(self._gate_color_id_map),
+        )
 
-    def random_recolor(
+    def _validate_recolor_args(
         self, len_cutoff: tp.Optional[int], no_colors: tp.Optional[int]
-    ) -> tp.Dict[int, int]:
+    ) -> int:
         if no_colors is None and len_cutoff is None:
             raise ValueError(
                 "At least one of len_cutoff or no_colors must be provided."
             )
         if no_colors is None:
             no_colors = sum(self.num_of_colors[:len_cutoff])
+        if no_colors > 64:
+            raise ValueError(
+                f"Len limit of {len_cutoff} results in over 64 colors please provide limit on the number of colors."
+            )
+        return no_colors
+
+    @staticmethod
+    def _recolor_dtype(no_colors: int):
         dtype = np.uint8
         if no_colors > 8:
             dtype = np.uint16
@@ -50,14 +74,20 @@ class ShortestPathFinder:
             dtype = np.uint32
         if no_colors > 32:
             dtype = np.uint64
-        if no_colors > 64:
-            raise ValueError(
-                f"Len limit of {len_cutoff} results in over 64 colors please provide limit on the number of colors."
-            )
+        return dtype
+
+    def random_recolor(
+        self, len_cutoff: tp.Optional[int], no_colors: tp.Optional[int]
+    ) -> tp.Dict[int, int]:
+        no_colors = self._validate_recolor_args(len_cutoff, no_colors)
+        dtype = self._recolor_dtype(no_colors)
         selected_colors = (2 ** np.arange(no_colors)).astype(dtype)
+        all_gate_colors_order = getattr(
+            self, "_all_gate_colors_order", list(self.all_gate_colors)
+        )
         color_mapping = dict(
             (k, np.random.choice(selected_colors).astype(dtype))
-            for k in self.all_gate_colors
+            for k in all_gate_colors_order
         )
         node_colors = {}
         for n in self.graph.nodes:
@@ -67,21 +97,70 @@ class ShortestPathFinder:
             node_colors[self.node_map[n]] = mask.item()
         return node_colors
 
+    def _random_recolor_dense(
+        self, len_cutoff: tp.Optional[int], no_colors: tp.Optional[int]
+    ) -> tp.List[int]:
+        no_colors = self._validate_recolor_args(len_cutoff, no_colors)
+        selected_colors = [1 << idx for idx in range(no_colors)]
+        all_gate_colors_order = getattr(
+            self, "_all_gate_colors_order", list(self.all_gate_colors)
+        )
+        gate_color_id_map = getattr(
+            self,
+            "_gate_color_id_map",
+            {color: index for index, color in enumerate(all_gate_colors_order)},
+        )
+        gate_color_ids_by_node = getattr(
+            self,
+            "_gate_color_ids_by_node",
+            [
+                tuple(gate_color_id_map[color] for color in self.gate_colors[node])
+                for node in self.graph.nodes
+            ],
+        )
+        color_mapping = [
+            int(np.random.choice(selected_colors))
+            for _ in range(len(gate_color_id_map))
+        ]
+        node_colors = [0] * len(self.node_map)
+        for node_idx, color_ids in enumerate(gate_color_ids_by_node):
+            mask = 0
+            for color_id in color_ids:
+                mask |= color_mapping[color_id]
+            node_colors[node_idx] = mask
+        return node_colors
+
     def find_shortest_path(
         self, len_cutoff: tp.Optional[int] = None, no_colors: tp.Optional[int] = None
     ):
-        if no_colors is None and len_cutoff is None:
-            raise ValueError(
-                "At least one of len_cutoff or no_colors must be provided."
-            )
-        path = colourful_dijkstra.colourful_shortest_path(
-            self.graph_edges,
-            self.node_map[self.source],
-            self.node_map[self.target],
-            self.random_recolor(len_cutoff, no_colors),
+        self._validate_recolor_args(len_cutoff, no_colors)
+        path = self._rust_finder.find_shortest_path_with_node_colors(
+            self._random_recolor_dense(len_cutoff, no_colors),
             len_cutoff,
         )
         return [self.idx_node_map[idx] for idx in path]
+
+    def find_many(
+        self,
+        min_gates: int,
+        max_gates: int,
+        retries: int,
+        seed: tp.Optional[int] = None,
+    ) -> tp.List[tp.Tuple[int, int, tp.List[tp.Any]]]:
+        raw_results = self._rust_finder.find_many(
+            min_gates,
+            max_gates,
+            retries,
+            seed,
+        )
+        return [
+            (
+                max_gates_for_run,
+                retry_index,
+                [self.idx_node_map[idx] for idx in path],
+            )
+            for max_gates_for_run, retry_index, path in raw_results
+        ]
 
 
 def all_shortest_paths(
