@@ -1,12 +1,11 @@
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
-// use pyo3::wrap_pyfunction;
 mod colourful_dijkstra_impl;
 mod scored;
 
+use ordered_float::NotNan;
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, VecDeque};
-use ordered_float::NotNan;
 
 use crate::colourful_dijkstra_impl::{
     dijkstra, dijkstra_with_node_colors_and_bounds_options, Predecessor, SearchOptions,
@@ -153,11 +152,9 @@ fn search_options(use_a_star: bool, use_dominance: bool) -> SearchOptions {
 }
 
 fn reverse_bounds_from_edges(
-    // edges: &[(usize, usize, usize)],
     edges: &[(usize, usize, f32)],
     node_count: usize,
     goal: usize,
-// ) -> (Vec<Option<usize>>, Vec<Option<usize>>) {
 ) -> (Vec<Option<f32>>, Vec<Option<usize>>) {
     let mut reverse_edges = vec![Vec::new(); node_count];
     for (src, dst, weight) in edges {
@@ -170,7 +167,6 @@ fn reverse_bounds_from_edges(
     let mut cost_heap = BinaryHeap::new();
     if goal < node_count {
         min_cost_to_goal[goal] = Some(0.0);
-        // cost_heap.push((Reverse(0usize), goal));
         cost_heap.push((Reverse(NotNan::new(0.0).unwrap()), goal));
     }
     while let Some((Reverse(cost), node)) = cost_heap.pop() {
@@ -216,7 +212,6 @@ struct ColourfulPathFinder {
     goal: usize,
     gate_color_ids_by_node: Option<Vec<Vec<usize>>>,
     all_color_count: usize,
-    // min_cost_to_goal: Vec<Option<usize>>,
     min_cost_to_goal: Vec<Option<f32>>,
     min_hops_to_goal: Vec<Option<usize>>,
 }
@@ -676,9 +671,7 @@ fn colourful_shortest_path(
 /// A Python module implemented in Rust.
 #[pymodule]
 fn colourful_dijkstra(m: &Bound<'_, PyModule>) -> PyResult<()> {
-    //m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
     m.add_function(wrap_pyfunction!(colourful_shortest_path, m)?)?;
-    // m.add_class::<ColourfulPathFinder>()?;
     m.add_class::<ColourfulPathFinderDiGraph>()?;
     Ok(())
 }
