@@ -37,9 +37,8 @@ where
     K: PartialOrd,
     C: num_traits::PrimInt,
 {
-    (existing.mask & candidate.mask) == existing.mask
-        && existing.cost <= candidate.cost
-        // && existing.depth <= candidate.depth
+    (existing.mask & candidate.mask) == existing.mask && existing.cost <= candidate.cost
+    // && existing.depth <= candidate.depth
 }
 
 fn insert_nondominated_label<K, C>(labels: &mut Vec<Label<K, C>>, candidate: Label<K, C>) -> bool
@@ -133,7 +132,7 @@ where
     G: IntoEdges + Visitable,
     G::NodeId: Eq + Hash,
     F: FnMut(G::EdgeRef) -> K,
-    K: Measure + Copy,
+    K: num_traits::Float + num_traits::cast::FromPrimitive + Measure + Copy,
     C: num_traits::PrimInt + num_traits::Unsigned + Hash + std::fmt::Display,
 {
     dijkstra_with_node_colors(
@@ -159,7 +158,7 @@ where
     G::NodeId: Eq + Hash,
     F: FnMut(G::EdgeRef) -> K,
     ColorFn: FnMut(&G::NodeId) -> C,
-    K: Measure + Copy,
+    K: num_traits::Float + num_traits::cast::FromPrimitive + Measure + Copy,
     C: num_traits::PrimInt + num_traits::Unsigned + Hash + std::fmt::Display,
 {
     dijkstra_with_node_colors_and_bounds(
@@ -188,7 +187,7 @@ where
     F: FnMut(G::EdgeRef) -> K,
     ColorFn: FnMut(&G::NodeId) -> C,
     BoundFn: FnMut(&G::NodeId) -> Option<(K, usize)>,
-    K: Measure + Copy,
+    K: num_traits::Float + num_traits::cast::FromPrimitive + Measure + Copy,
     C: num_traits::PrimInt + num_traits::Unsigned + Hash + std::fmt::Display,
 {
     dijkstra_with_node_colors_and_bounds_options(
@@ -219,7 +218,7 @@ where
     F: FnMut(G::EdgeRef) -> K,
     ColorFn: FnMut(&G::NodeId) -> C,
     BoundFn: FnMut(&G::NodeId) -> Option<(K, usize)>,
-    K: Measure + Copy,
+    K: num_traits::Float + num_traits::cast::FromPrimitive + Measure + Copy,
     C: num_traits::PrimInt + num_traits::Unsigned + Hash + std::fmt::Display,
 {
     let limit = limit.unwrap_or(0);
@@ -287,6 +286,11 @@ where
                     if limit > 0 && node_depth + min_hops > limit {
                         continue;
                     }
+                    if limit > 0
+                        && current_color.count_ones() + (min_hops as u32) > (limit as u32) + 1
+                    {
+                        continue;
+                    }
                 }
                 None => continue,
             }
@@ -300,6 +304,7 @@ where
             if (next_color & current_color) != C::min_value() {
                 continue;
             }
+            let next_color = current_color | next_color;
             let next_depth = node_depth + 1;
             let next_bound = if options.use_a_star {
                 let bound = match lower_bound_fn(&next) {
@@ -309,18 +314,25 @@ where
                 if limit > 0 && next_depth + bound.1 > limit {
                     continue;
                 }
+                if limit > 0 && next_color.count_ones() + (bound.1 as u32) > (limit as u32) + 1 {
+                    continue;
+                }
                 bound
             } else {
                 (K::default(), 0)
             };
             let next_score = node_score + edge_cost(edge);
-            let next_color = current_color | next_color;
             let next_state = (next, next_color);
             if visited.contains(&next_state) {
                 continue;
             }
             let next_priority = if options.use_a_star {
-                next_score + next_bound.0
+                // next_score + ( next_bound.0 as K )
+                let ratio = (K::from_u32(next_color.count_ones())
+                    .unwrap_or(num_traits::Zero::zero()))
+                    / (K::from_usize(limit).unwrap() + num_traits::One::one());
+                let weight = K::from(1.0).unwrap() + K::from(0.1).unwrap() * ratio;
+                next_score + (weight * (next_bound.0 as K))
             } else {
                 next_score
             };
@@ -382,7 +394,6 @@ mod tests {
         let mut labels = vec![Label {
             mask: 0b001u8,
             cost: 5usize,
-            depth: 2,
         }];
 
         assert!(!insert_nondominated_label(
@@ -390,7 +401,6 @@ mod tests {
             Label {
                 mask: 0b011,
                 cost: 5,
-                depth: 3,
             }
         ));
         assert_eq!(
@@ -398,7 +408,6 @@ mod tests {
             vec![Label {
                 mask: 0b001,
                 cost: 5,
-                depth: 2,
             }]
         );
     }
@@ -408,7 +417,6 @@ mod tests {
         let mut labels = vec![Label {
             mask: 0b011u8,
             cost: 5usize,
-            depth: 3,
         }];
 
         assert!(insert_nondominated_label(
@@ -416,7 +424,6 @@ mod tests {
             Label {
                 mask: 0b001,
                 cost: 4,
-                depth: 2,
             }
         ));
         assert_eq!(
@@ -424,7 +431,6 @@ mod tests {
             vec![Label {
                 mask: 0b001,
                 cost: 4,
-                depth: 2,
             }]
         );
     }
@@ -434,7 +440,6 @@ mod tests {
         let mut labels = vec![Label {
             mask: 0b001u8,
             cost: 6usize,
-            depth: 1,
         }];
 
         assert!(insert_nondominated_label(
@@ -442,7 +447,6 @@ mod tests {
             Label {
                 mask: 0b010,
                 cost: 4,
-                depth: 3,
             }
         ));
         assert_eq!(
@@ -451,12 +455,10 @@ mod tests {
                 Label {
                     mask: 0b001,
                     cost: 6,
-                    depth: 1,
                 },
                 Label {
                     mask: 0b010,
                     cost: 4,
-                    depth: 3,
                 },
             ]
         );
@@ -486,13 +488,13 @@ mod tests {
     #[test]
     fn dijkstra_with_bounds_matches_unbounded_result() {
         let edges = [
-            (0usize, 1usize, 10usize),
-            (1, 4, 10),
-            (0, 2, 1),
-            (2, 3, 1),
-            (3, 4, 1),
+            (0usize, 1usize, 10f32),
+            (1, 4, 10.0),
+            (0, 2, 1.0),
+            (2, 3, 1.0),
+            (3, 4, 1.0),
         ];
-        let graph = DiGraphMap::<usize, usize>::from_edges(&edges);
+        let graph = DiGraphMap::<usize, f32>::from_edges(&edges);
         let node_colors = [1usize, 2, 4, 8, 16];
 
         let (unbounded_predecessor, unbounded_node, unbounded_mask) = dijkstra_with_node_colors(
@@ -511,11 +513,11 @@ mod tests {
                 |edge| *edge.2,
                 |node| node_colors[*node],
                 |node| match *node {
-                    0 => Some((3, 3)),
-                    1 => Some((10, 1)),
-                    2 => Some((2, 2)),
-                    3 => Some((1, 1)),
-                    4 => Some((0, 0)),
+                    0 => Some((3.0, 3)),
+                    1 => Some((10.0, 1)),
+                    2 => Some((2.0, 2)),
+                    3 => Some((1.0, 1)),
+                    4 => Some((0.0, 0)),
                     _ => None,
                 },
                 Some(4),
@@ -529,8 +531,8 @@ mod tests {
 
     #[test]
     fn dijkstra_with_bounds_skips_nodes_disconnected_from_goal() {
-        let edges = [(0usize, 1usize, 1usize), (1, 2, 1), (0, 3, 1)];
-        let graph = DiGraphMap::<usize, usize>::from_edges(&edges);
+        let edges = [(0usize, 1usize, 1f32), (1, 2, 1f32), (0, 3, 1f32)];
+        let graph = DiGraphMap::<usize, f32>::from_edges(&edges);
         let node_colors = [1usize, 2, 4, 8];
 
         let (predecessor, node, mask) = dijkstra_with_node_colors_and_bounds(
@@ -540,8 +542,8 @@ mod tests {
             |edge| *edge.2,
             |node| node_colors[*node],
             |node| match *node {
-                0 => Some((1, 1)),
-                3 => Some((0, 0)),
+                0 => Some((1.0, 1)),
+                3 => Some((0.0, 0)),
                 _ => None,
             },
             Some(3),

@@ -6,6 +6,7 @@ mod scored;
 
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, VecDeque};
+use ordered_float::NotNan;
 
 use crate::colourful_dijkstra_impl::{
     dijkstra, dijkstra_with_node_colors_and_bounds_options, Predecessor, SearchOptions,
@@ -15,7 +16,7 @@ use petgraph::graphmap::DiGraphMap;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
-fn node_count_from_edges(edges: &[(usize, usize, usize)], start: usize, goal: usize) -> usize {
+fn node_count_from_edges(edges: &[(usize, usize, f32)], start: usize, goal: usize) -> usize {
     edges
         .iter()
         .fold(start.max(goal), |max_node, (src, dst, _)| {
@@ -152,10 +153,12 @@ fn search_options(use_a_star: bool, use_dominance: bool) -> SearchOptions {
 }
 
 fn reverse_bounds_from_edges(
-    edges: &[(usize, usize, usize)],
+    // edges: &[(usize, usize, usize)],
+    edges: &[(usize, usize, f32)],
     node_count: usize,
     goal: usize,
-) -> (Vec<Option<usize>>, Vec<Option<usize>>) {
+// ) -> (Vec<Option<usize>>, Vec<Option<usize>>) {
+) -> (Vec<Option<f32>>, Vec<Option<usize>>) {
     let mut reverse_edges = vec![Vec::new(); node_count];
     for (src, dst, weight) in edges {
         if *src < node_count && *dst < node_count {
@@ -166,11 +169,12 @@ fn reverse_bounds_from_edges(
     let mut min_cost_to_goal = vec![None; node_count];
     let mut cost_heap = BinaryHeap::new();
     if goal < node_count {
-        min_cost_to_goal[goal] = Some(0);
-        cost_heap.push((Reverse(0usize), goal));
+        min_cost_to_goal[goal] = Some(0.0);
+        // cost_heap.push((Reverse(0usize), goal));
+        cost_heap.push((Reverse(NotNan::new(0.0).unwrap()), goal));
     }
     while let Some((Reverse(cost), node)) = cost_heap.pop() {
-        if min_cost_to_goal[node] != Some(cost) {
+        if min_cost_to_goal[node] != Some(cost.into_inner()) {
             continue;
         }
         for (previous, edge_cost) in &reverse_edges[node] {
@@ -180,7 +184,7 @@ fn reverse_bounds_from_edges(
                 .unwrap_or(true)
             {
                 min_cost_to_goal[*previous] = Some(next_cost);
-                cost_heap.push((Reverse(next_cost), *previous));
+                cost_heap.push((Reverse(NotNan::new(next_cost).unwrap()), *previous));
             }
         }
     }
@@ -204,19 +208,21 @@ fn reverse_bounds_from_edges(
     (min_cost_to_goal, min_hops_to_goal)
 }
 
+/*
 #[pyclass]
 struct ColourfulPathFinder {
-    graph: DiGraphMap<usize, usize>,
+    graph: DiGraphMap<usize, f32>,
     start: usize,
     goal: usize,
     gate_color_ids_by_node: Option<Vec<Vec<usize>>>,
     all_color_count: usize,
-    min_cost_to_goal: Vec<Option<usize>>,
+    // min_cost_to_goal: Vec<Option<usize>>,
+    min_cost_to_goal: Vec<Option<f32>>,
     min_hops_to_goal: Vec<Option<usize>>,
 }
 
 impl ColourfulPathFinder {
-    fn lower_bound_for_node(&self, node: usize) -> Option<(usize, usize)> {
+    fn lower_bound_for_node(&self, node: usize) -> Option<(f32, usize)> {
         match (
             self.min_cost_to_goal.get(node),
             self.min_hops_to_goal.get(node),
@@ -303,11 +309,11 @@ impl ColourfulPathFinder {
 #[pymethods]
 impl ColourfulPathFinder {
     #[new]
-    fn new(edges: Vec<(usize, usize, usize)>, start: usize, goal: usize) -> Self {
+    fn new(edges: Vec<(usize, usize, f32)>, start: usize, goal: usize) -> Self {
         let node_count = node_count_from_edges(&edges, start, goal);
         let (min_cost_to_goal, min_hops_to_goal) =
             reverse_bounds_from_edges(&edges, node_count, goal);
-        let graph = DiGraphMap::<usize, usize>::from_edges(&edges);
+        let graph = DiGraphMap::<usize, f32>::from_edges(&edges);
         Self {
             graph,
             start,
@@ -321,7 +327,7 @@ impl ColourfulPathFinder {
 
     #[staticmethod]
     fn with_gate_colors(
-        edges: Vec<(usize, usize, usize)>,
+        edges: Vec<(usize, usize, f32)>,
         start: usize,
         goal: usize,
         node_count: usize,
@@ -331,7 +337,7 @@ impl ColourfulPathFinder {
         validate_gate_colors(node_count, &gate_color_ids_by_node, all_color_count)?;
         let (min_cost_to_goal, min_hops_to_goal) =
             reverse_bounds_from_edges(&edges, node_count, goal);
-        let graph = DiGraphMap::<usize, usize>::from_edges(&edges);
+        let graph = DiGraphMap::<usize, f32>::from_edges(&edges);
         Ok(Self {
             graph,
             start,
@@ -403,20 +409,21 @@ impl ColourfulPathFinder {
         }))
     }
 }
+*/
 
 #[pyclass]
 struct ColourfulPathFinderDiGraph {
-    graph: DiGraph<(), usize>,
+    graph: DiGraph<(), f32>,
     start: NodeIndex,
     goal: NodeIndex,
     gate_color_ids_by_node: Option<Vec<Vec<usize>>>,
     all_color_count: usize,
-    min_cost_to_goal: Vec<Option<usize>>,
+    min_cost_to_goal: Vec<Option<f32>>,
     min_hops_to_goal: Vec<Option<usize>>,
 }
 
 impl ColourfulPathFinderDiGraph {
-    fn lower_bound_for_node(&self, node: NodeIndex) -> Option<(usize, usize)> {
+    fn lower_bound_for_node(&self, node: NodeIndex) -> Option<(f32, usize)> {
         let node = node.index();
         match (
             self.min_cost_to_goal.get(node),
@@ -509,7 +516,7 @@ impl ColourfulPathFinderDiGraph {
 impl ColourfulPathFinderDiGraph {
     #[new]
     fn new(
-        edges: Vec<(usize, usize, usize)>,
+        edges: Vec<(usize, usize, f32)>,
         start: usize,
         goal: usize,
         node_count: Option<usize>,
@@ -521,7 +528,7 @@ impl ColourfulPathFinderDiGraph {
         let indexed_edges = edges
             .iter()
             .map(|(src, dst, weight)| (NodeIndex::new(*src), NodeIndex::new(*dst), *weight));
-        let mut graph = DiGraph::<(), usize>::from_edges(indexed_edges);
+        let mut graph = DiGraph::<(), f32>::from_edges(indexed_edges);
         while graph.node_count() < final_node_count {
             graph.add_node(());
         }
@@ -538,7 +545,7 @@ impl ColourfulPathFinderDiGraph {
 
     #[staticmethod]
     fn with_gate_colors(
-        edges: Vec<(usize, usize, usize)>,
+        edges: Vec<(usize, usize, f32)>,
         start: usize,
         goal: usize,
         node_count: usize,
@@ -551,7 +558,7 @@ impl ColourfulPathFinderDiGraph {
         let indexed_edges = edges
             .iter()
             .map(|(src, dst, weight)| (NodeIndex::new(*src), NodeIndex::new(*dst), *weight));
-        let mut graph = DiGraph::<(), usize>::from_edges(indexed_edges);
+        let mut graph = DiGraph::<(), f32>::from_edges(indexed_edges);
         while graph.node_count() < node_count {
             graph.add_node(());
         }
@@ -646,14 +653,14 @@ impl ColourfulPathFinderDiGraph {
 #[pyfunction]
 fn colourful_shortest_path(
     py: Python<'_>,
-    edges: Vec<(usize, usize, usize)>,
+    edges: Vec<(usize, usize, f32)>,
     start: usize,
     goal: usize,
     node_color_map: HashMap<usize, usize>,
     limit: Option<usize>,
 ) -> Vec<usize> {
     py.allow_threads(move || {
-        let graph = DiGraphMap::<usize, usize>::from_edges(&edges);
+        let graph = DiGraphMap::<usize, f32>::from_edges(&edges);
         let (predecessor, node, node_color) = dijkstra(
             &graph,
             start.into(),
@@ -671,7 +678,7 @@ fn colourful_shortest_path(
 fn colourful_dijkstra(m: &Bound<'_, PyModule>) -> PyResult<()> {
     //m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
     m.add_function(wrap_pyfunction!(colourful_shortest_path, m)?)?;
-    m.add_class::<ColourfulPathFinder>()?;
+    // m.add_class::<ColourfulPathFinder>()?;
     m.add_class::<ColourfulPathFinderDiGraph>()?;
     Ok(())
 }
