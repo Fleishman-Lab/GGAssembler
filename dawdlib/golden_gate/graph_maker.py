@@ -139,8 +139,8 @@ def build_custom_graph(
     src = SOURCE
     target = TARGET._replace(idx=TARGET.idx + len(dna))
 
-    make_nodes(d_graph, dna, is_valid_node, glength=gate_length)
     d_graph.add_node(src)
+    make_nodes(d_graph, dna, is_valid_node, glength=gate_length)
     d_graph.add_node(target)
     make_edges(d_graph, is_valid_edge, edge_weight)
     return d_graph, src, target
