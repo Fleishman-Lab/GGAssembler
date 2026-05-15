@@ -48,7 +48,7 @@ class ShortestPathFinder:
             tuple(self._gate_color_id_map[color] for color in self.gate_colors[node])
             for node in self.graph.nodes
         ]
-        self._rust_finder = colourful_dijkstra.ColourfulPathFinder.with_gate_colors(
+        self._rust_finder = colourful_dijkstra.ColourfulPathFinderDiGraph.with_gate_colors(
             self.graph_edges,
             self.node_map[self.source],
             self.node_map[self.target],
@@ -143,14 +143,27 @@ class ShortestPathFinder:
         no_colors: tp.Optional[int] = None,
         use_a_star: bool = True,
         use_dominance: bool = True,
+        algorithm: str = "dijkstra",
+        use_color_count_bound: bool = False,
     ):
         self._validate_recolor_args(len_cutoff, no_colors)
-        path = self._rust_finder.find_shortest_path_with_node_colors(
-            self._random_recolor_dense(len_cutoff, no_colors),
-            len_cutoff,
-            use_a_star,
-            use_dominance,
-        )
+        node_colors = self._random_recolor_dense(len_cutoff, no_colors)
+        if algorithm == "dijkstra":
+            path = self._rust_finder.find_shortest_path_with_node_colors(
+                node_colors,
+                len_cutoff,
+                use_a_star,
+                use_dominance,
+            )
+        elif algorithm == "dag-dp":
+            path = self._rust_finder.find_shortest_path_dag_dp_with_node_colors(
+                node_colors,
+                len_cutoff,
+                use_dominance=use_dominance,
+                use_color_count_bound=use_color_count_bound,
+            )
+        else:
+            raise ValueError(f"unknown colorful shortest path algorithm: {algorithm}")
         return [self.idx_node_map[idx] for idx in path]
 
     def find_many(
@@ -162,16 +175,31 @@ class ShortestPathFinder:
         use_a_star: bool = True,
         use_dominance: bool = True,
         no_colors: tp.Optional[int] = None,
+        algorithm: str = "dijkstra",
+        use_color_count_bound: bool = False,
     ) -> tp.List[tp.Tuple[int, int, tp.List[tp.Any]]]:
-        raw_results = self._rust_finder.find_many(
-            min_gates,
-            max_gates,
-            retries,
-            seed=seed,
-            use_a_star=use_a_star,
-            use_dominance=use_dominance,
-            no_colors=no_colors,
-        )
+        if algorithm == "dijkstra":
+            raw_results = self._rust_finder.find_many(
+                min_gates,
+                max_gates,
+                retries,
+                seed=seed,
+                use_a_star=use_a_star,
+                use_dominance=use_dominance,
+                no_colors=no_colors,
+            )
+        elif algorithm == "dag-dp":
+            raw_results = self._rust_finder.find_many_dag_dp(
+                min_gates,
+                max_gates,
+                retries,
+                seed=seed,
+                use_dominance=use_dominance,
+                no_colors=no_colors,
+                use_color_count_bound=use_color_count_bound,
+            )
+        else:
+            raise ValueError(f"unknown colorful shortest path algorithm: {algorithm}")
         return [
             (
                 max_gates_for_run,

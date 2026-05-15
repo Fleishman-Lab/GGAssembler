@@ -204,6 +204,38 @@ fn reverse_bounds_from_edges(
     (min_cost_to_goal, min_hops_to_goal)
 }
 
+fn dense_dag_adjacency_from_edges(
+    edges: &[(usize, usize, f32)],
+    node_count: usize,
+    start: usize,
+    goal: usize,
+) -> PyResult<(Vec<Vec<(usize, f32)>>, bool)> {
+    if start >= node_count || goal >= node_count {
+        return Err(PyValueError::new_err(
+            "start and goal must be valid node indices",
+        ));
+    }
+
+    let mut adj = vec![Vec::new(); node_count];
+    let mut is_dense_topological_dag = true;
+    for (src, dst, weight) in edges {
+        if *src >= node_count || *dst >= node_count {
+            return Err(PyValueError::new_err("edge endpoint is outside node_count"));
+        }
+        if !weight.is_finite() || *weight < 0.0 {
+            return Err(PyValueError::new_err(
+                "edge weights must be finite and non-negative",
+            ));
+        }
+        if src >= dst {
+            is_dense_topological_dag = false;
+        }
+        adj[*src].push((*dst, *weight));
+    }
+
+    Ok((adj, is_dense_topological_dag))
+}
+
 /*
 #[pyclass]
 struct ColourfulPathFinder {
@@ -409,12 +441,41 @@ impl ColourfulPathFinder {
 #[pyclass]
 struct ColourfulPathFinderDiGraph {
     graph: DiGraph<(), f32>,
+    dag_adj: Vec<Vec<(usize, f32)>>,
+    is_dense_topological_dag: bool,
     start: NodeIndex,
     goal: NodeIndex,
     gate_color_ids_by_node: Option<Vec<Vec<usize>>>,
     all_color_count: usize,
     min_cost_to_goal: Vec<Option<f32>>,
     min_hops_to_goal: Vec<Option<usize>>,
+}
+
+#[derive(Clone, Copy, Debug)]
+struct DagLabel {
+    mask: usize,
+    cost: f32,
+    depth: usize,
+}
+
+type DagPredecessor = HashMap<(usize, usize), (usize, usize)>;
+
+fn dag_label_dominates(existing: DagLabel, candidate: DagLabel) -> bool {
+    (existing.mask & candidate.mask) == existing.mask
+        && existing.cost <= candidate.cost
+        && existing.depth <= candidate.depth
+}
+
+fn insert_dag_nondominated_label(labels: &mut Vec<DagLabel>, candidate: DagLabel) -> bool {
+    if labels
+        .iter()
+        .any(|existing| dag_label_dominates(*existing, candidate))
+    {
+        return false;
+    }
+    labels.retain(|existing| !dag_label_dominates(candidate, *existing));
+    labels.push(candidate);
+    true
 }
 
 impl ColourfulPathFinderDiGraph {
@@ -471,6 +532,124 @@ impl ColourfulPathFinderDiGraph {
         reconstruct_node_index_path(&predecessor, self.goal, node, node_color)
     }
 
+    fn find_shortest_path_dag_dp_from_node_colors(
+        &self,
+        node_colors: &[usize],
+        limit: Option<usize>,
+        use_dominance: bool,
+        use_color_count_bound: bool,
+    ) -> PyResult<Vec<usize>> {
+        if !self.is_dense_topological_dag {
+            return Err(PyValueError::new_err(
+                "DAG DP requires dense node order to be topological: every edge must have src < dst",
+            ));
+        }
+        let node_count = self.dag_adj.len();
+        if node_colors.len() != node_count {
+            return Err(PyValueError::new_err(
+                "node_colors length must match node count",
+            ));
+        }
+
+        let start = self.start.index();
+        let goal = self.goal.index();
+        let limit = limit.unwrap_or(0);
+        let start_mask = node_colors[start];
+        let mut scores: Vec<HashMap<usize, f32>> =
+            (0..node_count).map(|_| HashMap::new()).collect();
+        let mut labels: Vec<Vec<DagLabel>> = (0..node_count).map(|_| Vec::new()).collect();
+        let mut predecessor: DagPredecessor = HashMap::new();
+
+        scores[start].insert(start_mask, 0.0);
+        labels[start].push(DagLabel {
+            mask: start_mask,
+            cost: 0.0,
+            depth: 0,
+        });
+
+        for u in 0..node_count {
+            if scores[u].is_empty() {
+                continue;
+            }
+            let current_labels = labels[u].clone();
+            for label in current_labels {
+                if scores[u].get(&label.mask) != Some(&label.cost) {
+                    continue;
+                }
+                if use_color_count_bound && limit > 0 {
+                    if let Some(min_hops) = self.min_hops_to_goal[u] {
+                        if label.mask.count_ones() as usize + min_hops > limit + 1 {
+                            continue;
+                        }
+                    }
+                }
+                if limit > 0 && label.depth + 1 > limit {
+                    continue;
+                }
+                for (v, weight) in &self.dag_adj[u] {
+                    let v_color = node_colors[*v];
+                    if (label.mask & v_color) != 0 {
+                        continue;
+                    }
+                    let next_depth = label.depth + 1;
+                    let next_mask = label.mask | v_color;
+                    if use_color_count_bound && limit > 0 {
+                        if let Some(min_hops) = self.min_hops_to_goal[*v] {
+                            if next_mask.count_ones() as usize + min_hops > limit + 1 {
+                                continue;
+                            }
+                        }
+                    }
+                    let next_cost = label.cost + *weight;
+                    let should_update = scores[*v]
+                        .get(&next_mask)
+                        .map(|known| next_cost < *known)
+                        .unwrap_or(true);
+                    if !should_update {
+                        continue;
+                    }
+
+                    let next_label = DagLabel {
+                        mask: next_mask,
+                        cost: next_cost,
+                        depth: next_depth,
+                    };
+                    if use_dominance {
+                        if !insert_dag_nondominated_label(&mut labels[*v], next_label) {
+                            continue;
+                        }
+                    } else {
+                        labels[*v].push(next_label);
+                    }
+
+                    scores[*v].insert(next_mask, next_cost);
+                    predecessor.insert((*v, next_mask), (u, label.mask));
+                }
+            }
+        }
+
+        let Some((&best_mask, _best_cost)) =
+            scores[goal].iter().min_by(|(_, a), (_, b)| a.total_cmp(b))
+        else {
+            return Ok(Vec::new());
+        };
+
+        let mut path = vec![goal];
+        let mut current = goal;
+        let mut current_mask = best_mask;
+        while let Some((previous, previous_mask)) = predecessor.get(&(current, current_mask)) {
+            path.push(*previous);
+            current = *previous;
+            current_mask = *previous_mask;
+        }
+        path.reverse();
+        if path.first() == Some(&start) {
+            Ok(path)
+        } else {
+            Ok(Vec::new())
+        }
+    }
+
     fn find_many_inner(
         &self,
         gate_color_ids_by_node: &[Vec<usize>],
@@ -505,6 +684,43 @@ impl ColourfulPathFinderDiGraph {
         }
         results
     }
+
+    fn find_many_dag_dp_inner(
+        &self,
+        gate_color_ids_by_node: &[Vec<usize>],
+        min_gates: usize,
+        max_gates: usize,
+        retries: usize,
+        rng_seed: u64,
+        no_colors: Option<usize>,
+        use_dominance: bool,
+        use_color_count_bound: bool,
+    ) -> PyResult<Vec<(usize, usize, Vec<usize>)>> {
+        let mut rng = StdRng::seed_from_u64(rng_seed);
+        let mut results = Vec::new();
+
+        for max_gates_for_run in min_gates..=max_gates {
+            let no_colors = no_colors.unwrap_or(max_gates_for_run + 1);
+            for retry_index in 0..retries {
+                let node_colors = recolor_node_masks(
+                    gate_color_ids_by_node,
+                    self.all_color_count,
+                    no_colors,
+                    &mut rng,
+                );
+                let path = self.find_shortest_path_dag_dp_from_node_colors(
+                    &node_colors,
+                    Some(max_gates_for_run),
+                    use_dominance,
+                    use_color_count_bound,
+                )?;
+                if !path.is_empty() {
+                    results.push((max_gates_for_run, retry_index, path));
+                }
+            }
+        }
+        Ok(results)
+    }
 }
 
 #[pymethods]
@@ -515,9 +731,11 @@ impl ColourfulPathFinderDiGraph {
         start: usize,
         goal: usize,
         node_count: Option<usize>,
-    ) -> Self {
+    ) -> PyResult<Self> {
         let final_node_count =
             node_count.unwrap_or_else(|| node_count_from_edges(&edges, start, goal));
+        let (dag_adj, is_dense_topological_dag) =
+            dense_dag_adjacency_from_edges(&edges, final_node_count, start, goal)?;
         let (min_cost_to_goal, min_hops_to_goal) =
             reverse_bounds_from_edges(&edges, final_node_count, goal);
         let indexed_edges = edges
@@ -527,15 +745,17 @@ impl ColourfulPathFinderDiGraph {
         while graph.node_count() < final_node_count {
             graph.add_node(());
         }
-        Self {
+        Ok(Self {
             graph,
+            dag_adj,
+            is_dense_topological_dag,
             start: NodeIndex::new(start),
             goal: NodeIndex::new(goal),
             gate_color_ids_by_node: None,
             all_color_count: 0,
             min_cost_to_goal,
             min_hops_to_goal,
-        }
+        })
     }
 
     #[staticmethod]
@@ -548,6 +768,8 @@ impl ColourfulPathFinderDiGraph {
         all_color_count: usize,
     ) -> PyResult<Self> {
         validate_gate_colors(node_count, &gate_color_ids_by_node, all_color_count)?;
+        let (dag_adj, is_dense_topological_dag) =
+            dense_dag_adjacency_from_edges(&edges, node_count, start, goal)?;
         let (min_cost_to_goal, min_hops_to_goal) =
             reverse_bounds_from_edges(&edges, node_count, goal);
         let indexed_edges = edges
@@ -559,6 +781,8 @@ impl ColourfulPathFinderDiGraph {
         }
         Ok(Self {
             graph,
+            dag_adj,
+            is_dense_topological_dag,
             start: NodeIndex::new(start),
             goal: NodeIndex::new(goal),
             gate_color_ids_by_node: Some(gate_color_ids_by_node),
@@ -596,6 +820,25 @@ impl ColourfulPathFinderDiGraph {
         })
     }
 
+    #[pyo3(signature = (node_colors, limit=None, use_dominance=true, use_color_count_bound=false))]
+    fn find_shortest_path_dag_dp_with_node_colors(
+        &self,
+        py: Python<'_>,
+        node_colors: Vec<usize>,
+        limit: Option<usize>,
+        use_dominance: bool,
+        use_color_count_bound: bool,
+    ) -> PyResult<Vec<usize>> {
+        py.allow_threads(move || {
+            self.find_shortest_path_dag_dp_from_node_colors(
+                &node_colors,
+                limit,
+                use_dominance,
+                use_color_count_bound,
+            )
+        })
+    }
+
     #[pyo3(signature = (min_gates, max_gates, retries, seed=None, use_a_star=true, use_dominance=true, no_colors=None))]
     fn find_many(
         &self,
@@ -626,6 +869,38 @@ impl ColourfulPathFinderDiGraph {
                 options,
             )
         }))
+    }
+
+    #[pyo3(signature = (min_gates, max_gates, retries, seed=None, use_dominance=true, no_colors=None, use_color_count_bound=false))]
+    fn find_many_dag_dp(
+        &self,
+        py: Python<'_>,
+        min_gates: usize,
+        max_gates: usize,
+        retries: usize,
+        seed: Option<u64>,
+        use_dominance: bool,
+        no_colors: Option<usize>,
+        use_color_count_bound: bool,
+    ) -> PyResult<Vec<(usize, usize, Vec<usize>)>> {
+        validate_find_many_args(min_gates, max_gates, no_colors)?;
+        let gate_color_ids_by_node = self
+            .gate_color_ids_by_node
+            .as_ref()
+            .ok_or_else(|| PyValueError::new_err("finder was not constructed with gate colors"))?;
+        let rng_seed = seed.unwrap_or_else(|| rand::thread_rng().gen());
+        py.allow_threads(move || {
+            self.find_many_dag_dp_inner(
+                gate_color_ids_by_node,
+                min_gates,
+                max_gates,
+                retries,
+                rng_seed,
+                no_colors,
+                use_dominance,
+                use_color_count_bound,
+            )
+        })
     }
 }
 

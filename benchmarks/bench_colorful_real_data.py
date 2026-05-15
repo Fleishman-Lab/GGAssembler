@@ -199,6 +199,8 @@ def time_legacy_loop(
     use_a_star,
     use_dominance,
     no_colors,
+    algorithm,
+    use_color_count_bound,
 ):
     started = time.perf_counter()
     summaries = []
@@ -212,6 +214,8 @@ def time_legacy_loop(
                 no_colors=no_colors or max_gates_for_run + 1,
                 use_a_star=use_a_star,
                 use_dominance=use_dominance,
+                algorithm=algorithm,
+                use_color_count_bound=use_color_count_bound,
             )
             if path:
                 summaries.append(summarize_path(graph, ggdata, path))
@@ -226,24 +230,43 @@ def time_fixed_colormap(
     resident_graph,
     use_a_star,
     use_dominance,
+    algorithm,
+    use_color_count_bound,
 ):
     resident_finder = build_resident_finder(finder, resident_graph)
     node_colors = node_color_list_from_fixed_colormap(fixed_colormap)
     max_gates = fixed_colormap["max_gates"]
 
     started = time.perf_counter()
-    dense_path = resident_finder.find_shortest_path_with_node_colors(
-        node_colors,
-        max_gates,
-        use_a_star,
-        use_dominance,
-    )
+    if algorithm == "dijkstra":
+        dense_path = resident_finder.find_shortest_path_with_node_colors(
+            node_colors,
+            max_gates,
+            use_a_star,
+            use_dominance,
+        )
+    elif algorithm == "dag-dp":
+        dense_path = resident_finder.find_shortest_path_dag_dp_with_node_colors(
+            node_colors,
+            max_gates,
+            use_dominance=use_dominance,
+            use_color_count_bound=use_color_count_bound,
+        )
+    else:
+        raise ValueError(f"unknown algorithm: {algorithm}")
     elapsed = time.perf_counter() - started
     return elapsed, summarize_dense_path(finder, graph, ggdata, dense_path)
 
 
 def time_fixed_colormap_comparison(
-    finder, graph, ggdata, fixed_colormap, use_a_star, use_dominance
+    finder,
+    graph,
+    ggdata,
+    fixed_colormap,
+    use_a_star,
+    use_dominance,
+    algorithm,
+    use_color_count_bound,
 ):
     node_colors = node_color_list_from_fixed_colormap(fixed_colormap)
     max_gates = fixed_colormap["max_gates"]
@@ -251,12 +274,22 @@ def time_fixed_colormap_comparison(
     for resident_graph in ("graphmap", "digraph"):
         resident_finder = build_resident_finder(finder, resident_graph)
         started = time.perf_counter()
-        dense_path = resident_finder.find_shortest_path_with_node_colors(
-            node_colors,
-            max_gates,
-            use_a_star,
-            use_dominance,
-        )
+        if algorithm == "dijkstra":
+            dense_path = resident_finder.find_shortest_path_with_node_colors(
+                node_colors,
+                max_gates,
+                use_a_star,
+                use_dominance,
+            )
+        elif algorithm == "dag-dp":
+            dense_path = resident_finder.find_shortest_path_dag_dp_with_node_colors(
+                node_colors,
+                max_gates,
+                use_dominance=use_dominance,
+                use_color_count_bound=use_color_count_bound,
+            )
+        else:
+            raise ValueError(f"unknown algorithm: {algorithm}")
         elapsed = time.perf_counter() - started
         results[resident_graph] = {
             "seconds": elapsed,
@@ -286,6 +319,8 @@ def time_find_many(
     use_a_star,
     use_dominance,
     no_colors,
+    algorithm,
+    use_color_count_bound,
 ):
     if not hasattr(finder, "find_many"):
         raise RuntimeError("ShortestPathFinder.find_many is not implemented yet")
@@ -299,6 +334,8 @@ def time_find_many(
         use_a_star=use_a_star,
         use_dominance=use_dominance,
         no_colors=no_colors,
+        algorithm=algorithm,
+        use_color_count_bound=use_color_count_bound,
     )
     summaries = [
         summarize_path(graph, ggdata, path)
@@ -361,6 +398,12 @@ def main():
         choices=sorted(SEARCH_MODE_FLAGS),
         default="astar-dominance",
     )
+    parser.add_argument(
+        "--algorithm",
+        choices=["dijkstra", "dag-dp"],
+        default="dijkstra",
+    )
+    parser.add_argument("--use-color-count-bound", action="store_true")
     args = parser.parse_args()
     use_a_star, use_dominance = SEARCH_MODE_FLAGS[args.search_mode]
 
@@ -388,6 +431,8 @@ def main():
                         fixed_colormap,
                         use_a_star,
                         use_dominance,
+                        args.algorithm,
+                        args.use_color_count_bound,
                     )
                 )
             graphmap_seconds = [
@@ -406,9 +451,11 @@ def main():
                 "nodes": graph.number_of_nodes(),
                 "edges": graph.number_of_edges(),
                 "mode": args.mode,
+                "algorithm": args.algorithm,
                 "search_mode": args.search_mode,
                 "use_a_star": use_a_star,
                 "use_dominance": use_dominance,
+                "use_color_count_bound": args.use_color_count_bound,
                 "runs": args.runs,
                 "setup_seconds": setup_seconds,
                 "graphmap_seconds": graphmap_seconds,
@@ -434,6 +481,8 @@ def main():
                 args.resident_graph,
                 use_a_star,
                 use_dominance,
+                args.algorithm,
+                args.use_color_count_bound,
             )
             samples.append(elapsed)
             summaries.append(summary)
@@ -448,9 +497,11 @@ def main():
             "max_gates": fixed_colormap["max_gates"],
             "no_colors": fixed_colormap["no_colors"],
             "mode": args.mode,
+            "algorithm": args.algorithm,
             "search_mode": args.search_mode,
             "use_a_star": use_a_star,
             "use_dominance": use_dominance,
+            "use_color_count_bound": args.use_color_count_bound,
             "resident_graph": args.resident_graph,
             "runs": args.runs,
             "setup_seconds": setup_seconds,
@@ -479,6 +530,8 @@ def main():
                 use_a_star,
                 use_dominance,
                 args.no_colors,
+                args.algorithm,
+                args.use_color_count_bound,
             )
         else:
             elapsed, summaries = time_find_many(
@@ -492,6 +545,8 @@ def main():
                 use_a_star,
                 use_dominance,
                 args.no_colors,
+                args.algorithm,
+                args.use_color_count_bound,
             )
         samples.append(elapsed)
         all_run_summaries.extend(summaries)
@@ -509,9 +564,11 @@ def main():
         "seed": args.seed,
         "no_colors": args.no_colors,
         "mode": args.mode,
+        "algorithm": args.algorithm,
         "search_mode": args.search_mode,
         "use_a_star": use_a_star,
         "use_dominance": use_dominance,
+        "use_color_count_bound": args.use_color_count_bound,
         "resident_graph": args.resident_graph,
         "setup_seconds": setup_seconds,
         "seconds": samples,

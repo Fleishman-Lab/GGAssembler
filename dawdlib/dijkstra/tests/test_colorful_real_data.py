@@ -121,7 +121,16 @@ def test_real_example_graph_builds_from_checked_in_inputs(real_example_graph):
     assert target in graph
 
 
-def test_real_example_resident_graphs_match_fixed_colormap(real_example_graph):
+def test_real_example_dense_node_order_is_topological(real_example_graph):
+    graph, ggdata, source, target = real_example_graph
+    finder = colorful.ShortestPathFinder(graph, ggdata, source, target)
+
+    assert finder.node_map[source] == 0
+    assert finder.node_map[target] == len(finder.node_map) - 1
+    assert all(src < dst for src, dst, _weight in finder.graph_edges)
+
+
+def test_real_example_digraph_matches_fixed_colormap(real_example_graph):
     graph, ggdata, source, target = real_example_graph
     finder = colorful.ShortestPathFinder(graph, ggdata, source, target)
     fixed_colormap = json.loads(FIXED_COLORMAP_PATH.read_text())
@@ -133,11 +142,6 @@ def test_real_example_resident_graphs_match_fixed_colormap(real_example_graph):
 
     node_colors = list(fixed_colormap["mask_by_node_index"])
     max_gates = fixed_colormap["max_gates"]
-    graphmap_finder = colourful_dijkstra.ColourfulPathFinder(
-        finder.graph_edges,
-        finder.node_map[source],
-        finder.node_map[target],
-    )
     digraph_finder = colourful_dijkstra.ColourfulPathFinderDiGraph(
         finder.graph_edges,
         finder.node_map[source],
@@ -145,35 +149,42 @@ def test_real_example_resident_graphs_match_fixed_colormap(real_example_graph):
         len(finder.node_map),
     )
 
-    graphmap_path = graphmap_finder.find_shortest_path_with_node_colors(
-        node_colors, max_gates
-    )
     digraph_path = digraph_finder.find_shortest_path_with_node_colors(
         node_colors, max_gates
     )
 
-    assert bool(graphmap_path) == bool(digraph_path)
-    assert len(graphmap_path) == len(digraph_path)
-    if not graphmap_path:
+    if not digraph_path:
         return
 
-    dense_weights = {
-        (src_idx, dst_idx): weight
-        for src_idx, dst_idx, weight in finder.graph_edges
-    }
-    graphmap_cost = sum(
-        dense_weights[(src_idx, dst_idx)]
-        for src_idx, dst_idx in zip(graphmap_path[:-1], graphmap_path[1:])
-    )
-    digraph_cost = sum(
-        dense_weights[(src_idx, dst_idx)]
-        for src_idx, dst_idx in zip(digraph_path[:-1], digraph_path[1:])
-    )
-    assert graphmap_cost == digraph_cost
+    original_path = [finder.idx_node_map[node_idx] for node_idx in digraph_path]
+    _assert_valid_path(graph, ggdata, source, target, original_path, max_gates)
 
-    for dense_path in (graphmap_path, digraph_path):
-        original_path = [finder.idx_node_map[node_idx] for node_idx in dense_path]
-        _assert_valid_path(graph, ggdata, source, target, original_path, max_gates)
+
+def test_real_example_dag_dp_fixed_colormap_returns_valid_path(real_example_graph):
+    graph, ggdata, source, target = real_example_graph
+    finder = colorful.ShortestPathFinder(graph, ggdata, source, target)
+    fixed_colormap = json.loads(FIXED_COLORMAP_PATH.read_text())
+    node_colors = list(fixed_colormap["mask_by_node_index"])
+    max_gates = fixed_colormap["max_gates"]
+
+    rust_finder = colourful_dijkstra.ColourfulPathFinderDiGraph(
+        finder.graph_edges,
+        finder.node_map[source],
+        finder.node_map[target],
+        len(finder.node_map),
+    )
+
+    dag_path = rust_finder.find_shortest_path_dag_dp_with_node_colors(
+        node_colors, max_gates
+    )
+
+    assert dag_path
+
+    dag_original = [finder.idx_node_map[idx] for idx in dag_path]
+    dag_summary = _path_summary(graph, ggdata, dag_original)
+
+    assert dag_summary["cost"] == 2035.0
+    _assert_valid_path(graph, ggdata, source, target, dag_original, max_gates)
 
 
 @pytest.mark.skipif(

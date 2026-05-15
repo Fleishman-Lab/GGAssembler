@@ -1,4 +1,5 @@
 import networkx as nx
+import pytest
 
 from dawdlib.dijkstra import colorful, colourful_dijkstra
 
@@ -70,30 +71,6 @@ def test_colourful_shortest_path_revisits_node_with_different_color_mask():
     assert path == [0, 2, 3, 4]
 
 
-def test_rust_resident_finder_matches_module_function():
-    edges = [
-        (0, 1, 1),
-        (1, 4, 10),
-        (0, 2, 2),
-        (2, 3, 2),
-        (3, 4, 2),
-    ]
-    node_colors = {
-        0: 1,
-        1: 2,
-        2: 4,
-        3: 8,
-        4: 16,
-    }
-
-    expected = colourful_dijkstra.colourful_shortest_path(
-        edges, 0, 4, node_colors, 4
-    )
-    finder = colourful_dijkstra.ColourfulPathFinder(edges, 0, 4)
-
-    assert finder.find_shortest_path(node_colors, 4) == expected
-
-
 def test_rust_resident_digraph_finder_matches_module_function():
     edges = [
         (0, 1, 1),
@@ -118,7 +95,31 @@ def test_rust_resident_digraph_finder_matches_module_function():
     assert finder.find_shortest_path(node_colors, 4) == expected
 
 
-def test_rust_resident_finders_accept_dense_node_colors():
+def test_rust_resident_digraph_finder_accepts_dense_node_colors():
+    edges = [
+        (0, 1, 1),
+        (1, 4, 10),
+        (0, 2, 2),
+        (2, 3, 2),
+        (3, 4, 2),
+    ]
+    node_colors = {
+        0: 1,
+        1: 2,
+        2: 4,
+        3: 8,
+        4: 16,
+    }
+
+    expected = colourful_dijkstra.colourful_shortest_path(
+        edges, 0, 4, node_colors, 4
+    )
+    finder = colourful_dijkstra.ColourfulPathFinderDiGraph(edges, 0, 4, 5)
+
+    assert finder.find_shortest_path(node_colors, 4) == expected
+
+
+def test_rust_resident_digraph_finder_accepts_dense_node_colors_against_module_function():
     edges = [
         (0, 1, 1),
         (1, 4, 10),
@@ -132,13 +133,8 @@ def test_rust_resident_finders_accept_dense_node_colors():
         edges, 0, 4, node_color_map, 4
     )
 
-    graphmap_finder = colourful_dijkstra.ColourfulPathFinder(edges, 0, 4)
     digraph_finder = colourful_dijkstra.ColourfulPathFinderDiGraph(edges, 0, 4, 5)
 
-    assert (
-        graphmap_finder.find_shortest_path_with_node_colors(node_colors, 4)
-        == expected
-    )
     assert (
         digraph_finder.find_shortest_path_with_node_colors(node_colors, 4)
         == expected
@@ -167,6 +163,84 @@ def test_rust_resident_search_modes_match_on_simple_path():
             ) == expected
 
 
+def test_dag_dp_matches_dijkstra_on_simple_dag():
+    edges = [
+        (0, 1, 10.0),
+        (1, 4, 10.0),
+        (0, 2, 1.0),
+        (2, 3, 1.0),
+        (3, 4, 1.0),
+    ]
+    node_colors = [1, 2, 4, 8, 16]
+    finder = colourful_dijkstra.ColourfulPathFinderDiGraph(edges, 0, 4, 5)
+
+    dijkstra_path = finder.find_shortest_path_with_node_colors(node_colors, 4)
+    dag_path = finder.find_shortest_path_dag_dp_with_node_colors(node_colors, 4)
+
+    assert dag_path == dijkstra_path == [0, 2, 3, 4]
+
+
+def test_dag_dp_respects_len_cutoff():
+    edges = [(0, 1, 1.0), (1, 2, 1.0), (2, 3, 1.0)]
+    node_colors = [1, 2, 4, 8]
+    finder = colourful_dijkstra.ColourfulPathFinderDiGraph(edges, 0, 3, 4)
+
+    assert finder.find_shortest_path_dag_dp_with_node_colors(node_colors, 2) == []
+    assert finder.find_shortest_path_dag_dp_with_node_colors(node_colors, 3) == [
+        0,
+        1,
+        2,
+        3,
+    ]
+
+
+def test_dag_dp_respects_color_conflicts():
+    edges = [
+        (0, 1, 1.0),
+        (1, 3, 1.0),
+        (0, 2, 2.0),
+        (2, 3, 1.0),
+    ]
+    node_colors = [1, 2, 2, 4]
+    finder = colourful_dijkstra.ColourfulPathFinderDiGraph(edges, 0, 3, 4)
+
+    assert finder.find_shortest_path_dag_dp_with_node_colors(node_colors, 3) == [
+        0,
+        1,
+        3,
+    ]
+
+
+def test_dag_dp_dominance_modes_match_on_simple_dag():
+    edges = [
+        (0, 1, 1.0),
+        (0, 2, 1.0),
+        (1, 3, 1.0),
+        (2, 3, 2.0),
+        (3, 4, 1.0),
+    ]
+    node_colors = [1, 2, 4, 8, 16]
+    finder = colourful_dijkstra.ColourfulPathFinderDiGraph(edges, 0, 4, 5)
+
+    without_dominance = finder.find_shortest_path_dag_dp_with_node_colors(
+        node_colors, 4, use_dominance=False
+    )
+    with_dominance = finder.find_shortest_path_dag_dp_with_node_colors(
+        node_colors, 4, use_dominance=True
+    )
+
+    assert with_dominance == without_dominance
+
+
+def test_dag_dp_rejects_non_topological_dense_order():
+    edges = [(1, 2, 1.0), (2, 0, 1.0)]
+    node_colors = [1, 2, 4]
+    finder = colourful_dijkstra.ColourfulPathFinderDiGraph(edges, 1, 0, 3)
+
+    with pytest.raises(ValueError, match="topological"):
+        finder.find_shortest_path_dag_dp_with_node_colors(node_colors, 2)
+
+
 def test_colourful_shortest_path_keeps_existing_public_api(monkeypatch):
     graph = nx.DiGraph()
     graph.add_edge("source", "a", weight=1)
@@ -182,10 +256,11 @@ def test_colourful_shortest_path_keeps_existing_public_api(monkeypatch):
         (finder.node_map[u], finder.node_map[v], data["weight"])
         for u, v, data in graph.edges(data=True)
     ]
-    finder._rust_finder = colourful_dijkstra.ColourfulPathFinder(
+    finder._rust_finder = colourful_dijkstra.ColourfulPathFinderDiGraph(
         finder.graph_edges,
         finder.node_map[finder.source],
         finder.node_map[finder.target],
+        len(finder.node_map),
     )
 
     monkeypatch.setattr(
