@@ -1,5 +1,5 @@
 from itertools import combinations
-from typing import Callable, Dict, List, Tuple, Union
+from typing import Callable, Dict, List, Optional, Sequence, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -115,6 +115,58 @@ def create_default_weight_func(
     return edge_weight
 
 
+def _gate_oligo_slice(g1: Gate, g2: Gate) -> slice:
+    g1_idx = g1.idx if not g1.src_or_target else None
+    g2_idx = g2.span()[1] + 1 if not g2.src_or_target else None
+    return slice(g1_idx, g2_idx)
+
+
+def make_length_tier_cost(
+    tiers: Sequence[Tuple[int, int, float]],
+    fallback: Optional[Callable[[int], float]] = None,
+) -> Callable[[int], float]:
+    def _cost(length: int) -> float:
+        for min_len, max_len, price_per_nt in tiers:
+            if min_len <= length <= max_len:
+                return length * price_per_nt
+        if fallback is not None:
+            return fallback(length)
+        return float(length)
+
+    return _cost
+
+
+def create_exact_variant_weight_func(
+    wt_dna: str,
+    variant_dnas: Dict[str, str],
+    retrieval_handle_length: int = 20,
+    segment_length_cost: Optional[Callable[[int], float]] = None,
+    oligo_addition: int = VAR_ADD_COST,
+    const_cost: int = CONST_COST,
+) -> Callable[[Gate, Gate], float]:
+    if segment_length_cost is None:
+        segment_length_cost = lambda length: float(length)
+
+    def edge_weight(nd1: Gate, nd2: Gate) -> float:
+        psuedogates = isinstance(nd1, PseudoGate) or isinstance(nd2, PseudoGate)
+        o_slice = _gate_oligo_slice(nd1, nd2)
+        wt_segment = wt_dna[o_slice]
+        variant_segments = [dna[o_slice] for dna in variant_dnas.values()]
+
+        if all(segment == wt_segment for segment in variant_segments):
+            return const_cost if not psuedogates else 0
+
+        unique_segments = set(variant_segments)
+        return sum(
+            segment_length_cost(
+                len(segment) + oligo_addition + 2 * retrieval_handle_length
+            )
+            for segment in unique_segments
+        )
+
+    return edge_weight
+
+
 def make_edges(
     d_graph: nx.Graph,
     is_valid_edge: Callable[[Gate, Gate], bool],
@@ -165,6 +217,47 @@ def make_default_graph(
     )
     edge_weight = create_default_weight_func(
         dna_pos_n_codons, reqs.oligo_addition, reqs.const_cost
+    )
+    return build_custom_graph(
+        dna, is_valid_node, is_valid_edge, edge_weight, gate_length=gatelength
+    )
+
+
+def make_no_degenerate_graph(
+    gm: GraphMaker,
+    dna: str,
+    reqs: Requirements,
+    gatelength: int = 4,
+) -> Tuple[nx.Graph, Gate, Gate]:
+    return make_default_graph(gm, dna, [], {}, reqs, gatelength)
+
+
+def make_exact_variant_graph(
+    gm: GraphMaker,
+    dna: str,
+    mut_dna_poss: List[int],
+    variant_dnas: Dict[str, str],
+    reqs: Requirements,
+    retrieval_handle_length: int = 20,
+    segment_length_cost: Optional[Callable[[int], float]] = None,
+    gatelength: int = 4,
+) -> Tuple[nx.Graph, Gate, Gate]:
+    acceptable_fcws = gm.ggdata.filter_self_binding_gates(reqs.filter_gc_overhangs)
+    is_valid_node = create_default_valid_node_function(acceptable_fcws, mut_dna_poss)
+    is_valid_edge = gm.create_default_valid_edge_func(
+        mut_dna_poss,
+        reqs.min_oligo_length,
+        reqs.max_oligo_length,
+        reqs.min_const_oligo_length,
+        reqs.min_fidelity,
+    )
+    edge_weight = create_exact_variant_weight_func(
+        dna,
+        variant_dnas,
+        retrieval_handle_length,
+        segment_length_cost,
+        reqs.oligo_addition,
+        reqs.const_cost,
     )
     return build_custom_graph(
         dna, is_valid_node, is_valid_edge, edge_weight, gate_length=gatelength
