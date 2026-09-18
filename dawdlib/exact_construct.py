@@ -1,5 +1,5 @@
 import json
-from typing import Dict, Iterable, List, NamedTuple, Optional, Sequence, Tuple
+from typing import Any, Dict, Iterable, List, NamedTuple, Optional, Sequence, Tuple
 
 import pandas as pd
 from Bio.Seq import Seq
@@ -7,7 +7,6 @@ from Bio.Seq import Seq
 from dawdlib.degenerate_dna.codon_selector import CodonSelector
 from dawdlib.golden_gate.gate import Gate
 from dawdlib.golden_gate.utils import check_for_restriction_sites, find_dna_var_poss
-from dawdlib.gg_dc_combine.gg_dc_combine import get_wt
 
 
 class Mutation(NamedTuple):
@@ -21,6 +20,12 @@ class Variant(NamedTuple):
     target_aas: str
     mutations: Sequence[Mutation]
     total_score: Optional[float] = None
+
+
+class ExactConstructOutput(NamedTuple):
+    parts: pd.DataFrame
+    bom: pd.DataFrame
+    summary: Dict[str, Any]
 
 
 def read_sequence_space_resfile(path: str) -> List[Tuple[int, str]]:
@@ -120,6 +125,12 @@ def build_exact_variant_dnas(
     codon_selector: CodonSelector,
     enzymes: Optional[Sequence[str]] = None,
 ) -> Dict[str, str]:
+    wt_dna = wt_dna.upper()
+    variant_ids = [variant.variant_id for variant in variants]
+    if len(variant_ids) != len(set(variant_ids)):
+        raise ValueError("Exact variant IDs must be unique")
+    if set(wt_dna) - set("ACGT"):
+        raise ValueError("WT DNA must contain only A, C, G, and T")
     result = {}
 
     for variant in variants:
@@ -130,6 +141,13 @@ def build_exact_variant_dnas(
             dna[dna_idx : dna_idx + 3] = codon
 
         variant_dna = "".join(dna)
+        translated = str(Seq(variant_dna).translate())
+        for mutation in variant.mutations:
+            if translated[mutation.aa_pos - 1] != mutation.to_aa:
+                raise ValueError(
+                    f"{variant.variant_id} does not encode {mutation.to_aa} "
+                    f"at position {mutation.aa_pos}"
+                )
         if enzymes:
             ok, enzyme, sites = check_for_restriction_sites(variant_dna, list(enzymes))
             if not ok:
@@ -141,50 +159,99 @@ def build_exact_variant_dnas(
     return result
 
 
-def exact_variant_oligo_table(
+def exact_variant_tables(
     path: Sequence[Gate],
-    wt_dna: str,
+    graph,
     variant_dnas: Dict[str, str],
-    prefix: str,
-    suffix: str,
-    project_name: str = "",
-) -> pd.DataFrame:
-    rows = []
-    cassette_id = 0
-    name_prefix = f"{project_name}." if project_name else ""
+    fidelity_metrics: Optional[Dict[str, float]] = None,
+) -> ExactConstructOutput:
+    if not variant_dnas:
+        raise ValueError("At least one exact variant is required")
 
-    for g1, g2 in zip(path[:-1], path[1:]):
-        wt_entry = get_wt(g1, g2, const=True, dna=wt_dna)
-        o_pre = prefix if not g1.src_or_target else ""
-        o_suf = suffix if not g2.src_or_target else ""
-        wt_segment = wt_entry.oligo_dna
-        variant_segments = {
-            variant_id: get_wt(g1, g2, const=True, dna=variant_dna).oligo_dna
-            for variant_id, variant_dna in variant_dnas.items()
-        }
-        is_variable = any(segment != wt_segment for segment in variant_segments.values())
-        current_cassette_id = None
-        if is_variable:
-            cassette_id += 1
-            current_cassette_id = cassette_id
+    part_rows = []
+    bom_rows = []
+    for interval_number, (g1, g2) in enumerate(zip(path[:-1], path[1:]), 1):
+        plan = graph.edges[g1, g2].get("exact_plan")
+        if plan is None:
+            raise ValueError(f"Missing exact interval plan for {g1.idx}-{g2.idx}")
 
-        for variant_id, segment in variant_segments.items():
-            entry = wt_entry._replace(
-                wt=segment == wt_segment,
-                const=not is_variable,
-                oligo_dna=segment,
-                full_oligo_dna=o_pre + segment + o_suf,
-                name=f"{name_prefix}{variant_id}.{g1.idx}-{g2.idx}",
-            )
-            rows.append(
+        interval_id = f"I{interval_number}"
+        gate1 = json.dumps(g1)
+        gate2 = json.dumps(g2)
+        part_ids = []
+        for part_number, part in enumerate(plan.parts, 1):
+            part_id = f"{interval_id}.P{part_number}"
+            part_ids.append(part_id)
+            part_rows.append(
                 {
-                    **entry._asdict(),
-                    "variant_id": variant_id,
-                    "cassette_id": current_cassette_id,
+                    "part_id": part_id,
+                    "interval_id": interval_id,
+                    "gate1": gate1,
+                    "gate2": gate2,
+                    "payload_sequence": part.payload_sequence,
+                    "ordered_sequence": part.ordered_sequence,
+                    "source_type": part.source_type,
+                    "is_wt": part.is_wt,
+                    "ordered_length": len(part.ordered_sequence),
+                    "cost_cents": part.cost_cents,
+                    "cost_eur": part.cost_cents / 100,
+                    "usage_count": len(part.variant_ids),
+                    "primer_length": part.primer_length,
+                    "primer_count": part.primer_count,
                 }
             )
 
-    df = pd.DataFrame(rows)
-    df["gate1"] = df["gate1"].map(json.dumps)
-    df["gate2"] = df["gate2"].map(json.dumps)
-    return df
+        for variant_id, part_index in plan.variant_part_indices:
+            part = plan.parts[part_index]
+            bom_rows.append(
+                {
+                    "variant_id": variant_id,
+                    "interval_id": interval_id,
+                    "part_id": part_ids[part_index],
+                    "gate1": gate1,
+                    "gate2": gate2,
+                    "is_wt": part.is_wt,
+                    "source_type": part.source_type,
+                }
+            )
+
+    parts = pd.DataFrame(part_rows)
+    bom = pd.DataFrame(bom_rows)
+    variant_count = len(variant_dnas)
+    non_common_part_ids = set(parts.loc[parts.usage_count < variant_count, "part_id"])
+    total_cost_cents = int(parts.cost_cents.sum())
+    summary = {
+        "requested_variants": variant_count,
+        "unique_physical_parts": len(parts),
+        "unique_synthesized_non_wt_oligos": int(
+            ((parts.source_type == "individual_oligo") & ~parts.is_wt).sum()
+        ),
+        "directly_synthesized_wt_oligos": int(
+            ((parts.source_type == "individual_oligo") & parts.is_wt).sum()
+        ),
+        "wt_pcr_fragments": int((parts.source_type == "wt_pcr").sum()),
+        "terminal_free_parts": int((parts.source_type == "terminal_free").sum()),
+        "total_ordered_oligo_nt": int(
+            parts.loc[parts.source_type == "individual_oligo", "ordered_length"].sum()
+        ),
+        "total_primer_nt": int((parts.primer_length * parts.primer_count).sum()),
+        "total_cost_cents": total_cost_cents,
+        "total_cost_eur": total_cost_cents / 100,
+        "total_fragment_usages": len(bom),
+        "average_non_wt_parts_per_variant": float((~bom.is_wt).sum()) / variant_count,
+        "average_non_common_parts_per_variant": float(
+            bom.part_id.isin(non_common_part_ids).sum()
+        )
+        / variant_count,
+        "golden_gate_fragments_per_construct": len(path) - 1,
+        "golden_gate_junctions": max(0, len(path) - 2),
+        "junctions": [
+            {"idx": gate.idx, "bps": gate.bps}
+            for gate in path
+            if not gate.src_or_target
+        ],
+    }
+    if fidelity_metrics is not None:
+        summary["fidelity"] = fidelity_metrics
+
+    return ExactConstructOutput(parts=parts, bom=bom, summary=summary)
