@@ -5,7 +5,6 @@ mod scored;
 
 use std::collections::HashMap;
 
-use petgraph::graphmap::DiGraphMap;
 use crate::colourful_dijkstra_impl::dijkstra;
 
 /// Finds shortest path between source and target and an optional path length limit.
@@ -26,25 +25,44 @@ use crate::colourful_dijkstra_impl::dijkstra;
 
 #[pyfunction]
 fn colourful_shortest_path(
-    edges: Vec<(usize,usize,usize)>,
+    edges: Vec<(usize, usize, usize)>,
     start: usize,
     goal: usize,
     node_color_map: HashMap<usize, usize>,
-    limit: Option<usize>
-) -> Vec<usize>
-{
-    let graph = DiGraphMap::<usize, usize>::from_edges(&edges);
-    let (predecessor, node, node_color): (HashMap<(usize, usize), (usize,usize)>, usize, usize) = dijkstra(&graph, start.into(), goal.into(), |e| *e.2, node_color_map, limit);
+    limit: Option<usize>,
+) -> Vec<usize> {
+    let node_count = edges
+        .iter()
+        .flat_map(|(source, target, _)| [*source, *target])
+        .chain(node_color_map.keys().copied())
+        .chain([start, goal])
+        .max()
+        .unwrap_or(0)
+        + 1;
+    let mut graph = vec![Vec::new(); node_count];
+    for (source, target, weight) in edges {
+        graph[source].push((target, weight));
+    }
+    let mut node_colors = vec![0; node_count];
+    for (node, color) in node_color_map {
+        node_colors[node] = color;
+    }
+    let (predecessor, (node, node_color, node_depth)) =
+        dijkstra(&graph, start, goal, &node_colors, limit);
     // predecessor
     let mut path: Vec<usize> = vec![];
     if node == goal {
         let mut current = node;
         let mut current_color = node_color;
+        let mut current_depth = node_depth;
         path.push(current);
-        while let Some((pred, pred_color)) = predecessor.get(&(current, current_color)) {
+        while let Some((pred, pred_color, pred_depth)) =
+            predecessor.get(&(current, current_color, current_depth))
+        {
             path.push(*pred);
             current = *pred;
             current_color = *pred_color;
+            current_depth = *pred_depth;
         }
     }
 
